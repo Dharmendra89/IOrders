@@ -5,9 +5,3 @@ Ext.regApplication({
 		Ext.Interaction.controller = 'Main';
 	}
 });
-
-
-//delete
-var metadata = {
-		
-};

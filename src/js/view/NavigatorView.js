@@ -32,11 +32,13 @@ var NavigatorView = Ext.extend(AbstractView, {
 				list
 			]			
 		});
+		this.items = [this.form, list];
 	},
 	/**
 	 * Overridden
 	 */
 	initComponent: function() {
+		this.createItems();
 		NavigatorView.superclass.initComponent.apply(this, arguments);
 	}
 });

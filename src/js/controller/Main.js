@@ -1,6 +1,8 @@
-Ext.regController({
-	name: 'Main',
+Ext.regController('Main', {
 	onBackTap: function(options) {
+		
+	},
+	onListItemTap: function(options) {
 		
 	}
 });

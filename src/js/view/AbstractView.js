@@ -10,11 +10,14 @@ var AbstractView = Ext.extend(Ext.Panel, {
 			title: this.title,
 			items: [{
 				ui: 'back',
-				handler: function() {
+				scope: this,
+				handler: function(btn, e) {
 					Ext.dispatch({
 						action: 'onBackTap',
-						btn: this
-					});			
+						view: this,
+						btn: btn,
+						event: e
+					});
 				}
 			}]
 		}].concat(this.dockedItems);

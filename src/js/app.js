@@ -29,17 +29,16 @@ Ext.regStore('Warehouse', {
 
 Ext.regApplication({
 	name: 'IOrders',
-	viewport: {xtype: 'panel', fullscreen: true},
 	beforeLauch: function() {
-		Ext.Interaction.controller = 'Main';
+		this.viewport = Ext.create({xtype: 'viewport'});
 	},
 	launch: function() {
 		this.beforeLauch();
 		
-		var v = new NavigatorView({
-			fullscreen: true,
+		this.viewport.setActiveItem(new NavigatorView({
+			//fullscreen: true,
+			objectView: true,
 			objectRecord: Ext.ModelMgr.create({id: 1, name: 'Север'}, 'Warehouse')
-		});
-		v.show();
+		}));
 	}
 });

@@ -20,9 +20,17 @@ Ext.regController('Main', {
 					idx: options.idx,
 					item: options.item
 				});
+				break;
 			}
 			case 'tableList' : {
-				
+				Ext.dispatch({
+					controller: 'Navigator',
+					action: 'onTableListItemTap',
+					list: list,
+					idx: options.idx,
+					item: options.item
+				});
+				break;
 			}
 		};
 	}

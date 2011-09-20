@@ -6,6 +6,9 @@ var getItemTpl = function(modelName) {
 		case 'Warehouse' : {
 			return '<div>{name}</div>';
 		}
+		case 'Customer' : {
+			return '<div>{name} {address}</div>';
+		}
 	}
 };
 
@@ -15,12 +18,23 @@ var createFieldSet = function(columnsStore) {
 		if(column.get('name')) {
 			var field = {name: column.get('id'), label: column.get('name')};
 			Ext.apply(field, column.get('parent') 
-				? {xtype: 'selectfield', store: Ext.get('parent')}
+				? {xtype: 'selectfield', store: Ext.getStore(column.get('parent')), valueField: 'id', displayField: 'name'}
 				: {xtype: 'textfield'});
 			fsItems.push(field);
 		}
 	});
 	return {xtype: 'fieldset', items: fsItems};
+};
+
+var createFilterField = function(objectRecord) {
+	var modelName = objectRecord.modelName;
+	return {xtype: 'fieldset', items: {
+		xtype: 'selectfield',
+		store: modelName,
+		name: modelName.toLowerCase(),
+		label: Ext.getStore('tables').getById(modelName).get('name'),
+		valueField: 'id', displayField: 'name'
+	}};
 };
 
 var createButtonsList = function(depsStore, tablesStore) {
@@ -31,9 +45,7 @@ var createButtonsList = function(depsStore, tablesStore) {
 		data.push({name: depTable.get('nameSet'), table_id: depTable.get('id'), expandable: depTable.get('expandable')});
 	});
 	
-	var btnsStore = new Ext.data.Store({
-		model: 'Button'
-	});
+	var btnsStore = new Ext.data.Store({model: 'Button'});
 	btnsStore.loadData(data);
 	
 	return {

@@ -8,6 +8,7 @@ var Viewport = Ext.extend(Ext.Panel , {
 	initComponent: function() {
 		Ext.apply(this.listeners, {
 			cardswitch: function(panel, newC, oldC) {
+				panel.remove(oldC);
 				oldC.destroy();
 			}
 		}); 

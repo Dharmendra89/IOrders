@@ -5,19 +5,18 @@ var data = {
     		nameSet: 'Склады',
     		name: 'Склад',
             columns: [
-                {           
+                {
 	                id: 'id',
 	                type: 'int'
                 },
                 {           
 	                id: 'name',
 	                name: 'Склад',
-	                formField: true,
 	                type: 'string'
                 }
             ],
             deps: [
-				{           
+				{
 				    id: 'warehouse',
 				    name: 'Склад',
 				    type: 'int',

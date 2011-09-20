@@ -1,7 +1,7 @@
 Ext.regModel('Warehouse', {
 	modelName: 'Warehouse',
 	fields: [
-		{name: 'id', type: 'string'},
+		{name: 'id', type: 'int'},
 		{name: 'name', type: 'string'}
 	]
 });
@@ -26,6 +26,49 @@ Ext.regStore('Warehouse', {
 	}
 });
 
+Ext.regModel('Customer', {
+	modelName: 'Customer',
+	fields: [
+		{           
+			name: 'id',
+            type: 'int'
+        },
+        {           
+        	name: 'name',
+            type: 'string'
+        },
+        {           
+        	name: 'address',
+            type: 'string'
+        },
+        {           
+        	name: 'warehouse',
+            type: 'int'
+        },
+        {           
+            name: 'partner',
+            type: 'int'
+        }
+	]
+});
+
+var data = {
+	wars: [
+		{id: 1, name: 'ИП', address: 'Москва', warehouse: 1, partner: 'вфыв'}
+	]
+};
+
+Ext.regStore('Customer', {
+	model: 'Customer',
+	data: data,
+	proxy: {
+		type: 'memory',
+		reader: {
+			type: 'json',
+			root: 'wars'
+		}
+	}
+});
 
 Ext.regApplication({
 	name: 'IOrders',
@@ -36,8 +79,7 @@ Ext.regApplication({
 		this.beforeLauch();
 		
 		this.viewport.setActiveItem(new NavigatorView({
-			//fullscreen: true,
-			objectView: true,
+			isObjectView: true,
 			objectRecord: Ext.ModelMgr.create({id: 1, name: 'Север'}, 'Warehouse')
 		}));
 	}

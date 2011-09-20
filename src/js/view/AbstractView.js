@@ -9,16 +9,10 @@ var AbstractView = Ext.extend(Ext.Panel, {
 			dock: 'top',
 			title: this.title,
 			items: [{
-				ui: 'back',
-				scope: this,
-				handler: function(btn, e) {
-					Ext.dispatch({
-						action: 'onBackTap',
-						view: this,
-						btn: btn,
-						event: e
-					});
-				}
+				ui: 'back', iconMask: true,
+				name: 'Back',
+				iconCls: 'reply',
+				scope: this
 			}]
 		}].concat(this.dockedItems);
 	},

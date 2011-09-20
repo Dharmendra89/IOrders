@@ -1,7 +1,7 @@
 Ext.regModel('Warehouse', {
 	modelName: 'Warehouse',
 	fields: [
-		{name: 'id', type: 'int'},
+		{name: 'id', type: 'string'},
 		{name: 'name', type: 'string'}
 	]
 });
@@ -31,7 +31,7 @@ Ext.regModel('Customer', {
 	fields: [
 		{           
 			name: 'id',
-            type: 'int'
+            type: 'string'
         },
         {           
         	name: 'name',
@@ -43,7 +43,7 @@ Ext.regModel('Customer', {
         },
         {           
         	name: 'warehouse',
-            type: 'int'
+            type: 'string'
         },
         {           
             name: 'partner',

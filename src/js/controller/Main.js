@@ -1,37 +1,20 @@
 Ext.regController('Main', {
-	onBackTap: function(options) {
+	onButtonTap: function(options) {
 		var view = options.view;
 		if(view.isXType('navigatorview')) {
-			Ext.dispatch({
-				controller: 'Navigator',
-				action: 'onBackTap',
-				view: view
-			});
+			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('Button', options.btn.name + 'Button')}));
 		}
+		
 	},
 	onListItemTap: function(options) {
 		var list = options.list;
-		switch(list.name) {
-			case 'buttonList' : {
-				Ext.dispatch({
-					controller: 'Navigator',
-					action: 'onButtonListItemTap',
-					list: list,
-					idx: options.idx,
-					item: options.item
-				});
-				break;
-			}
-			case 'tableList' : {
-				Ext.dispatch({
-					controller: 'Navigator',
-					action: 'onTableListItemTap',
-					list: list,
-					idx: options.idx,
-					item: options.item
-				});
-				break;
-			}
-		};
+		var isNavView = list.up('navigatorview');
+		var listEl = list.getEl();
+		if(isNavView) {
+			Ext.dispatch(Ext.apply(options, {
+				controller: 'Navigator',
+				isSetView: listEl.hasCls('x-buttons-list')
+			}));
+		}
 	}
 });

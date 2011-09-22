@@ -15,3 +15,7 @@
 .x-buttons-list .x-list-item .hbox .data {
 	-webkit-box-flex: 1;
 }
+
+.x-product-category-list {
+	border-right: 2px black groove;
+}

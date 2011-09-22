@@ -12,6 +12,12 @@ var getItemTpl = function(modelName) {
 		case 'Customer' : {
 			return '<div>{id} {name} {address}</div>';
 		}
+		case 'SaleOrder' : {
+			return '<div>{id} {toDate}</div>';
+		}
+		case 'ProductCategory' : {
+			return '<div>{name}</div><div class="price"><tpl if="totalPrice &gt; 0"><small> {totalPrice} руб.</small></tpl></div>';
+		}
 	}
 };
 
@@ -22,7 +28,7 @@ var createFieldSet = function(columnsStore, editable) {
 			var field = {name: column.get('id'), label: column.get('name'), useMask: !editable};
 			Ext.apply(field, column.get('parent')
 				? {xtype: 'selectfield', store: Ext.getStore(column.get('parent')), valueField: 'id', displayField: 'name', useMask: editable}
-				: {xtype: 'textfield'});
+				: (column.get('type') === 'boolean' ? {xtype: 'togglefield', useMask: editable} : {xtype: 'textfield'}));
 			fsItems.push(field);
 		}
 	});
@@ -75,8 +81,10 @@ var createNavigatorView = function(rec, oldCard, isSetView, editable) {
 		objectRecord: isSetView ? oldCard.objectRecord : rec,
 		tableRecord: isSetView ? rec.get('table_id') : undefined,
 		editable: editable,
+		expandable: rec.get('expandable'),
 		ownerViewConfig: {
 			xtype: 'navigatorview',
+			expandable: oldCard.expandable,
 			isObjectView: oldCard.isObjectView,
 			isSetView: oldCard.isSetView,
 			objectRecord: oldCard.objectRecord,

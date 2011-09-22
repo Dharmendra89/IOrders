@@ -11,7 +11,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 		if(this.isObjectView) {
 			formItems.push(createTitlePanel(table.get('name')));
 			formItems.push(createFieldSet(table.columns(), this.editable));
-			formItems.push(createButtonsList(table.deps(), tablesStore));
+			this.editable && this.objectRecord.modelName !== 'SaleOrder' || formItems.push(createButtonsList(table.deps(), tablesStore));
 			this.editable && this.dockedItems[0].items.push({xtype: 'spacer'}, {
 				ui: 'plain', iconMask: true, name: 'Save',
 				iconCls: 'compose', scope: this
@@ -32,7 +32,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 				store: Ext.getStore(this.tableRecord)
 			});
 			
-			this.dockedItems[0].items.push({xtype: 'spacer'}, {
+			this.expandable && this.dockedItems[0].items.push({xtype: 'spacer'}, {
 				ui: 'plain', iconMask: true, name: 'Add',
 				iconCls: 'add', scope: this
 			});
@@ -42,13 +42,17 @@ var NavigatorView = Ext.extend(AbstractView, {
 			this.form = new Ext.form.FormPanel({items: formItems})
 		];
 		
-		this.form.loadRecord(this.objectRecord);
+		
 	},
 	/**
 	 * Overridden
 	 */
 	initComponent: function() {
 		NavigatorView.superclass.initComponent.apply(this, arguments);
+	},
+	onShow: function() {
+		NavigatorView.superclass.onShow.apply(this, arguments);
+		this.form.loadRecord(this.objectRecord);
 	}
 });
 Ext.reg('navigatorview', NavigatorView);

@@ -4,15 +4,20 @@ Ext.regController('Navigator', {
 		IOrders.viewport.setActiveItem(Ext.create(view.ownerViewConfig), IOrders.viewport.anims.back);
 	},
 	onSaveButtonTap: function(options) {
+		Ext.dispatch(Ext.apply(options, {action: 'saveObjectRecord'}));
+		IOrders.viewport.setActiveItem(Ext.create(options.view.ownerViewConfig), IOrders.viewport.anims.back);
+	},
+	saveObjectRecord: function(options) {
 		var view = options.view;
 		var form = view.form;
 		var formRec = form.getRecord();
 		form.updateRecord(formRec);
 		var store = Ext.getStore(formRec.modelName);
-		formRec.setId(uuid());
-		store.add(formRec);
+		if(formRec.phantom) {
+			formRec.setId(uuid());
+			store.add(formRec);
+		}
 		store.sync();
-		IOrders.viewport.setActiveItem(Ext.create(view.ownerViewConfig), IOrders.viewport.anims.back);
 	},
 	onAddButtonTap: function(options) {
 		var rec = Ext.ModelMgr.create({}, options.view.tableRecord);
@@ -22,7 +27,7 @@ Ext.regController('Navigator', {
 	},
 	onListItemTap: function(options) {
 		var target = Ext.get(options.event.target);
-		var rec;
+		var rec = undefined;
 		var editable = false;
 		if(target.hasCls('x-button')) {
 			if(target.hasCls('add')) {

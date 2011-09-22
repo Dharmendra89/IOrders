@@ -28,6 +28,7 @@ var data = {
         	id: 'Customer',
     		nameSet: 'Клиенты',
     		name: 'Клиент',
+    		expandable: true,
             columns: [
                 {           
 	                id: 'id',
@@ -54,7 +55,156 @@ var data = {
 	                name: 'Патнер',
 	                type: 'int'
                 }
-            ]
+            ],
+            deps: [
+            	{
+        			id: 'customer',
+        			type: 'string',
+        			table_id: 'SaleOrder'
+        		}
+           	]
+        },
+        {
+        	id: 'SaleOrder',
+        	nameSet: 'Заказы',
+        	name: 'Заказ',
+        	expandable: true,
+        	columns: [
+        		{
+        			id: 'id',
+        			type: 'string',
+        		},
+        		{
+        			id: 'toDate',
+        			name: 'Дата',
+        			type: 'string'
+        		},
+        		{
+        			id: 'isCredit',
+        			name: 'В кредит',
+        			type: 'boolean'
+        		},
+        		{
+        			id: 'isDocuments',
+        			name: 'Документы',
+        			type: 'boolean'
+        		},
+        		{
+        			id: 'customer',
+        			name: 'Клиент',
+        			type: 'string',
+        			parent: 'Customer'
+        		}
+        	],
+        	deps: [
+        		{
+        			id: 'product',
+        			type: 'string',
+        			table_id: 'SaleOrderPosition'
+        		}
+        	]
+        },
+        {
+        	id: 'SaleOrderPosition',
+        	nameSet: 'Позиции заказ',
+        	name: 'Позиция заказа',
+        	expandable: true,
+        	columns: [
+        		{
+        			id: 'id',
+        			type: 'string',
+        		},
+        		{
+        			id: 'saleOrder',
+        			type: 'string'
+        		},
+        		{
+        			id: 'price',
+        			type: 'float'
+        		},
+        		{
+        			id: 'volume',
+        			type: 'int'
+        		},
+        		{
+        			id: 'product',
+        			type: 'string'
+        		},
+        		{
+        			id: 'rel',
+        			type: 'int'
+        		}
+        	]
+        },
+        {
+        	id: 'Category',
+        	name: 'Категория',
+        	nameSet: 'Категории',
+        	columns: [
+        		{
+        			id: 'id',
+        			type: 'string'
+        		},
+        		{
+        			id: 'name',
+        			type: 'string'
+        		},
+        		{
+        			id: 'ord',
+        			type: 'int'
+        		},
+        		{
+        			id: 'packageName',
+        			type: 'string'
+        		}
+        	],
+        	deps: [
+				{
+					id: 'category',
+					type: 'string',
+					table_id: 'Product'
+				}
+        	]
+        },
+        {
+        	id: 'Product',
+        	name: 'Товар',
+        	nameSet: 'Товары',
+        	columns: [
+        		{
+        			id: 'id',
+        			type: 'string'
+        		},
+        		{
+        			id: 'name',
+        			type: 'string'
+        		},
+        		{
+        			id: 'firstName',
+        			type: 'string'
+        		},
+        		{
+        			id: 'factor',
+        			type: 'int'
+        		},
+        		{
+        			id: 'rel',
+        			type: 'int'
+        		},
+        		{
+        			id: 'category',
+        			type: 'string',
+        			parent: 'Category'
+        		},
+        		{
+        			id: 'price',
+        			type: 'float'	
+        		},
+        		{
+        			id: 'customer',
+        			type: 'string'
+        		}
+        	]
         }
 ]};
 Ext.regModel('Table', {

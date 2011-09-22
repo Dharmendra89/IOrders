@@ -18,11 +18,7 @@ var AbstractView = Ext.extend(Ext.Panel, {
 	},
 	createItems: Ext.EmptyFn,
 	/**
-	 * Handlers
-	 */
-	
-	/**
-	 * Overriden
+	 * Overridden
 	 */
 	initComponent: function() {
 		this.createDockedItmes();

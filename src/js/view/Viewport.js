@@ -11,6 +11,11 @@ var Viewport = Ext.extend(Ext.Panel , {
 			this.remove(oldC);
 			oldC.destroy();
 		}
+	},
+	layoutOrientation: function(orientation, w, h) {		
+		Viewport.superclass.layoutOrientation.apply(this, arguments);
+		var card = this.getActiveItem();
+		card && card.layoutOrientation.apply(card, arguments);
 	}
 });
 Ext.reg('viewport', Viewport);

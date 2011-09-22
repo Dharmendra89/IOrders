@@ -32,3 +32,19 @@ Ext.form.Select.prototype.onMaskTap = function() {
     }
     this.showComponent();
 };
+
+Ext.form.Toggle.prototype.setValue = function(value) {
+	value = (value === true || value === 1 ? 1 : 0);
+	Ext.form.Toggle.superclass.setValue.call(this, value, this.animationDuration);
+
+    var fieldEl = this.fieldEl;
+    
+    if (this.constrain(value) === this.minValue) {
+        fieldEl.addCls(this.minValueCls);
+        fieldEl.removeCls(this.maxValueCls);
+    }
+    else {
+        fieldEl.addCls(this.maxValueCls);
+        fieldEl.removeCls(this.minValueCls);
+    }
+};

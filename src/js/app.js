@@ -279,7 +279,7 @@ Ext.regApplication({
 		
 		this.viewport.setActiveItem(new NavigatorView({
 			isObjectView: true,
-			objectRecord: Ext.getStore('Customer').getAt(0)
+			objectRecord: Ext.ModelMgr.create({id: 1, name: 'Север'}, 'Warehouse')
 		}));
 	}
 });

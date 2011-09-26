@@ -11,12 +11,13 @@ var data = {
 			"name": "Название",
 			"type": "string"
 		}],
-		"deps": [{
-			"table_id": "Customer",
-			"id": "warehouse",
-		}, {
+		"deps": [
+		         {
 			"table_id": "Stock",
 			"id": "warehouse"
+		}, {
+			"table_id": "Customer",
+			"id": "warehouse",
 		}]
 	}, {
 		"id": "Customer",
@@ -327,6 +328,9 @@ Ext.regModel('Column', {
 		type: 'string'
 	}, {
 		name: 'name',
+		type: 'string'
+	}, {
+		name: 'label',
 		type: 'string'
 	}, {
 		name: 'type',

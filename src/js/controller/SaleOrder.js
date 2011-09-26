@@ -82,10 +82,8 @@ Ext.regController('SaleOrder', {
 		]);
 		view.productPanel.removeAll(true);
 		view.productList = view.productPanel.add({
-			xtype: 'list', store: productStore, itemTpl: getItemTpl('Product'),
-			cls: 'x-product-list'
+			xtype: 'productlist', store: productStore
 		});
-		view.productList.scroll.threshold = 80;
 		
 		view.productList.mon(view.productList, 'itemswipe', function(list, idx, item, event) {
 			Ext.dispatch({

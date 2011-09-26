@@ -1,7 +1,6 @@
 Ext.regController('SaleOrder', {
 	onBackButtonTap: function(options) {
-		var view = options.view;
-		IOrders.viewport.setActiveItem(Ext.create(view.ownerViewConfig), IOrders.viewport.anims.back);
+		IOrders.viewport.setActiveItem(Ext.create(options.view.ownerViewConfig), IOrders.viewport.anims.back);
 	},
 	onListItemTap: function(options) {
 		var listEl = options.list.getEl();
@@ -25,10 +24,51 @@ Ext.regController('SaleOrder', {
 				 */
 				
 			}
-			//var oldCard = IOrders.viewport.getActiveItem();
-			var newCard = Ext.create({xtype: 'saleorderview', saleOrder: options.saleOrder});
+			var oldCard = IOrders.viewport.getActiveItem();
+			var newCard = Ext.create({
+				xtype: 'saleorderview', saleOrder: options.saleOrder,
+				ownerViewConfig: {
+					xtype: 'navigatorview',
+					expandable: oldCard.expandable,
+					isObjectView: oldCard.isObjectView,
+					isSetView: oldCard.isSetView,
+					objectRecord: oldCard.objectRecord,
+					tableRecord: oldCard.tableRecord,
+					ownerViewConfig: oldCard.ownerViewConfig
+				}
+			});
 			IOrders.viewport.setActiveItem(newCard);
 		}
+	},
+	onListItemSwipe: function(options) {
+		var rec = options.list.getRecord(options.item);
+		var oldVolume = parseInt(rec.get('volume'));
+		var newVolume = 0;
+		var factor = parseInt(rec.get('factor'));
+		var sign = 1;
+		!oldVolume && (oldVolume = 0);
+		options.event.direction === 'left' && (sign = -1);
+		newVolume = oldVolume + sign * factor;
+		newVolume < 0 && (newVolume = 0);
+		rec.set('volume', newVolume);
+		Ext.get(options.item).down('.volume').dom.innerHTML = newVolume;
+		Ext.dispatch(Ext.apply(options, {
+			action: 'calculateTotalPrice',
+			record: rec,
+			priceDifference: newVolume * parseInt(rec.get('rel')) * parseFloat(rec.get('price')) 
+					- oldVolume * parseInt(rec.get('rel')) * parseFloat(rec.get('price'))
+		}));
+	},
+	calculateTotalPrice: function(options) {
+		var view = options.list.up('saleorderview');
+		var bottomToolbar = view.getDockedComponent('bottomToolbar');
+
+		var newTotalPrice = parseFloat(view.saleOrder.get('totalPrice')) + options.priceDifference;
+		bottomToolbar.setTitle(bottomToolbar.titleTpl.apply({totalPrice: newTotalPrice.toFixed(2)}));
+		view.saleOrder.set('totalPrice', newTotalPrice.toFixed(2));
+		//TODO
+		var productCategoryRecord = Ext.getStore('ProductCategory').getById(options.record.get('category'));
+		productCategoryRecord.set('totalPrice', (parseFloat(productCategoryRecord.get('totalPrice')) + options.priceDifference).toFixed(2));
 	},
 	onProductCategoryListItemTap: function(options) {
 		var list = options.list;
@@ -38,10 +78,25 @@ Ext.regController('SaleOrder', {
 		productStore.clearFilter(true);
 		productStore.filter([
 			{property: 'category', value: rec.getId()},
-			{property: 'customer', value: Ext.getStore('SaleOrder').getById(view.saleOrder.getId()).get('customer')}
+			{property: 'customer', value: view.saleOrder.get('customer')}
 		]);
 		view.productPanel.removeAll(true);
-		view.productPanel.add({xtype: 'list', store: productStore, itemTpl: '{name}', ownerConfig: {}});
+		view.productList = view.productPanel.add({
+			xtype: 'list', store: productStore, itemTpl: getItemTpl('Product'),
+			cls: 'x-product-list'
+		});
+		view.productList.scroll.threshold = 80;
+		
+		view.productList.mon(view.productList, 'itemswipe', function(list, idx, item, event) {
+			Ext.dispatch({
+				controller: 'Main',
+				action: 'onListItemSwipe',
+				list: list,
+				idx: idx,
+				item: item,
+				event: event
+			});
+		});
 		view.productPanel.doLayout();
 	}
 });

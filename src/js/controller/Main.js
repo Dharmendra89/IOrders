@@ -35,5 +35,14 @@ Ext.regController('Main', {
 				controller: 'SaleOrder'
 			}));
 		}
+	},
+	onListItemSwipe: function(options) {
+		var list = options.list;
+		var listEl = list.getEl();
+		if(listEl.hasCls('x-product-list')) {
+			Ext.dispatch(Ext.apply(options, {
+				controller: 'SaleOrder'
+			}));
+		}
 	}
 });

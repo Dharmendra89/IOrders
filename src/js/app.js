@@ -92,13 +92,17 @@ Ext.regModel('SaleOrder', {
 		{
 			name: 'customer',
 			type: 'string'
+		},
+		{
+			name: 'totalPrice',
+			type: 'string'
 		}
 	]
 });
 
 var data = {
 	wars: [
-		{id: 1, toDate: '20.09.2011', isCredit: true, isDocuments: true, customer: 1}
+		{id: 1, toDate: '20.09.2011', isCredit: true, isDocuments: true, customer: 1, totalPrice: '0'}
 	]
 };
 
@@ -132,14 +136,18 @@ Ext.regModel('ProductCategory', {
 		{
 			name: 'packageName',
 			type: 'string'
+		},
+		{
+			name: 'totalPrice',
+			type: 'string'
 		}
 	]
 });
 
 var data = {
 	wars: [
-		{id: 1, name: 'Консервы', ord: 1, packageName: 'Коробка'},
-		{id: 2, name: 'Консервы2', ord: 1, packageName: 'Коробка'}
+		{id: 1, name: 'Консервы', ord: 1, packageName: 'Коробка', totalPrice: '0'},
+		{id: 2, name: 'Консервы2', ord: 1, packageName: 'Коробка', totalPrice: '0'}
 	]
 };
 
@@ -190,6 +198,10 @@ Ext.regModel('Product', {
 		{
 			name: 'customer',
 			type: 'string'
+		},
+		{
+			name: 'volume',
+			type: 'int'
 		}
 	]
 });
@@ -267,7 +279,7 @@ Ext.regApplication({
 		
 		this.viewport.setActiveItem(new NavigatorView({
 			isObjectView: true,
-			objectRecord: Ext.ModelMgr.create({id: 1, name: 'Север'}, 'Warehouse')
+			objectRecord: Ext.getStore('Customer').getAt(0)
 		}));
 	}
 });

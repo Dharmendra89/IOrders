@@ -18,6 +18,11 @@ var getItemTpl = function(modelName) {
 		case 'ProductCategory' : {
 			return '<div>{name}</div><div class="price"><tpl if="totalPrice &gt; 0"><small> {totalPrice} руб.</small></tpl></div>';
 		}
+		case 'Product' : {
+			return '<div class="info {cls}">' + '<p>{name}</p>' + '<small><span>Цена: {price} руб. </span>'
+				+ '<tpl if="rel &gt; 1"><span>Вложение: {rel} </span></tpl>' + '<span>Кратность: {factor} </span></small>' + '</div>'
+				+ '<div class="volume">Количество: {volume}</div>';
+		}
 	}
 };
 

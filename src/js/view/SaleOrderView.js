@@ -35,6 +35,15 @@ var SaleOrderView = Ext.extend(AbstractView, {
 			this.productCategoryList,
 			this.productPanel
 		];
+		
+		this.dockedItems.push({
+			id: 'bottomToolbar',
+			xtype: 'toolbar',
+			dock: 'bottom',
+			titleTpl: new Ext.XTemplate(
+					'<p style="text-align: right"><tpl if="packageName"><small>Упаковка: {packageName}</small></tpl>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+						+ 'Сумма заказа: {totalPrice} руб.</p>')
+		});
 
 		this.dockedItems[0].items.push(this.productCategoryBtn);
 	},

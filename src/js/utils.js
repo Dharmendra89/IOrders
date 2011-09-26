@@ -13,9 +13,9 @@ var getItemTpl = function(modelName) {
 			return '<div>{id} {name} {address}</div>';
 		}
 		case 'SaleOrder' : {
-			return '<div>{id} {toDate}</div>';
+			return '<div>{id} {xid} {date}</div>';
 		}
-		case 'ProductCategory' : {
+		case 'Category' : {
 			return '<div>{name}</div><div class="price"><tpl if="totalPrice &gt; 0"><small> {totalPrice} руб.</small></tpl></div>';
 		}
 		case 'Product' : {
@@ -23,14 +23,21 @@ var getItemTpl = function(modelName) {
 				+ '<tpl if="rel &gt; 1"><span>Вложение: {rel} </span></tpl>' + '<span>Кратность: {factor} </span></small>' + '</div>'
 				+ '<div class="volume">Количество: {volume}</div>';
 		}
+		case 'SaleOrderBottomToolbar' : {
+			return '<p style="text-align: right"><tpl if="packageName"><small>Упаковка: {packageName}</small></tpl>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+			+ 'Сумма заказа: {totalPrice} руб.</p>';
+		}
+		default : {
+			return '{name}';
+		}
 	}
 };
 
 var createFieldSet = function(columnsStore, editable) {
 	var fsItems = [];
 	columnsStore.each(function(column) {
-		if(column.get('name')) {
-			var field = {name: column.get('id'), label: column.get('name'), useMask: !editable};
+		if(column.get('label')) {
+			var field = {name: column.get('name'), label: column.get('label'), useMask: !editable};
 			Ext.apply(field, column.get('parent')
 				? {xtype: 'selectfield', store: Ext.getStore(column.get('parent')), valueField: 'id', displayField: 'name', useMask: editable}
 				: (column.get('type') === 'boolean' ? {xtype: 'togglefield', useMask: editable} : {xtype: 'textfield'}));
@@ -45,18 +52,18 @@ var createFilterField = function(objectRecord) {
 	return {xtype: 'fieldset', items: {
 		xtype: 'selectfield',
 		store: modelName,
-		name: modelName.toLowerCase(),
+		name: 'id',
 		label: Ext.getStore('tables').getById(modelName).get('name'),
 		valueField: 'id', displayField: 'name'
 	}};
 };
 
-var createButtonsList = function(depsStore, tablesStore) {
+var createButtonsList = function(depsStore, tablesStore, objectRecord) {
 
 	var data = [];
 	depsStore.each(function(column) {
 		var depTable = tablesStore.getById(column.get('table_id'));
-		data.push({name: depTable.get('nameSet'), table_id: depTable.get('id'), expandable: depTable.get('expandable')});
+		(depTable.get('id') != 'SaleOrderPosition' || objectRecord.modelName == 'SaleOrder') && data.push({name: depTable.get('nameSet'), table_id: depTable.get('id'), expandable: depTable.get('expandable')});
 	});
 
 	var btnsStore = new Ext.data.Store({model: 'Button'});

@@ -67,14 +67,14 @@ Ext.regController('SaleOrder', {
 		bottomToolbar.setTitle(bottomToolbar.titleTpl.apply({totalPrice: newTotalPrice.toFixed(2)}));
 		view.saleOrder.set('totalPrice', newTotalPrice.toFixed(2));
 		//TODO
-		var productCategoryRecord = Ext.getStore('ProductCategory').getById(options.record.get('category'));
+		var productCategoryRecord = Ext.getStore('Category').getById(options.record.get('category'));
 		productCategoryRecord.set('totalPrice', (parseFloat(productCategoryRecord.get('totalPrice')) + options.priceDifference).toFixed(2));
 	},
 	onProductCategoryListItemTap: function(options) {
 		var list = options.list;
 		var rec = list.getRecord(options.item);
 		var view = list.up('saleorderview');
-		var productStore = Ext.getStore('Product');
+		var productStore = Ext.getStore('Offer');
 		productStore.clearFilter(true);
 		productStore.filter([
 			{property: 'category', value: rec.getId()},
@@ -84,17 +84,9 @@ Ext.regController('SaleOrder', {
 		view.productList = view.productPanel.add({
 			xtype: 'productlist', store: productStore
 		});
-		
-		view.productList.mon(view.productList, 'itemswipe', function(list, idx, item, event) {
-			Ext.dispatch({
-				controller: 'Main',
-				action: 'onListItemSwipe',
-				list: list,
-				idx: idx,
-				item: item,
-				event: event
-			});
-		});
 		view.productPanel.doLayout();
+		view.productList.mon(view.productList.el, 'tap', view.onListHeaderTap, view, {
+			delegate: '.x-list-header'
+		});
 	}
 });

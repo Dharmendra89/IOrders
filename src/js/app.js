@@ -32,6 +32,7 @@ Ext.regApplication({
 			listeners: {
 				dbstart: function(db) {
 					console.log('Database started: version=' + db.version);
+					//IOrders.xi.download(IOrders.dbeng, IOrders.dbeng.processDowloadData);
 				}
 			}
 		});
@@ -45,10 +46,10 @@ Ext.regApplication({
 						console.log(m);
 						var metadata = IOrders.xi.xml2obj(m).metadata;
 						composeMainMenu(metadata.tables);
-						
+						composeOffer(metadata.tables);
 						IOrders.dbeng.startDatabase(tStore.getProxy().data = metadata);
 						tStore.load();
-						//IOrders.xi.download(IOrders.dbeng, IOrders.dbeng.processDowloadData);
+						
 						IOrders.init();
 					}
 				});

@@ -17,6 +17,49 @@ var composeMainMenu = function(tables) {
 	});
 	tables.push(mainMenu);
 };
+
+var composeOffer = function(tables) {
+	var offer = {
+		id: 'Offer',
+		name: 'Продукт',
+		nameSet: 'Предложения продуктов',
+		columns: [{
+			name: 'product',
+			type: 'int'
+		}, {
+			name: 'category',
+			type: 'int',
+			parent: 'Category'
+		}, {
+			name: 'customer',
+			type: 'int',
+			parent: 'Customer'
+		},{
+			name: 'price',
+			type: 'float'
+		},{
+			name: 'isActive',
+			type: 'int'
+		},{
+			name: 'stockLevel',
+			type: 'int'
+		},{
+			name: 'name',
+			type: 'string'
+		},{
+			name: 'firstName',
+			type: 'string'
+		},{
+			name: 'factor',
+			type: 'int'
+		},{
+			name: 'rel',
+			type: 'int'
+		}]
+	};
+	tables.push(offer);
+};
+
 Ext.regModel('Table', {
 	fields: [{
 		name: 'id',

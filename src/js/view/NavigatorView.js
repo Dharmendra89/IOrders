@@ -24,19 +24,10 @@ var NavigatorView = Ext.extend(AbstractView, {
 			formItems.push(createTitlePanel(tablesStore.getById(this.tableRecord).get('nameSet')));
 			if(this.objectRecord.modelName != 'MainMenu') {
 				formItems.push(createFilterField(this.objectRecord));
-				Ext.getStore(this.tableRecord).clearFilter(true);
-				if(this.objectRecord.modelName) {
-					Ext.getStore(this.tableRecord).filter([
-						{property: this.objectRecord.modelName.toLowerCase(), value: this.objectRecord.getId()}
-					]);
-				} else {
-					Ext.getStore(this.tableRecord).load();
-				}
-			} else {
-				Ext.getStore(this.tableRecord).load();
 			}
 			formItems.push({
 				xtype: 'list',
+				plugins: new Ext.plugins.ListPagingPlugin({autoPaging: true}),
 				scroll: false,
 				cls: 'x-table-list',
 				allowDeselect: false,
@@ -66,7 +57,6 @@ var NavigatorView = Ext.extend(AbstractView, {
 	onShow: function() {
 		NavigatorView.superclass.onShow.apply(this, arguments);
 		this.form.loadRecord(this.objectRecord);
-		console.log(this.objectRecord.data);
 	}
 });
 Ext.reg('navigatorview', NavigatorView);

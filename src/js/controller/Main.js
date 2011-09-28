@@ -16,7 +16,7 @@ Ext.regController('Main', {
 		if(navView) {
 			switch(rec.get('table_id')) {
 				case 'SaleOrderPosition' : {
-					Ext.dispatch({controller: 'Navigator', action: 'saveObjectRecord', view: navView});
+					navView.objectRecord.phantom && Ext.dispatch({controller: 'Navigator', action: 'saveObjectRecord', view: navView});
 					Ext.dispatch(Ext.apply(options, {
 						controller: 'SaleOrder',
 						saleOrder: navView.objectRecord

@@ -2,6 +2,22 @@ Ext.regController('SaleOrder', {
 	onBackButtonTap: function(options) {
 		IOrders.viewport.setActiveItem(Ext.create(options.view.ownerViewConfig), IOrders.viewport.anims.back);
 	},
+	onSaveButtonTap: function(options) {
+		var view = options.view;
+		var offerStore = Ext.getStore('Offer');
+		var saleOrderPosStore = Ext.getStore('SaleOrderPosition');
+		offerStore.clearFilter(true);
+		var offerProducts = offerStore.getUpdatedRecords();
+		Ext.each(offerProducts, function(product) {
+			saleOrderPosStore.add(Ext.ModelMgr.create(Ext.apply({saleorder: view.saleOrder.getId()}, product.data), 'SaleOrderPosition'));
+		});
+		saleOrderPosStore.sync();
+		saleOrderPosStore.removeAll();
+		offerStore.removeAll();
+		Ext.dispatch(Ext.apply(options, {
+			action: 'onBackButtonTap'
+		}));
+	},
 	onListItemTap: function(options) {
 		var listEl = options.list.getEl();
 		if(listEl.hasCls('x-product-category-list')) {
@@ -37,7 +53,12 @@ Ext.regController('SaleOrder', {
 					ownerViewConfig: oldCard.ownerViewConfig
 				}
 			});
-			IOrders.viewport.setActiveItem(newCard);
+			oldCard.setLoading(true);
+			Ext.getStore('Offer').remoteFilter = false;
+			Ext.getStore('Offer').load({limit: 0, filters: [{property: 'customer', value: options.saleOrder.get('customer')}], callback: function() {
+				oldCard.setLoading(false);
+				IOrders.viewport.setActiveItem(newCard);
+			}});
 		}
 	},
 	onListItemSwipe: function(options) {
@@ -76,10 +97,11 @@ Ext.regController('SaleOrder', {
 		var view = list.up('saleorderview');
 		var productStore = Ext.getStore('Offer');
 		productStore.clearFilter(true);
+		console.log(productStore.getCount());
 		productStore.filter([
-			{property: 'category', value: rec.getId()},
-			{property: 'customer', value: view.saleOrder.get('customer')}
+			{property: 'category', value: rec.getId()}
 		]);
+		console.log(productStore.getCount());
 		view.productPanel.removeAll(true);
 		view.productList = view.productPanel.add({
 			xtype: 'productlist', store: productStore

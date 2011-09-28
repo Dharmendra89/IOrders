@@ -8,6 +8,7 @@ var SaleOrderView = Ext.extend(AbstractView, {
 	 * Own
 	 */
 	createItems: function() {
+		Ext.getStore('Category').load({limit: 0});
 		this.productCategoryList = Ext.create({
 			xtype: 'list',
 			cls: 'x-product-category-list',
@@ -37,7 +38,10 @@ var SaleOrderView = Ext.extend(AbstractView, {
 			id: 'bottomToolbar',
 			xtype: 'toolbar',
 			dock: 'bottom',
-			titleTpl: new Ext.XTemplate(getItemTpl('SaleOrderBottomToolbar'))
+			titleTpl: new Ext.XTemplate(getItemTpl('SaleOrderBottomToolbar')),
+			items: [
+				{ui: 'save', name: 'Save', text: 'Сохранить', scope: this}
+			]
 		});
 
 		this.dockedItems[0].items.push(this.productCategoryBtn);

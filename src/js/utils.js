@@ -3,7 +3,7 @@ var getItemTpl = function(modelName) {
 		case 'Button' : {
 			return '<div class="hbox">' +
 					'<div class="data">{name}</div>' +
-					'<tpl if="expandable"><div class="x-button add">+</div></tpl>' +
+					'<tpl if="!expandable"><div class="x-button add">+</div></tpl>' +
 				'</div>';
 		}
 		case 'Warehouse' : {
@@ -21,7 +21,7 @@ var getItemTpl = function(modelName) {
 		case 'Product' : {
 			return '<div class="info {cls}">' + '<p>{name}</p>' + '<small><span>Цена: {price} руб. </span>'
 				+ '<tpl if="rel &gt; 1"><span>Вложение: {rel} </span></tpl>' + '<span>Кратность: {factor} </span></small>' + '</div>'
-				+ '<div class="volume">Количество: {volume}</div>';
+				+ '<div>Количество: <div class="volume">{volume}</div></div>';
 		}
 		case 'SaleOrderBottomToolbar' : {
 			return '<p style="text-align: right"><tpl if="packageName"><small>Упаковка: {packageName}</small></tpl>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'

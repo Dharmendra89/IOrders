@@ -14,6 +14,7 @@
 
 .x-buttons-list .x-list-item .hbox .data {
 	-webkit-box-flex: 1;
+	padding-top: 7px;
 }
 
 .x-product-category-list {

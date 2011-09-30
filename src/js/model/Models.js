@@ -46,14 +46,17 @@ var createExtandableModels = function() {
 
 var createStores = function(tablesStore) {
 	tablesStore.each(function(table) {
-		createStore(table.getId());
+		var config={};
+		if (table.columns().data.map[table.getId()+'name'] && table.deps().data.length)
+			Ext.apply (config, {autoLoad:true});
+		createStore(table.getId(),config);
 	});
 	Ext.apply(Ext.getStore('Offer'), {
 		getGroupString: function(rec) {
 			return rec.get('firstName');
 		}
 	});
-	Ext.getStore('Offer').sort('firstName', 'DESC');
+	Ext.getStore('Offer').sort('firstName', 'ASC');
 };
 
 var createStore = function(name, config) {

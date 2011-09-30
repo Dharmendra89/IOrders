@@ -4,3 +4,9 @@ dump.datasync.metadata.clean.xml
 dump.datasync.main.out.xml
 
 dump.datasync.download.out.xml
+
+/.project
+/.settings/.jsdtscope
+/.settings/org.eclipse.core.resources.prefs
+/.settings/org.eclipse.wst.jsdt.ui.superType.container
+/.settings/org.eclipse.wst.jsdt.ui.superType.name

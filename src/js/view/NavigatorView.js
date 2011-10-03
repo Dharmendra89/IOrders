@@ -25,13 +25,14 @@ var NavigatorView = Ext.extend(AbstractView, {
 				this.dockedItems[0].items.push({xtype: 'spacer'}, {
 					ui: 'plain', iconMask: true, name: 'Save',
 					iconCls: 'compose', scope: this
-				});
-			} else
-				this.objectRecord.modelName == 'SaleOrder'
-					|| formItems.push(
-						createDepsList(table.deps(), tablesStore, this.objectRecord)
-					)
-			;
+				})
+			}
+			
+			if (!this.editable || this.objectRecord.modelName == 'SaleOrder')
+				formItems.push(
+					createDepsList(table.deps(), tablesStore, this.objectRecord)
+			)
+			
 		} else if (this.isSetView) {
 			
 			formItems.push(createTitlePanel(tablesStore.getById(this.tableRecord).get('nameSet')));

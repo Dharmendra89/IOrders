@@ -126,7 +126,7 @@ Ext.regController('SaleOrder', {
 
 		view.productPanel.removeAll(true);
 		view.productList = view.productPanel.add({
-			xtype: 'productlist', store: productStore
+			xtype: 'offerproductlist', store: productStore
 		});
 		view.productPanel.doLayout();
 

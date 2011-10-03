@@ -33,10 +33,10 @@ var getItemTpl = function(modelName) {
 				 + '</div>';
 		}
 		case 'Product': {
-			return +'<div class="info {cls} data">'
+			return '<div>'
 				     + '<p>{name}</p>'
 				     + '<small>'
-					   + '<tpl if="rel &gt; 1"><span>Вложение: {rel};</span></tpl>' + '<span>Кратность: {factor} </span>'
+					   + '<span>Вложение: {rel};</span> <span>Кратность: {factor} </span>'
 				     + '</small>'
 				   + '</div>';
 
@@ -148,8 +148,15 @@ var createNavigatorView = function(rec, oldCard, isSetView, editable) {
 			tableRecord: isSetView ? rec.get('table_id') : undefined,
 			editable: editable,
 			extendable: rec.get('extendable'),
-			ownerViewConfig: {xtype: 'navigatorview', extendable: oldCard.extendable, isObjectView: oldCard.isObjectView, isSetView: oldCard.isSetView,
-				objectRecord: oldCard.objectRecord, tableRecord: oldCard.tableRecord, ownerViewConfig: oldCard.ownerViewConfig}
+			ownerViewConfig: {
+				xtype: 'navigatorview',
+				extendable: oldCard.extendable,
+				isObjectView: oldCard.isObjectView,
+				isSetView: oldCard.isSetView,
+				objectRecord: oldCard.objectRecord,
+				tableRecord: oldCard.tableRecord,
+				ownerViewConfig: oldCard.ownerViewConfig
+			}
 		};
 		
 	return view;

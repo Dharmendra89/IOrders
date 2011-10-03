@@ -33,7 +33,7 @@
     background: transparent;
 }
 
-.x-list .x-list-item {
+.x-list > .x-list-item {
     background: white;
     border: 1px solid #B4B4B4;
     border-bottom: none;
@@ -41,13 +41,13 @@
     padding: 10px;
 }
 
-.x-list .x-list-item:first-child {
+.x-list > .x-list-item:first-child {
     border-top: 1px solid #B4B4B4;
     border-top-left-radius: 8px 8px;
     border-top-right-radius: 8px 8px;
 }
 
-.x-list .x-list-item:last-child {
+.x-list > .x-list-item:last-child {
     border-bottom: 1px solid #B4B4B4;
     border-bottom-left-radius: 8px 8px;
     border-bottom-right-radius: 8px 8px;

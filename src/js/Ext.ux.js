@@ -77,7 +77,7 @@ Ext.override(Ext.plugins.ListPagingPlugin, {
 		if(pos.y >= Math.abs(scroller.offsetBoundary.top)) {
 			this.loading = true;
 			this.list.store.nextPage();
-			this.el.removeCls('x-hidden-display');
+			this.el.show();
 		}
 	}
 	

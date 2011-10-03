@@ -35,6 +35,11 @@ Ext.regApplication({
 			listeners: {
 				dbstart: function(db) {
 					console.log('Database started: version=' + db.version);
+					
+					tStore.getProxy().data = this.metadata;
+					tStore.load();
+					IOrders.init();
+					
 					//IOrders.xi.download(IOrders.dbeng, IOrders.dbeng.processDowloadData);
 				}
 			}
@@ -56,16 +61,6 @@ Ext.regApplication({
 						
 						IOrders.dbeng.startDatabase(metadata);
 						
-						var proxyData = { tables: metadata.tables };
-						
-						Ext.each (metadata.views, function (view) {
-							proxyData.tables.push (Ext.apply(view, {type: 'view'}))
-						});
-						
-						tStore.getProxy().data = proxyData;
-						
-						tStore.load();
-						IOrders.init();
 					}
 				});
 			}

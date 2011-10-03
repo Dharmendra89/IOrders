@@ -49,7 +49,7 @@ Ext.regModel('Column', {
 			{name: 'parent', type: 'string'}
 	],
 	associations: [
-		{type: 'belongsTo', model: 'Table', foreignKey: 'table_id'}
+		{type: 'belongsTo', model: 'Table'}
 	]
 });
 

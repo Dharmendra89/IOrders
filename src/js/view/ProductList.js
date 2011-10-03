@@ -1,4 +1,4 @@
-var ProductList = Ext.extend(Ext.List, {
+var offerProductList = Ext.extend(Ext.List, {
 	/**
 	 * Config
 	 */
@@ -20,8 +20,9 @@ var ProductList = Ext.extend(Ext.List, {
 			}
 		};
 
-		ProductList.superclass.initComponent.apply(this, arguments);
+		offerProductList.superclass.initComponent.apply(this, arguments);
 		this.scroll.threshold = 80;
 	}
 });
-Ext.reg('productlist', ProductList);
+
+Ext.reg('offerproductlist', offerProductList);

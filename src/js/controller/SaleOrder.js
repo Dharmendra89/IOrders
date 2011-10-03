@@ -11,6 +11,7 @@ Ext.regController('SaleOrder', {
 		var offerProducts = offerStore.getUpdatedRecords();
 		
 		offerStore.clearFilter(true);
+		
 		Ext.each(offerProducts, function(product) {
 			saleOrderPosStore.add(Ext.ModelMgr.create(Ext.apply({saleorder: view.saleOrder.getId()}, product.data), 'SaleOrderPosition'));
 		});
@@ -23,20 +24,21 @@ Ext.regController('SaleOrder', {
 		Ext.dispatch(Ext.apply(options, {action: 'onBackButtonTap'}));
 	},
 	onListItemTap: function(options) {
-
+		
 		var listEl = options.list.getEl();
-
+		
 		if(listEl.hasCls('x-product-category-list')) {
-
+		
 			Ext.dispatch(Ext.apply(options, {action: 'onProductCategoryListItemTap'}));
-		} else if(listEl.hasCls('x-buttons-list')) {
-
+			
+		} else if(listEl.hasCls('x-deps-list')) {
+			
 			var target = Ext.get(options.event.target);
 			if(target.hasCls('x-button')) {
 				/*
 				 * Создание нового заказа. Добавление позиций в заказ
 				 */
-				if(target.hasCls('add')) {
+				if(target.hasCls('extend')) {
 				}
 				/*
 				 * Просмотр заказа. Просмотр позиций в заказе
@@ -48,13 +50,13 @@ Ext.regController('SaleOrder', {
 				 */
 				
 			}
-
+			
 			var oldCard = IOrders.viewport.getActiveItem();
 			var newCard = Ext.create({
 				xtype: 'saleorderview', saleOrder: options.saleOrder,
 				ownerViewConfig: {
 					xtype: 'navigatorview',
-					expandable: oldCard.expandable,
+					extendable: oldCard.extendable,
 					isObjectView: oldCard.isObjectView,
 					isSetView: oldCard.isSetView,
 					objectRecord: oldCard.objectRecord,
@@ -62,9 +64,9 @@ Ext.regController('SaleOrder', {
 					ownerViewConfig: oldCard.ownerViewConfig
 				}
 			});
-
+			
 			oldCard.setLoading(true);
-
+			
 			Ext.getStore('Offer').remoteFilter = false;
 			Ext.getStore('Offer').load({limit: 0, filters: [{property: 'customer', value: options.saleOrder.get('customer')}], callback: function() {
 				oldCard.setLoading(false);
@@ -72,6 +74,7 @@ Ext.regController('SaleOrder', {
 			}});
 		}
 	},
+	
 	onListItemSwipe: function(options) {
 
 		var rec = options.list.getRecord(options.item);
@@ -89,24 +92,26 @@ Ext.regController('SaleOrder', {
 		Ext.get(options.item).down('.volume').dom.innerHTML = newVolume;
 
 		Ext.dispatch(Ext.apply(options, {
-			action: 'calculateTotalPrice',
+			action: 'calculatetotalCost',
 			record: rec,
 			priceDifference: newVolume * parseInt(rec.get('rel')) * parseFloat(rec.get('price')) 
 					- oldVolume * parseInt(rec.get('rel')) * parseFloat(rec.get('price'))
 		}));
 	},
-	calculateTotalPrice: function(options) {
+	
+	calculatetotalCost: function(options) {
 
 		var view = options.list.up('saleorderview');
 		var bottomToolbar = view.getDockedComponent('bottomToolbar');
-		var newTotalPrice = parseFloat(view.saleOrder.get('totalPrice')) + options.priceDifference;
+		var newtotalCost = parseFloat(view.saleOrder.get('totalCost')) + options.priceDifference;
 
-		bottomToolbar.setTitle(bottomToolbar.titleTpl.apply({totalPrice: newTotalPrice.toFixed(2)}));
-		view.saleOrder.set('totalPrice', newTotalPrice.toFixed(2));
+		bottomToolbar.setTitle(bottomToolbar.titleTpl.apply({totalCost: newtotalCost.toFixed(2)}));
+		view.saleOrder.set('totalCost', newtotalCost.toFixed(2));
 		//TODO
 		var productCategoryRecord = Ext.getStore('Category').getById(options.record.get('category'));
-		productCategoryRecord.set('totalPrice', (parseFloat(productCategoryRecord.get('totalPrice')) + options.priceDifference).toFixed(2));
+		productCategoryRecord.set('totalCost', (parseFloat(productCategoryRecord.get('totalCost')) + options.priceDifference).toFixed(2));
 	},
+	
 	onProductCategoryListItemTap: function(options) {
 
 		var list = options.list;

@@ -5,7 +5,6 @@ Ext.override(Ext.Interaction, {controller: 'Main'});
 Ext.override(Ext.List, {
 	listeners: {
 		itemtap: function(list, idx, item, e) {
-	
 			Ext.dispatch({action: 'onListItemTap', list: list, idx: idx, item: item, event: e});
 		}
 	}
@@ -50,28 +49,36 @@ Ext.override(Ext.form.Toggle, {
 	}
 });
 
-Ext.override(Ext.plugins.ListPagingPlugin, {
-	onListUpdate: function() {
 
-		if(!this.rendered) {
-			this.render();
+Ext.override(Ext.plugins.ListPagingPlugin, {
+	
+	onListUpdate: function() {
+		
+		var store = this.list.store;
+		
+		if( !this.rendered) {
+			this.render()
 		}
-	
-		this.el.appendTo(this.list.getTargetEl());
-	
+		
+		if (!(store.pageSize && store.data.items.length % store.pageSize))
+			this.el.appendTo(this.list.getTargetEl())
+		else
+			this.el.remove();
+		
 		if(!this.autoPaging) {
 			this.el.removeCls('x-loading');
 		}
-	
-		this.el.addCls('x-hidden-display');
+		
+		this.el.hide();
 		this.loading = false;
 	},
+	
 	onScrollEnd: function(scroller, pos) {
-
 		if(pos.y >= Math.abs(scroller.offsetBoundary.top)) {
 			this.loading = true;
 			this.list.store.nextPage();
 			this.el.removeCls('x-hidden-display');
 		}
 	}
+	
 });

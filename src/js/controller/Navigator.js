@@ -38,7 +38,7 @@ Ext.regController('Navigator', {
 		var editable = false;
 
 		if (target.hasCls('x-button')) {
-			if (target.hasCls('add')) {
+			if (target.hasCls('extend')) {
 
 				var view = options.list.up('navigatorview');
 				options.isSetView = false;
@@ -46,7 +46,7 @@ Ext.regController('Navigator', {
 
 				rec = Ext.ModelMgr.create({}, options.list.getRecord(options.item).get('table_id'));				
 				rec.set(view.objectRecord.modelName.toLowerCase(), view.objectRecord.getId());
-				rec.set('totalPrice', '0');
+				rec.set('totalCost', '0');
 			}
 		} else {
 			rec = options.list.getRecord(options.item);

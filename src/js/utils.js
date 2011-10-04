@@ -1,7 +1,8 @@
 //TODO
 var getValueFromParent = function(field, value) {
 	var parentStore = Ext.getStore(field[0].toUpperCase() + field.substring(1));
-	return parentStore.getById(value).get('name');
+	var rec = parentStore.getById(value);
+	return rec ? rec.get('name') : value;
 };
 
 var getItemTpl = function(modelName) {
@@ -57,6 +58,16 @@ var getItemTpl = function(modelName) {
 			       +'<tpl if="packageName"><small>Упаковка: {packageName}</small></tpl>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
 				 + 'Сумма заказа: {totalCost} руб.</p>';
 		}
+		case 'SaleOrderPosition': {
+			return '<div class="hbox">'
+		       +'<div class="info {cls} data">'
+			     + '<p>{[getValueFromParent("product", values.product)]}</p>'
+			     + '<small><span>Цена: {cost} руб. </span>'
+			     + '</small>'
+			   + '</div>'
+			   + '<div class="volume">{volume}</div>'
+			 + '</div>';
+		}
 		default: {
 			return '{name}';
 		}
@@ -107,7 +118,7 @@ var createFilterField = function(objectRecord) {
 	};
 };
 
-function createDepsList (depsStore, tablesStore, objectRecord) {
+function createDepsList(depsStore, tablesStore, objectRecord, editable) {
 
 	var data = [];
 
@@ -119,7 +130,7 @@ function createDepsList (depsStore, tablesStore, objectRecord) {
 			&& data.push({
 				name: depTable.get('nameSet'),
 				table_id: depTable.get('id'),
-				extendable: depTable.get('extendable')
+				extendable: depTable.get('extendable') && (objectRecord.modelName != 'SaleOrder' || editable)
 			});
 	});
 

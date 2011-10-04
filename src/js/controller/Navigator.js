@@ -4,7 +4,7 @@ Ext.regController('Navigator', {
 		var view = options.view;
 		var newCard = Ext.create(view.ownerViewConfig);
 		if (newCard.isSetView) {
-			Ext.dispatch(Ext.apply(options, {action: 'loadSetViewStore', newCard: newCard}));
+			Ext.dispatch(Ext.apply(options, {action: 'loadSetViewStore', newCard: newCard, anim: IOrders.viewport.anims.back}));
 		} else {
 			IOrders.viewport.setActiveItem(newCard, IOrders.viewport.anims.back);
 		}
@@ -112,13 +112,13 @@ Ext.regController('Navigator', {
 				}]);
 				
 				oldCard.setLoading(false);
-				IOrders.viewport.setActiveItem(newCard);
+				IOrders.viewport.setActiveItem(newCard, options.anim);
 			} else {
 
 				store.load({
 					callback: function() {
 						oldCard.setLoading(false);
-						IOrders.viewport.setActiveItem(newCard);
+						IOrders.viewport.setActiveItem(newCard, options.anim);
 					}
 				});
 			}
@@ -127,7 +127,7 @@ Ext.regController('Navigator', {
 			store.load({
 				callback: function() {
 					oldCard.setLoading(false);
-					IOrders.viewport.setActiveItem(newCard);
+					IOrders.viewport.setActiveItem(newCard, options.anim);
 				}
 			});
 		}

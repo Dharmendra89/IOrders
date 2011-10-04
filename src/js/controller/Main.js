@@ -23,11 +23,23 @@ Ext.regController('Main', {
 		if(navView) {
 			switch(rec.get('table_id')) {
 				case 'SaleOrderPosition' : {
-					navView.objectRecord.phantom && Ext.dispatch({controller: 'Navigator', action: 'saveObjectRecord', view: navView});
-					Ext.dispatch(Ext.apply(options, {
-						controller: 'SaleOrder',
-						saleOrder: navView.objectRecord
-					}));
+					var target = Ext.get(options.event.target);
+					if(target.hasCls('x-button')) {
+
+						if(target.hasCls('extend')) {
+							navView.objectRecord.phantom && Ext.dispatch({controller: 'Navigator', action: 'saveObjectRecord', view: navView});
+
+							Ext.dispatch(Ext.apply(options, {
+								controller: 'SaleOrder',
+								saleOrder: navView.objectRecord
+							}));
+						}
+					} else {
+						Ext.dispatch(Ext.apply(options, {
+							controller: 'Navigator',
+							isSetView: listEl.hasCls('x-deps-list')
+						}));
+					}
 					break;
 				}
 				default : {

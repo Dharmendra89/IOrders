@@ -32,25 +32,7 @@ Ext.regController('SaleOrder', {
 			Ext.dispatch(Ext.apply(options, {action: 'onProductCategoryListItemTap'}));
 			
 		} else if(listEl.hasCls('x-deps-list')) {
-			
-			var target = Ext.get(options.event.target);
-			if(target.hasCls('x-button')) {
-				/*
-				 * Создание нового заказа. Добавление позиций в заказ
-				 */
-				if(target.hasCls('extend')) {
-				}
-				/*
-				 * Просмотр заказа. Просмотр позиций в заказе
-				 */
-			} else {
-				rec = options.list.getRecord(options.item);
-				/*
-				 * Сохранить заказ
-				 */
-				
-			}
-			
+
 			var oldCard = IOrders.viewport.getActiveItem();
 			var newCard = Ext.create({
 				xtype: 'saleorderview', saleOrder: options.saleOrder,

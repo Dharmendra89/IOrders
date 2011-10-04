@@ -10,10 +10,10 @@ Ext.regController('Navigator', {
 		}
 	},
 	onSaveButtonTap: function(options) {
-		
+
 		var btn = options.btn;
 		btn.setText('Редактировать');
-		btn.name = 'Edit';
+		Ext.apply(btn, {name: 'Edit'});
 
 		var toolbar = btn.up('toolbar');
 		toolbar.getComponent('Cancel').hide();
@@ -25,7 +25,7 @@ Ext.regController('Navigator', {
 		
 		var btn = options.btn;
 		btn.setText('Сохранить');
-		btn.name = 'Save';
+		Ext.apply(btn, {name: 'Save'});
 
 		var toolbar = btn.up('toolbar');
 		toolbar.getComponent('Cancel').show();
@@ -39,12 +39,10 @@ Ext.regController('Navigator', {
 		var toolbar = options.btn.up('toolbar');
 		toolbar.getComponent('Cancel').hide();
 		
-		var segBtn = toolbar.getComponent('segBtn');
+		var saveEditBtn = toolbar.getComponent('SaveEdit');
 		
-		var btn = segBtn.getComponent(0);
-		btn.setText('Редактировать');
-		btn.name = 'Edit';
-		segBtn.setPressed(btn, false, true);
+		saveEditBtn.setText('Редактировать');
+		Ext.apply(saveEditBtn, {name: 'Edit'});
 
 		Ext.dispatch(Ext.apply(options, {action: 'setEditable', editable: false}));
 	},
@@ -56,14 +54,10 @@ Ext.regController('Navigator', {
 		var view = options.view;
 		var form = view.form;
 		var formRec = form.getRecord();
-		var store = Ext.getStore(formRec.modelName);
 
 		form.updateRecord(formRec);
 		
-		if (formRec.phantom) {
-			store.add(formRec);
-		}
-		store.sync();
+		formRec.save();
 	},
 	onAddButtonTap: function(options) {
 

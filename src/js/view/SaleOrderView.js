@@ -26,13 +26,10 @@ var SaleOrderView = Ext.extend(AbstractView, {
 
 		this.dockedItems.push({
 			id: 'bottomToolbar', xtype: 'toolbar', dock: 'bottom',
-			titleTpl: new Ext.XTemplate(getItemTpl('SaleOrderBottomToolbar')),
-			items: [
-				{ui: 'save', name: 'Save', text: 'Сохранить', scope: this}
-			]
+			titleTpl: new Ext.XTemplate(getItemTpl('SaleOrderBottomToolbar'))
 		});
 
-		this.dockedItems[0].items.push(this.productCategoryBtn);
+		this.dockedItems[0].items.push(this.productCategoryBtn, {xtype: 'spacer'}, {ui: 'save', name: 'Save', text: 'Сохранить', scope: this});
 	},
 	onListHeaderTap: function(e, t) {
 

@@ -12,7 +12,11 @@ var createModels = function(tablesStore) {
 		
 		Ext.regModel(tableName, {
 			fields: fields,
-			modelName: tableName
+			modelName: tableName,
+			proxy: {
+				type: 'sql',
+				engine: IOrders.dbeng
+			}
 		});
 		
 		regStore(tableName);

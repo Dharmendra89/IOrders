@@ -21,15 +21,8 @@ var NavigatorView = Ext.extend(AbstractView, {
 			
 			this.dockedItems[0].items.push(
 					{xtype: 'spacer'},
-					{name: 'Cancel', id: 'Cancel', text: 'Отменить', hidden: true, scope: this},
-					{
-						xtype: 'segmentedbutton',
-						id: 'segBtn',
-						allowDepress: true,
-						items: [
-							{name: this.editable ? 'Save' : 'Edit', text: this.editable ? 'Сохранить' : 'Редактировать', pressed: this.editable, scope: this}
-						]
-					}
+					{id: 'Cancel', name: 'Cancel', text: 'Отменить', hidden: true, scope: this},
+					{id: 'SaveEdit', name: this.editable ? 'Save' : 'Edit', text: this.editable ? 'Сохранить' : 'Редактировать', scope: this}
 			);
 			
 			this.objectRecord.modelName === 'MainMenu' && (this.dockedItems[0].items = []);

@@ -10,8 +10,12 @@ var getItemTpl = function(modelName) {
 		case 'Warehouse': {
 			return '<div>{name}</div>';
 		}
+		case 'Price': {
+			return '<div>{price} руб.</div>'
+				+'<small><span>Ценовая категория: {pricelistSet}</span><span>Прайс-лист: {pricelist}</span><span>Товар: {product}</span></small>';
+		}
 		case 'Customer': {
-			return '<div>{name}</div><small>{address}</small>';
+			return '<div>{name}</div><small><span>Адрес: {address}</span><span>Партнер: {partner}</span></small>';
 		}
 		case 'SaleOrder': {
 			return '<div>{id} {xid} {date}</div>';

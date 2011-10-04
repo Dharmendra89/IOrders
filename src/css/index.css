@@ -36,6 +36,10 @@
 	color: silver;
 }
 
+.x-list-item small span {
+	padding-right: 1em;
+}
+
 .x-list {
     background: transparent;
 }

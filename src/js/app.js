@@ -40,7 +40,8 @@ Ext.regApplication({
 					tStore.load();
 					IOrders.init();
 					
-					//IOrders.xi.download(IOrders.dbeng, IOrders.dbeng.processDowloadData);
+					if (db.clean)
+						IOrders.xi.download(IOrders.dbeng, IOrders.dbeng.processDowloadData);
 				}
 			}
 		});

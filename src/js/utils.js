@@ -16,9 +16,9 @@ var getItemTpl = function(modelName) {
 		case 'SaleOrder': {
 			return '<div>{id} {xid} {date}</div>';
 		}
-		case 'Category': {
+		case 'OfferCategory': {
 			return '<div>{name}</div><div class="price">'
-				   + '<tpl if="totalCost &gt; 0"><small> {totalCost} руб.</small></tpl>'
+				   + '<small> {totalCost} руб.</small>'
 				 + '</div>';
 		}
 		case 'OfferProduct': {

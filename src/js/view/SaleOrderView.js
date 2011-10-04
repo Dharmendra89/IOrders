@@ -8,12 +8,12 @@ var SaleOrderView = Ext.extend(AbstractView, {
 	 */
 	createItems: function() {
 
-		Ext.getStore('Category').load({limit: 0});
+		Ext.getStore('OfferCategory').load({limit: 0, filters:[{property: 'customer', value: this.saleOrder.get('customer')}]});
 
 		this.productCategoryList = Ext.create({
 			xtype: 'list', cls: 'x-product-category-list', allowDeselect: false, flex: 1,
-			store: Ext.getStore('Category'),
-			itemTpl: getItemTpl('Category')
+			store: Ext.getStore('OfferCategory'),
+			itemTpl: getItemTpl('OfferCategory')
 		});
 		this.productCategoryBtn = Ext.create({
 			xtype: 'button', hidden: Ext.is.Phone || Ext.Viewport.orientation == 'landscape',

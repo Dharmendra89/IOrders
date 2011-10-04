@@ -108,7 +108,7 @@ Ext.regController('SaleOrder', {
 		bottomToolbar.setTitle(bottomToolbar.titleTpl.apply({totalCost: newtotalCost.toFixed(2)}));
 		view.saleOrder.set('totalCost', newtotalCost.toFixed(2));
 		//TODO
-		var productCategoryRecord = Ext.getStore('Category').getById(options.record.get('category'));
+		var productCategoryRecord = Ext.getStore('OfferCategory').findRecord('category',options.record.get('category'));
 		productCategoryRecord.set('totalCost', (parseFloat(productCategoryRecord.get('totalCost')) + options.priceDifference).toFixed(2));
 	},
 	
@@ -121,7 +121,7 @@ Ext.regController('SaleOrder', {
 
 		productStore.clearFilter(true);
 		productStore.filter([
-			{property: 'category', value: rec.getId()}
+			{property: 'category', value: rec.get('category')}
 		]);
 
 		view.productPanel.removeAll(true);

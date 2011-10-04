@@ -5,6 +5,8 @@ var offerProductList = Ext.extend(Ext.List, {
 	cls: 'x-product-list',
 	itemTpl: getItemTpl('OfferProduct'),
 	grouped: true,
+	disableSelection: true,
+	
 	/**
 	 * Overridden
 	 */

@@ -24,7 +24,10 @@ var offerProductList = Ext.extend(Ext.List, {
 
 		offerProductList.superclass.initComponent.apply(this, arguments);
 		this.scroll.threshold = 80;
-	}
+	},
+	onUpdate : function(store, record) {
+        return false;
+    }
 });
 
 Ext.reg('offerproductlist', offerProductList);

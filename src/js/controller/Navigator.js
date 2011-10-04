@@ -2,7 +2,12 @@ Ext.regController('Navigator', {
 	onBackButtonTap: function(options) {
 
 		var view = options.view;
-		IOrders.viewport.setActiveItem(Ext.create(view.ownerViewConfig), IOrders.viewport.anims.back);
+		var newCard = Ext.create(view.ownerViewConfig);
+		if (newCard.isSetView) {
+			Ext.dispatch(Ext.apply(options, {action: 'loadSetViewStore', newCard: newCard}));
+		} else {
+			IOrders.viewport.setActiveItem(newCard, IOrders.viewport.anims.back);
+		}
 	},
 	onSaveButtonTap: function(options) {
 		
@@ -89,34 +94,31 @@ Ext.regController('Navigator', {
 			rec = options.list.getRecord(options.item);
 		}		
 
-		var oldCard = IOrders.viewport.getActiveItem();
-		var newCard = Ext.create(createNavigatorView(rec, oldCard, options.isSetView, editable));
+		var newCard = Ext.create(createNavigatorView(rec, IOrders.viewport.getActiveItem(), options.isSetView, editable));
 		if (newCard.isSetView) {
+			Ext.dispatch(Ext.apply(options, {action: 'loadSetViewStore', newCard: newCard}));
+		} else {
+			IOrders.viewport.setActiveItem(newCard);
+		}
+	},
+	loadSetViewStore: function(options) {
+		var oldCard = IOrders.viewport.getActiveItem();
+		var newCard = options.newCard;
+		oldCard.setLoading(true);
+		var store = newCard.setViewStore;
+		store.currentPage = 1;
+		store.clearFilter(true);
 
-			oldCard.setLoading(true);
-			var store = Ext.getStore(newCard.tableRecord);
-			store.currentPage = 1;
-			store.clearFilter(true);
+		if (newCard.objectRecord.modelName != 'MainMenu') {
+			if (newCard.objectRecord.modelName) {
 
-			if (newCard.objectRecord.modelName != 'MainMenu') {
-				if (newCard.objectRecord.modelName) {
-
-					store.filter([{
-						property: newCard.objectRecord.modelName.toLowerCase(),
-						value: newCard.objectRecord.getId()
-					}]);
-					
-					oldCard.setLoading(false);
-					IOrders.viewport.setActiveItem(newCard);
-				} else {
-
-					store.load({
-						callback: function() {
-							oldCard.setLoading(false);
-							IOrders.viewport.setActiveItem(newCard);
-						}
-					});
-				}
+				store.filter([{
+					property: newCard.objectRecord.modelName.toLowerCase(),
+					value: newCard.objectRecord.getId()
+				}]);
+				
+				oldCard.setLoading(false);
+				IOrders.viewport.setActiveItem(newCard);
 			} else {
 
 				store.load({
@@ -128,7 +130,12 @@ Ext.regController('Navigator', {
 			}
 		} else {
 
-			IOrders.viewport.setActiveItem(newCard);
+			store.load({
+				callback: function() {
+					oldCard.setLoading(false);
+					IOrders.viewport.setActiveItem(newCard);
+				}
+			});
 		}
 	}
 });

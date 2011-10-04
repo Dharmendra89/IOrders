@@ -15,7 +15,7 @@ var createModels = function(tablesStore) {
 			modelName: tableName
 		});
 		
-		createStore(tableName);
+		regStore(tableName);
 	});
 
 };
@@ -23,15 +23,10 @@ var createModels = function(tablesStore) {
 var createStores = function(tablesStore) {
 	
 	tablesStore.each(function(table) {
-		var config={};
 		
-		if (table.columns().data.map[table.getId()+'name'] && table.deps().data.length)
-			Ext.apply (config, {
-				autoLoad:true
-			})
-		;
-		
-		createStore(table.getId(),config);
+		if (table.columns().data.map[table.getId() + 'name'] && table.deps().data.length) {		
+			regStore(table.getId(), {autoLoad:true, pageSize: 0});
+		}
 	});
 	
 	Ext.apply(Ext.getStore('Offer'), {
@@ -44,11 +39,9 @@ var createStores = function(tablesStore) {
 	
 };
 
-var createStore = function(name, config) {
+var regStore = function(name, config) {
 	
 	Ext.regStore(name, Ext.apply({
-		remoteFilter: true,
-		clearOnPageLoad: false,
 		model: name,
 		proxy: {
 			type: 'sql',
@@ -57,3 +50,7 @@ var createStore = function(name, config) {
 	}, config));
 	
 };
+
+var createStore = function(name) {
+	return new Ext.data.Store({remoteFilter: true, clearOnPageLoad: false, model: name, proxy: {type: 'sql', engine: IOrders.dbeng}});
+}

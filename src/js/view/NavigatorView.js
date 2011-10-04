@@ -45,6 +45,8 @@ var NavigatorView = Ext.extend(AbstractView, {
 				formItems.push(createFilterField(this.objectRecord));
 			}
 			
+			this.setViewStore = createStore(this.tableRecord);
+			
 			formItems.push({
 				xtype: 'list',
 				plugins: new Ext.plugins.ListPagingPlugin({autoPaging: true}),
@@ -52,7 +54,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 				cls: 'x-table-list',
 				allowDeselect: false,
 				itemTpl: getItemTpl(this.tableRecord),
-				store: Ext.getStore(this.tableRecord)
+				store: this.setViewStore
 			});
 			
 			this.extendable && this.dockedItems[0].items.push({xtype: 'spacer'}, {
@@ -61,7 +63,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 		}
 		
 		this.items = [
-			this.form = new Ext.form.FormPanel({cls: 'x-navigator-form', disabled: !this.editable, scroll: true, items: formItems})
+			this.form = new Ext.form.FormPanel({cls: 'x-navigator-form', scroll: true, items: formItems})
 		];
 	},
 	
@@ -76,6 +78,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 	onShow: function() {
 		NavigatorView.superclass.onShow.apply(this, arguments);
 		this.form.loadRecord(this.objectRecord);
+		this.form.setDisabled(!this.editable);
 	}
 	
 });

@@ -5,9 +5,46 @@ Ext.regController('Navigator', {
 		IOrders.viewport.setActiveItem(Ext.create(view.ownerViewConfig), IOrders.viewport.anims.back);
 	},
 	onSaveButtonTap: function(options) {
+		
+		var btn = options.btn;
+		btn.setText('Редактировать');
+		btn.name = 'Edit';
+
+		var toolbar = btn.up('toolbar');
+		toolbar.getComponent('Cancel').hide();
 
 		Ext.dispatch(Ext.apply(options, {action: 'saveObjectRecord'}));
-		IOrders.viewport.setActiveItem(Ext.create(options.view.ownerViewConfig), IOrders.viewport.anims.back);
+		Ext.dispatch(Ext.apply(options, {action: 'setEditable', editable: false}));
+	},
+	onEditButtonTap: function(options) {
+		
+		var btn = options.btn;
+		btn.setText('Сохранить');
+		btn.name = 'Save';
+
+		var toolbar = btn.up('toolbar');
+		toolbar.getComponent('Cancel').show();
+
+		Ext.dispatch(Ext.apply(options, {action: 'setEditable', editable: true}));
+	},
+	onCancelButtonTap: function(options) {
+
+		options.view.form.load(options.view.form.getRecord());
+
+		var toolbar = options.btn.up('toolbar');
+		toolbar.getComponent('Cancel').hide();
+		
+		var segBtn = toolbar.getComponent('segBtn');
+		
+		var btn = segBtn.getComponent(0);
+		btn.setText('Редактировать');
+		btn.name = 'Edit';
+		segBtn.setPressed(btn, false, true);
+
+		Ext.dispatch(Ext.apply(options, {action: 'setEditable', editable: false}));
+	},
+	setEditable: function(options) {
+		options.view.form.setDisabled(!options.editable);
 	},
 	saveObjectRecord: function(options) {
 
@@ -15,7 +52,7 @@ Ext.regController('Navigator', {
 		var form = view.form;
 		var formRec = form.getRecord();
 		var store = Ext.getStore(formRec.modelName);
-		
+
 		form.updateRecord(formRec);
 		
 		if (formRec.phantom) {

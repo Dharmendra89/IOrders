@@ -19,19 +19,23 @@ var NavigatorView = Ext.extend(AbstractView, {
 			formItems.push(createTitlePanel(table.get('name')));
 			formItems.push(createFieldSet(table.columns(), this.editable));
 			
-			this.objectRecord.modelName === 'MainMenu' && this.dockedItems[0].items.splice(0, 1);
+			this.dockedItems[0].items.push(
+					{xtype: 'spacer'},
+					{name: 'Cancel', id: 'Cancel', text: 'Отменить', hidden: true, scope: this},
+					{
+						xtype: 'segmentedbutton',
+						id: 'segBtn',
+						allowDepress: true,
+						items: [
+							{name: this.editable ? 'Save' : 'Edit', text: this.editable ? 'Сохранить' : 'Редактировать', pressed: this.editable, scope: this}
+						]
+					}
+			);
 			
-			if (this.editable) {
-				this.dockedItems[0].items.push({xtype: 'spacer'}, {
-					ui: 'plain', iconMask: true, name: 'Save',
-					iconCls: 'compose', scope: this
-				})
-			}
+			this.objectRecord.modelName === 'MainMenu' && (this.dockedItems[0].items = []);
 			
 			if (!this.editable || this.objectRecord.modelName == 'SaleOrder')
-				formItems.push(
-					createDepsList(table.deps(), tablesStore, this.objectRecord)
-			)
+				formItems.push(createDepsList(table.deps(), tablesStore, this.objectRecord));
 			
 		} else if (this.isSetView) {
 			
@@ -56,7 +60,9 @@ var NavigatorView = Ext.extend(AbstractView, {
 			});
 		}
 		
-		this.items = [this.form = new Ext.form.FormPanel({scroll: true, items: formItems})];
+		this.items = [
+			this.form = new Ext.form.FormPanel({cls: 'x-navigator-form', disabled: !this.editable, scroll: true, items: formItems})
+		];
 	},
 	
 	/**

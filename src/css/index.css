@@ -52,3 +52,10 @@
     border-bottom-left-radius: 8px 8px;
     border-bottom-right-radius: 8px 8px;
 }
+
+
+.x-navigator-form .x-item-disabled .x-form-label span, .x-navigator-form .x-item-disabled input, 
+.x-navigator-form .x-item-disabled .x-spinner-body, .x-navigator-form .x-item-disabled select,
+.x-navigator-form .x-item-disabled textarea, .x-navigator-form .x-item-disabled .x-field-clear-container {
+	color: black;
+}

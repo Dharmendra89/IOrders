@@ -52,7 +52,7 @@ var getItemTpl = function(modelName) {
 	}
 };
 
-var createFieldSet = function(columnsStore, editable) {
+var createFieldSet = function(columnsStore) {
 
 	var fsItems = [];
 
@@ -60,8 +60,7 @@ var createFieldSet = function(columnsStore, editable) {
 		if (column.get('label')) {
 			var field = {
 				name: column.get('name'),
-				label: column.get('label'),
-				useMask: !editable
+				label: column.get('label')
 			};
 			
 			Ext.apply(field, column.get('parent') 
@@ -69,10 +68,9 @@ var createFieldSet = function(columnsStore, editable) {
 						xtype: 'selectfield',
 						store: Ext.getStore(column.get('parent')),
 						valueField: 'id',
-						displayField: 'name',
-						useMask: editable
+						displayField: 'name'
 					} 
-					: (column.get('type') === 'boolean' ? {xtype: 'togglefield', useMask: editable} : {xtype: 'textfield'})
+					: (column.get('type') === 'boolean' ? {xtype: 'togglefield'} : {xtype: 'textfield'})
 			);
 			fsItems.push(field);
 		}

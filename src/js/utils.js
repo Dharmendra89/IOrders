@@ -1,3 +1,9 @@
+//TODO
+var getValueFromParent = function(field, value) {
+	var parentStore = Ext.getStore(field[0].toUpperCase() + field.substring(1));
+	return parentStore.getById(value).get('name');
+};
+
 var getItemTpl = function(modelName) {
 
 	switch(modelName) {
@@ -12,10 +18,11 @@ var getItemTpl = function(modelName) {
 		}
 		case 'Price': {
 			return '<div>{price} руб.</div>'
-				+'<small><span>Ценовая категория: {pricelistSet}</span><span>Прайс-лист: {pricelist}</span><span>Товар: {product}</span></small>';
+				+'<small><span>Ценовая категория: {pricelistSet}</span><span>Прайс-лист: {pricelist}</span><span>Товар: {[getValueFromParent("product", values.product)]}</span></small>';
 		}
 		case 'Customer': {
-			return '<div>{name}</div><small><span>Адрес: {address}</span><span>Партнер: {partner}</span></small>';
+			//TODO
+			return '<div>{name}</div><small><span>Адрес: {address}</span><span>Партнер: {[getValueFromParent("partner", values.partner)]}</span></small>';
 		}
 		case 'SaleOrder': {
 			return '<div>{id} {xid} {date}</div>';

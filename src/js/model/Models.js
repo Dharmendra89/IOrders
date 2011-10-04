@@ -27,19 +27,19 @@ var createModels = function(tablesStore) {
 var createStores = function(tablesStore) {
 	
 	tablesStore.each(function(table) {
-		if (!(table.get('type')=='view') && table.columns().data.map[table.getId() + 'name'] && table.deps().data.length) {
+		if (!(table.get('type') == 'view') && table.columns().data.map[table.getId() + 'name'] && table.deps().data.length) {
 			regStore(table.getId(), {
 				autoLoad:true,
 				pageSize: 0,
 				listeners: {
 					load: function(store,r,s){
 						if (s)
-							console.log ('Store '+store.storeId+' load success: '+r.length)
+							console.log ('Store '+store.storeId+' load success: '+r.length);
 						else
-							console.log ('Store '+store.storeId+' load failure')
+							console.log ('Store '+store.storeId+' load failure');
 					}
 				}
-			})
+			});
 		}
 	});
 	

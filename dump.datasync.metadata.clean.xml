@@ -159,7 +159,7 @@
         <column id="OfferCategoryname" name="name" label="Название" type="string"/>
         <column id="OfferCategorytotalCost" name="totalCost" label="Стоимость" type="float"/>
       </columns>
-      <sql>select distinct o.customer, c.id category, c.name, null as totalCost from Offer o join Category c on c.id=o.category</sql>
+      <sql>select * from ( select cu.id as customer, c.id category, c.name, null as totalCost from Customer cu, Category c where exists (select * from Offer where c.id=category and customer = cu.id) )</sql>
     </view>
   </views>
 </metadata>

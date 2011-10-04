@@ -12,6 +12,13 @@
 	-webkit-box-align: stretch;
 }
 
+
+.x-list-item .hbox .volume {
+	color: green;
+	padding: 10px 16px 0;
+	font-weight: bold;
+}
+
 .hbox .data {
 	-webkit-box-flex: 1;
 }

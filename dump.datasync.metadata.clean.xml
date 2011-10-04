@@ -12,7 +12,7 @@
     </table>
     <table id="Stock" name="Остаток" nameSet="Остатки">
       <columns set-of="column">
-        <column id="Stockwarehouse" name="warehouse" label="Склад" parent="Warehouse"/>
+        <column id="Stockwarehouse" name="warehouse" label="Склад" type="int" parent="Warehouse"/>
         <column id="Stockid" name="id" type="string"/>
         <column id="Stockproduct" name="product" label="Товар" parent="Product"/>
         <column id="StockstockLevel" name="stockLevel" type="int"/>
@@ -49,7 +49,7 @@
     </table>
     <table id="Product" name="Товар" nameSet="Товары">
       <columns set-of="column">
-        <column id="Productcategory" name="category" label="Категория товаров" parent="Category"/>
+        <column id="Productcategory" name="category" label="Категория товаров" type="int" parent="Category"/>
         <column id="Productid" name="id" type="int"/>
         <column id="Productname" name="name" label="Наименование" type="string"/>
         <column id="ProductfirstName" name="firstName" label="Преднаименование" type="string"/>
@@ -62,7 +62,7 @@
     </table>
     <table id="Price" name="Цена прайс-листа" nameSet="Цены прайс-листа">
       <columns set-of="column">
-        <column id="Pricecategory" name="category" label="Категория товаров" parent="Category"/>
+        <column id="Pricecategory" name="category" label="Категория товаров" type="int" parent="Category"/>
         <column id="Priceid" name="id" type="string"/>
         <column id="PricepricelistSet" name="pricelistSet" label="Ценовая категория" parent="PricelistSet"/>
         <column id="Pricepricelist" name="pricelist" label="Прайс-лист" parent="Pricelist"/>
@@ -83,7 +83,7 @@
     </table>
     <table id="PartnerPriceList" name="Прайслист партнера" nameSet="Прайслисты партнера">
       <columns set-of="column">
-        <column id="PartnerPriceListpartner" name="partner" label="Партнер" parent="Partner"/>
+        <column id="PartnerPriceListpartner" name="partner" label="Партнер" type="int" parent="Partner"/>
         <column id="PartnerPriceListid" name="id" type="string"/>
         <column id="PartnerPriceListpricelistSet" name="pricelistSet" label="Ценовая категория" parent="PricelistSet"/>
         <column id="PartnerPriceListpricelist" name="pricelist" label="Прайс-лист" parent="Pricelist"/>
@@ -103,7 +103,7 @@
     </table>
     <table id="Customer" name="Клиент" nameSet="Клиенты">
       <columns set-of="column">
-        <column id="Customerpartner" name="partner" label="Партнер" parent="Partner"/>
+        <column id="Customerpartner" name="partner" label="Партнер" type="int" parent="Partner"/>
         <column id="Customerid" name="id" type="int"/>
         <column id="Customername" name="name" label="Название" type="string"/>
         <column id="Customeraddress" name="address" label="Адрес" type="string"/>
@@ -115,7 +115,7 @@
     </table>
     <table id="SaleOrder" name="Предзаказ" nameSet="Предзаказы" extendable="true">
       <columns set-of="column">
-        <column id="SaleOrdercustomer" name="customer" label="Клиент" parent="Customer"/>
+        <column id="SaleOrdercustomer" name="customer" label="Клиент" type="int" parent="Customer"/>
         <column id="SaleOrderid" name="id" type="string"/>
         <column id="SaleOrderxid" name="xid"/>
         <column id="SaleOrderincassNeeded" name="incassNeeded" label="Требуется инкассация" type="boolean"/>
@@ -129,7 +129,7 @@
     </table>
     <table id="SaleOrderPosition" name="Позиция предзаказа" nameSet="Позиции предзаказа" extendable="true">
       <columns set-of="column">
-        <column id="SaleOrderPositionsaleorder" name="saleorder" label="Предзаказ" parent="SaleOrder"/>
+        <column id="SaleOrderPositionsaleorder" name="saleorder" label="Предзаказ" type="string" parent="SaleOrder"/>
         <column id="SaleOrderPositionvolume" name="volume" label="Кол-во" type="int"/>
         <column id="SaleOrderPositioncost" name="cost" label="Стоимость" type="float"/>
         <column id="SaleOrderPositionxid" name="xid"/>

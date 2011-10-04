@@ -8,7 +8,7 @@ var createModels = function(tablesStore) {
 				name: column.get('name'),
 				type: column.get('type')
 			});
-		});		
+		});	
 		
 		Ext.regModel(tableName, {
 			fields: fields,

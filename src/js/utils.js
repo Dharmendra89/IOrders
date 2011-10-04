@@ -5,7 +5,7 @@ var getValueFromParent = function(field, value) {
 	return rec ? rec.get('name') : value;
 };
 
-var getItemTpl = function(modelName) {
+function getItemTpl (modelName) {
 
 	switch(modelName) {
 		case 'Dep': {
@@ -19,14 +19,15 @@ var getItemTpl = function(modelName) {
 		}
 		case 'Price': {
 			return '<div>{price} руб.</div>'
-				+'<small><span>Ценовая категория: {pricelistSet}</span><span>Прайс-лист: {pricelist}</span><span>Товар: {[getValueFromParent("product", values.product)]}</span></small>';
+				+'<small><span>Ценовая категория: {[getValueFromParent("pricelistSet",values.pricelistSet)]}</span><span>Прайс-лист: {[getValueFromParent("pricelist",values.pricelist)]}</span><span>Товар: {[getValueFromParent("product", values.product)]}</span></small>';
 		}
 		case 'Customer': {
 			//TODO
 			return '<div>{name}</div><small><span>Адрес: {address}</span><span>Партнер: {[getValueFromParent("partner", values.partner)]}</span></small>';
 		}
 		case 'SaleOrder': {
-			return '<div>{id} {xid} {date}</div>';
+			return '<div><span>Клиент: {[getValueFromParent("customer", values.customer)]}</span></div>'
+				+'<small><span>На дату: {date}</span><span>Сумма: {totalCost}</span><span>Обновлено: {ts}</span></small>';
 		}
 		case 'OfferCategory': {
 			return '<div>{name}</div><div class="price">'

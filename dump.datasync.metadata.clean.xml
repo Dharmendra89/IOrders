@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.28">
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.29" expect-megabytes="15">
   <tables set-of="table">
     <table id="Warehouse" name="Склад" nameSet="Склады">
       <columns set-of="column">
@@ -120,7 +120,7 @@
         <column id="SaleOrderxid" name="xid"/>
         <column id="SaleOrderincassNeeded" name="incassNeeded" label="Требуется инкассация" type="boolean"/>
         <column id="SaleOrderisWhite" name="isWhite" label="Нужен счет-фактура" type="boolean"/>
-        <column id="SaleOrderdate" name="date" label="Дата" type="date"/>
+        <column id="SaleOrderdate" name="date" label="Дата" type="string"/>
         <column id="SaleOrdertotalCost" name="totalCost" label="Стоимость" type="float"/>
       </columns>
       <deps set-of="dep">

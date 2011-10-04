@@ -17,6 +17,14 @@ function getItemTpl (modelName) {
 		case 'Warehouse': {
 			return '<div>{name}</div>';
 		}
+		case 'PartnerPriceList': {
+			return '<div><span>{[getValueFromParent("pricelistSet",values.pricelistSet)]}: {[getValueFromParent("pricelist",values.pricelist)]}</span><tpl if="discount"><span>-{discount} %</span></tpl></div>'
+				+'<small><span>Партнер: {[getValueFromParent("partner", values.partner)]}</span></small>';
+		}
+		case 'Debt': {
+			return '<div><span>{remSumm} руб.</span><tpl if="isWhite"><span>Чек</span></tpl></div>'
+				+'<small><span>Полная сумма: {fullSumm}</span><span>Дата: {ddate}</span><span>№: {ndoc}</span></small>';
+		}
 		case 'Price': {
 			return '<div>{price} руб.</div>'
 				+'<small><span>Ценовая категория: {[getValueFromParent("pricelistSet",values.pricelistSet)]}</span><span>Прайс-лист: {[getValueFromParent("pricelist",values.pricelist)]}</span><span>Товар: {[getValueFromParent("product", values.product)]}</span></small>';
@@ -63,7 +71,7 @@ function getItemTpl (modelName) {
 			return '<div class="hbox">'
 		       +'<div class="info {cls} data">'
 			     + '<p>{[getValueFromParent("product", values.product)]}</p>'
-			     + '<small><span>Цена: {cost} руб. </span>'
+			     + '<small><span>Стоимость: {cost} руб. </span>'
 			     + '</small>'
 			   + '</div>'
 			   + '<div class="volume">{volume}</div>'

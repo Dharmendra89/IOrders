@@ -1,28 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.27"><tables set-of="table"><table id="Warehouse" name="Склад" nameSet="Склады"><columns set-of="column"><column id="Warehouseid" name="id" type="int"/><column id="Warehousename" name="name" label="Название" type="string"/></columns><deps set-of="dep"><dep table_id="Customer" id="Customerwarehouse"/></deps></table><table id="Stock" name="Остаток" nameSet="Остатки"><columns set-of="column"><column id="Stockwarehouse" name="warehouse" label="Склад" parent="Warehouse"/><column id="Stockid" name="id" type="string"/><column id="Stockproduct" name="product" label="Товар" parent="Product"/><column id="StockstockLevel" name="stockLevel" type="int"/></columns></table><table id="PricelistSet" name="Ценовая категория" nameSet="Ценовые категории"><columns set-of="column"><column id="PricelistSetid" name="id" type="int"/><column id="PricelistSetname" name="name" label="Название" type="string"/></columns><deps set-of="dep"><dep table_id="PartnerPriceList" id="PartnerPriceListpricelistSet"/></deps></table><table id="Pricelist" name="Прайс-лист" nameSet="Прайс-листы"><columns set-of="column"><column id="Pricelistid" name="id" type="int"/><column id="Pricelistname" name="name" label="Название" type="string"/></columns><deps set-of="dep"><dep table_id="PartnerPriceList" id="PartnerPriceListpricelist"/></deps></table><table id="Category" name="Категория товаров" nameSet="Категории товаров"><columns set-of="column"><column id="Categoryid" name="id" type="int"/><column id="Categoryname" name="name" label="Название" type="string"/><column id="Categoryord" name="ord" type="int"/></columns><deps set-of="dep"><dep table_id="Price" id="Pricecategory"/><dep table_id="Product" id="Productcategory"/></deps></table><table id="Product" name="Товар" nameSet="Товары"><columns set-of="column"><column id="Productcategory" name="category" label="Категория товаров" parent="Category"/><column id="Productid" name="id" type="int"/><column id="Productname" name="name" label="Наименование" type="string"/><column id="ProductfirstName" name="firstName" label="Преднаименование" type="string"/><column id="Productfactor" name="factor" label="Кратность" type="int"/><column id="Productrel" name="rel" label="Шт. в упаковке" type="int"/></columns><deps set-of="dep"><dep table_id="Price" id="Priceproduct"/></deps></table><table id="Price" name="Цена прайс-листа" nameSet="Цены прайс-листа"><columns set-of="column"><column id="Pricecategory" name="category" label="Категория товаров" parent="Category"/><column id="Priceid" name="id" type="string"/><column id="PricepricelistSet" name="pricelistSet" label="Ценовая категория" parent="PricelistSet"/><column id="Pricepricelist" name="pricelist" label="Прайс-лист" parent="Pricelist"/><column id="Priceproduct" name="product" label="Товар" parent="Product"/><column id="Priceprice" name="price" label="Цена" type="float"/></columns></table><table id="Partner" name="Партнер" nameSet="Партнеры"><columns set-of="column"><column id="Partnerid" name="id" type="int"/><column id="Partnername" name="name" label="Название" type="string"/></columns><deps set-of="dep"><dep table_id="PartnerPriceList" id="PartnerPriceListpartner"/><dep table_id="Customer" id="Customerpartner"/><dep table_id="Debt" id="Debtpartner"/></deps></table><table id="PartnerPriceList" name="Прайслист партнера" nameSet="Прайслисты партнера"><columns set-of="column"><column id="PartnerPriceListpartner" name="partner" label="Партнер" parent="Partner"/><column id="PartnerPriceListid" name="id" type="string"/><column id="PartnerPriceListpricelistSet" name="pricelistSet" label="Ценовая категория" parent="PricelistSet"/><column id="PartnerPriceListpricelist" name="pricelist" label="Прайс-лист" parent="Pricelist"/><column id="PartnerPriceListdiscount" name="discount" label="% скидки" type="float"/></columns></table><table id="Debt" name="Задолженность" nameSet="Задолженность"><columns set-of="column"><column id="Debtid" name="id" type="int"/><column id="Debtddate" name="ddate" label="Дата" type="date"/><column id="Debtndoc" name="ndoc" label="Документ№" type="string"/><column id="DebtfullSumm" name="fullSumm" label="Сумма" type="float"/><column id="DebtisWhite" name="isWhite" label="Нужен чек" type="boolean"/><column id="DebtremSumm" name="remSumm" label="Задолженность" type="float"/><column id="Debtpartner" name="partner" label="Партнер" parent="Partner"/></columns></table><table id="Customer" name="Клиент" nameSet="Клиенты"><columns set-of="column"><column id="Customerpartner" name="partner" label="Партнер" parent="Partner"/><column id="Customerid" name="id" type="int"/><column id="Customername" name="name" label="Название" type="string"/><column id="Customeraddress" name="address" label="Адрес" type="string"/><column id="Customerwarehouse" name="warehouse" label="Склад" parent="Warehouse"/></columns><deps set-of="dep"><dep table_id="SaleOrder" id="SaleOrdercustomer"/></deps></table><table id="SaleOrder" name="Предзаказ" nameSet="Предзаказы" extendable="true"><columns set-of="column"><column id="SaleOrdercustomer" name="customer" label="Клиент" parent="Customer"/><column id="SaleOrderid" name="id" type="string"/><column id="SaleOrderxid" name="xid"/><column id="SaleOrderincassNeeded" name="incassNeeded" label="Требуется инкассация" type="boolean"/><column id="SaleOrderisWhite" name="isWhite" label="Нужен счет-фактура" type="boolean"/><column id="SaleOrderdate" name="date" label="Дата" type="date"/><column id="SaleOrdertotalCost" name="totalCost" label="Стоимость" type="float"/></columns><deps set-of="dep"><dep table_id="SaleOrderPosition" id="SaleOrderPositionsaleorder"/></deps></table><table id="SaleOrderPosition" name="Позиция предзаказа" nameSet="Позиции предзаказа" extendable="true"><columns set-of="column"><column id="SaleOrderPositionsaleorder" name="saleorder" label="Предзаказ" parent="SaleOrder"/><column id="SaleOrderPositionvolume" name="volume" label="Кол-во" type="int"/><column id="SaleOrderPositioncost" name="cost" label="Стоимость" type="float"/><column id="SaleOrderPositionxid" name="xid"/><column id="SaleOrderPositionproduct" name="product" label="Товар" parent="Product"/></columns></table></tables><views set-of="view"><view id="Offer"><columns set-of="column"><column id="Offercustomer" name="customer" label="Клиент"/><column id="Offercategory" name="category" label="Категория товаров"/><column id="Offerprice" name="price" label="Цена" type="float"/><column id="Offerproduct" name="product" label="Товар"/><column id="OfferfirstName" name="firstName" label="Преднаименование" type="string"/><column id="Offername" name="name" label="Наименование" type="string"/><column id="Offerrel" name="rel" label="Шт. в упаковке" type="int"/><column id="Offerfactor" name="factor" label="Кратность" type="int"/><column id="OfferstockLevel" name="stockLevel" type="int"/></columns><sql>
-                select
-                   c.id as customer,
-                   g.category,
-                   p.price,
-                   g.id as Product,
-                   g.firstName,
-                   g.name,
-                   g.rel,
-                   g.factor,
-                   s.stockLevel,
-                   0 as isActive,
-                   null as cost
-                from Customer c
-                   join PartnerPriceList ppl on ppl.partner = c.partner
-                   join Price p on p.pricelistSet = ppl.pricelistSet and p.priceList = ppl.priceList
-                   join Product g on g.id = p.product
-                   join Stock s on s.product = g.id and s.warehouse = c.warehouse and s.stockLevel &gt; 0
-            </sql></view><view id="OfferCategory"><columns set-of="column"><column id="OfferCategorycustomer" name="customer" label="Клиент"/><column id="OfferCategorycategory" name="category" label="Категория товаров"/><column id="OfferCategoryname" name="name" label="Название" type="string"/><column id="OfferCategorytotalCost" name="totalCost" label="Стоимость" type="float"/></columns><sql>
-                select distinct
-                   o.customer,
-                   c.id category,
-                   c.name,
-                   null as totalCost
-                from Offer o
-                   join Category c on c.id=o.category
-            </sql></view></views></metadata>
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.27">
+  <tables set-of="table">
+    <table id="Warehouse" name="Склад" nameSet="Склады">
+      <columns set-of="column">
+        <column id="Warehouseid" name="id" type="int"/>
+        <column id="Warehousename" name="name" label="Название" type="string"/>
+      </columns>
+      <deps set-of="dep">
+        <dep table_id="Customer" id="Customerwarehouse"/>
+      </deps>
+    </table>
+    <table id="Stock" name="Остаток" nameSet="Остатки">
+      <columns set-of="column">
+        <column id="Stockwarehouse" name="warehouse" label="Склад" parent="Warehouse"/>
+        <column id="Stockid" name="id" type="string"/>
+        <column id="Stockproduct" name="product" label="Товар" parent="Product"/>
+        <column id="StockstockLevel" name="stockLevel" type="int"/>
+      </columns>
+    </table>
+    <table id="PricelistSet" name="Ценовая категория" nameSet="Ценовые категории">
+      <columns set-of="column">
+        <column id="PricelistSetid" name="id" type="int"/>
+        <column id="PricelistSetname" name="name" label="Название" type="string"/>
+      </columns>
+      <deps set-of="dep">
+        <dep table_id="PartnerPriceList" id="PartnerPriceListpricelistSet"/>
+      </deps>
+    </table>
+    <table id="Pricelist" name="Прайс-лист" nameSet="Прайс-листы">
+      <columns set-of="column">
+        <column id="Pricelistid" name="id" type="int"/>
+        <column id="Pricelistname" name="name" label="Название" type="string"/>
+      </columns>
+      <deps set-of="dep">
+        <dep table_id="PartnerPriceList" id="PartnerPriceListpricelist"/>
+      </deps>
+    </table>
+    <table id="Category" name="Категория товаров" nameSet="Категории товаров">
+      <columns set-of="column">
+        <column id="Categoryid" name="id" type="int"/>
+        <column id="Categoryname" name="name" label="Название" type="string"/>
+        <column id="Categoryord" name="ord" type="int"/>
+      </columns>
+      <deps set-of="dep">
+        <dep table_id="Price" id="Pricecategory"/>
+        <dep table_id="Product" id="Productcategory"/>
+      </deps>
+    </table>
+    <table id="Product" name="Товар" nameSet="Товары">
+      <columns set-of="column">
+        <column id="Productcategory" name="category" label="Категория товаров" parent="Category"/>
+        <column id="Productid" name="id" type="int"/>
+        <column id="Productname" name="name" label="Наименование" type="string"/>
+        <column id="ProductfirstName" name="firstName" label="Преднаименование" type="string"/>
+        <column id="Productfactor" name="factor" label="Кратность" type="int"/>
+        <column id="Productrel" name="rel" label="Шт. в упаковке" type="int"/>
+      </columns>
+      <deps set-of="dep">
+        <dep table_id="Price" id="Priceproduct"/>
+      </deps>
+    </table>
+    <table id="Price" name="Цена прайс-листа" nameSet="Цены прайс-листа">
+      <columns set-of="column">
+        <column id="Pricecategory" name="category" label="Категория товаров" parent="Category"/>
+        <column id="Priceid" name="id" type="string"/>
+        <column id="PricepricelistSet" name="pricelistSet" label="Ценовая категория" parent="PricelistSet"/>
+        <column id="Pricepricelist" name="pricelist" label="Прайс-лист" parent="Pricelist"/>
+        <column id="Priceproduct" name="product" label="Товар" parent="Product"/>
+        <column id="Priceprice" name="price" label="Цена" type="float"/>
+      </columns>
+    </table>
+    <table id="Partner" name="Партнер" nameSet="Партнеры">
+      <columns set-of="column">
+        <column id="Partnerid" name="id" type="int"/>
+        <column id="Partnername" name="name" label="Название" type="string"/>
+      </columns>
+      <deps set-of="dep">
+        <dep table_id="PartnerPriceList" id="PartnerPriceListpartner"/>
+        <dep table_id="Customer" id="Customerpartner"/>
+        <dep table_id="Debt" id="Debtpartner"/>
+      </deps>
+    </table>
+    <table id="PartnerPriceList" name="Прайслист партнера" nameSet="Прайслисты партнера">
+      <columns set-of="column">
+        <column id="PartnerPriceListpartner" name="partner" label="Партнер" parent="Partner"/>
+        <column id="PartnerPriceListid" name="id" type="string"/>
+        <column id="PartnerPriceListpricelistSet" name="pricelistSet" label="Ценовая категория" parent="PricelistSet"/>
+        <column id="PartnerPriceListpricelist" name="pricelist" label="Прайс-лист" parent="Pricelist"/>
+        <column id="PartnerPriceListdiscount" name="discount" label="% скидки" type="float"/>
+      </columns>
+    </table>
+    <table id="Debt" name="Задолженность" nameSet="Задолженность">
+      <columns set-of="column">
+        <column id="Debtid" name="id" type="int"/>
+        <column id="Debtddate" name="ddate" label="Дата" type="date"/>
+        <column id="Debtndoc" name="ndoc" label="Документ№" type="string"/>
+        <column id="DebtfullSumm" name="fullSumm" label="Сумма" type="float"/>
+        <column id="DebtisWhite" name="isWhite" label="Нужен чек" type="boolean"/>
+        <column id="DebtremSumm" name="remSumm" label="Задолженность" type="float"/>
+        <column id="Debtpartner" name="partner" label="Партнер" parent="Partner"/>
+      </columns>
+    </table>
+    <table id="Customer" name="Клиент" nameSet="Клиенты">
+      <columns set-of="column">
+        <column id="Customerpartner" name="partner" label="Партнер" parent="Partner"/>
+        <column id="Customerid" name="id" type="int"/>
+        <column id="Customername" name="name" label="Название" type="string"/>
+        <column id="Customeraddress" name="address" label="Адрес" type="string"/>
+        <column id="Customerwarehouse" name="warehouse" label="Склад" parent="Warehouse"/>
+      </columns>
+      <deps set-of="dep">
+        <dep table_id="SaleOrder" id="SaleOrdercustomer"/>
+      </deps>
+    </table>
+    <table id="SaleOrder" name="Предзаказ" nameSet="Предзаказы" extendable="true">
+      <columns set-of="column">
+        <column id="SaleOrdercustomer" name="customer" label="Клиент" parent="Customer"/>
+        <column id="SaleOrderid" name="id" type="string"/>
+        <column id="SaleOrderxid" name="xid"/>
+        <column id="SaleOrderincassNeeded" name="incassNeeded" label="Требуется инкассация" type="boolean"/>
+        <column id="SaleOrderisWhite" name="isWhite" label="Нужен счет-фактура" type="boolean"/>
+        <column id="SaleOrderdate" name="date" label="Дата" type="date"/>
+        <column id="SaleOrdertotalCost" name="totalCost" label="Стоимость" type="float"/>
+      </columns>
+      <deps set-of="dep">
+        <dep table_id="SaleOrderPosition" id="SaleOrderPositionsaleorder"/>
+      </deps>
+    </table>
+    <table id="SaleOrderPosition" name="Позиция предзаказа" nameSet="Позиции предзаказа" extendable="true">
+      <columns set-of="column">
+        <column id="SaleOrderPositionsaleorder" name="saleorder" label="Предзаказ" parent="SaleOrder"/>
+        <column id="SaleOrderPositionvolume" name="volume" label="Кол-во" type="int"/>
+        <column id="SaleOrderPositioncost" name="cost" label="Стоимость" type="float"/>
+        <column id="SaleOrderPositionxid" name="xid"/>
+        <column id="SaleOrderPositionproduct" name="product" label="Товар" parent="Product"/>
+      </columns>
+    </table>
+  </tables>
+  <views set-of="view">
+    <view id="Offer">
+      <columns set-of="column">
+        <column id="Offercustomer" name="customer" label="Клиент"/>
+        <column id="Offercategory" name="category" label="Категория товаров"/>
+        <column id="Offerprice" name="price" label="Цена" type="float"/>
+        <column id="Offerproduct" name="product" label="Товар"/>
+        <column id="OfferfirstName" name="firstName" label="Преднаименование" type="string"/>
+        <column id="Offername" name="name" label="Наименование" type="string"/>
+        <column id="Offerrel" name="rel" label="Шт. в упаковке" type="int"/>
+        <column id="Offerfactor" name="factor" label="Кратность" type="int"/>
+        <column id="OfferstockLevel" name="stockLevel" type="int"/>
+      </columns>
+      <sql>select c.id as customer, g.category, p.price, g.id as Product, g.firstName, g.name, g.rel, g.factor, s.stockLevel, 0 as isActive, null as cost from Customer c join PartnerPriceList ppl on ppl.partner = c.partner join Price p on p.pricelistSet = ppl.pricelistSet and p.priceList = ppl.priceList join Product g on g.id = p.product join Stock s on s.product = g.id and s.warehouse = c.warehouse and s.stockLevel &gt; 0</sql>
+    </view>
+    <view id="OfferCategory">
+      <columns set-of="column">
+        <column id="OfferCategorycustomer" name="customer" label="Клиент"/>
+        <column id="OfferCategorycategory" name="category" label="Категория товаров"/>
+        <column id="OfferCategoryname" name="name" label="Название" type="string"/>
+        <column id="OfferCategorytotalCost" name="totalCost" label="Стоимость" type="float"/>
+      </columns>
+      <sql>select distinct o.customer, c.id category, c.name, null as totalCost from Offer o join Category c on c.id=o.category</sql>
+    </view>
+  </views>
+</metadata>

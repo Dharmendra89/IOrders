@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<datasync xmlns="http://unact.net/xml/xi">
+  <session id="c5954fd35c7df7cafda30711c49ee17d" authenticated="2011/10/04 7:45:46" username="preorderer" validator="1"/>
+  <menu name="iorders">
+    <option name="close" label="Закрыть"/>
+    <option name="refresh" label="Обновить"/>
+    <option name="save" label="Сохранить" advisor="avoid"/>
+    <option name="backward" label="Вернуться" disabled="true"/>
+    <option name="forward" label="Продолжить" disabled="true"/>
+  </menu>
+  <menu name="iorders">
+    <option name="OfferCategory" label=""/>
+  </menu>
+</datasync>

@@ -93,7 +93,7 @@
     <table id="Debt" name="Задолженность" nameSet="Задолженность">
       <columns set-of="column">
         <column id="Debtid" name="id" type="int"/>
-        <column id="Debtddate" name="ddate" label="Дата" type="date"/>
+        <column id="Debtddate" name="ddate" label="Дата" type="string"/>
         <column id="Debtndoc" name="ndoc" label="Документ№" type="string"/>
         <column id="DebtfullSumm" name="fullSumm" label="Сумма" type="float"/>
         <column id="DebtisWhite" name="isWhite" label="Нужен чек" type="boolean"/>

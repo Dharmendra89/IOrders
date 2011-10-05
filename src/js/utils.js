@@ -5,7 +5,7 @@ var getValueFromParent = function(field, value) {
 	return rec ? rec.get('name') : value;
 };
 
-function getItemTpl (modelName) {
+function getItemTpl (modelName, table) {
 
 	switch(modelName) {
 		case 'Dep': {
@@ -26,8 +26,13 @@ function getItemTpl (modelName) {
 				+'<small><span>Полная сумма: {fullSumm}</span><span>Дата: {ddate}</span><span>№: {ndoc}</span></small>';
 		}
 		case 'Price': {
-			return '<div>{price} руб.</div>'
-				+'<small><span>Ценовая категория: {[getValueFromParent("pricelistSet",values.pricelistSet)]}</span><span>Прайс-лист: {[getValueFromParent("pricelist",values.pricelist)]}</span><span>Товар: {[getValueFromParent("product", values.product)]}</span></small>';
+			var tpl = '<div>{price} руб.</div>'
+				+'<small>'
+					+'<span>Ценовая категория: {[getValueFromParent("pricelistSet",values.pricelistSet)]}</span>'
+				    +'<span>Прайс-лист: {[getValueFromParent("pricelist",values.pricelist)]}</span>'
+			  	    + (!(table && table.getId()=='Product') ? '<span>Товар: {[getValueFromParent("product", values.product)]}</span>' : '')
+				+'</small>';
+			return tpl;
 		}
 		case 'Customer': {
 			//TODO

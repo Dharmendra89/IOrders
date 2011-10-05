@@ -46,7 +46,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 				scroll: false,
 				cls: 'x-table-list',
 				allowDeselect: false,
-				itemTpl: getItemTpl(this.tableRecord),
+				itemTpl: getItemTpl ( this.tableRecord, table ),
 				store: this.setViewStore
 			});
 			

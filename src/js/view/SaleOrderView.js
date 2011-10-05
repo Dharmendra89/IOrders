@@ -8,11 +8,13 @@ var SaleOrderView = Ext.extend(AbstractView, {
 	 */
 	createItems: function() {
 
-		Ext.getStore('OfferCategory').load({limit: 0, filters:[{property: 'customer', value: this.saleOrder.get('customer')}]});
+		this.offerCategoryStore = createStore('OfferCategory', 
+				{filters:[{property: 'customer', value: this.saleOrder.get('customer')}]});
+		this.offerCategoryStore.load({limit: 0});
 
 		this.productCategoryList = Ext.create({
 			xtype: 'list', cls: 'x-product-category-list', allowDeselect: false, flex: 1,
-			store: Ext.getStore('OfferCategory'),
+			store: this.offerCategoryStore,
 			itemTpl: getItemTpl('OfferCategory')
 		});
 		this.productCategoryBtn = Ext.create({
@@ -29,7 +31,12 @@ var SaleOrderView = Ext.extend(AbstractView, {
 			titleTpl: new Ext.XTemplate(getItemTpl('SaleOrderBottomToolbar'))
 		});
 
-		this.dockedItems[0].items.push(this.productCategoryBtn, {xtype: 'spacer'}, {ui: 'save', name: 'Save', text: 'Сохранить', scope: this});
+		this.dockedItems[0].items.push(
+			this.productCategoryBtn,
+			{xtype: 'spacer'},
+			this.showSaleOrderBtn = new Ext.Button({name: 'ShowSaleOrder', text: 'Показать заказ', scope: this}),
+			{ui: 'save', name: 'Save', text: 'Сохранить', scope: this}
+		);
 	},
 	onListHeaderTap: function(e, t) {
 

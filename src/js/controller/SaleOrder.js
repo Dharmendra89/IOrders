@@ -6,7 +6,7 @@ Ext.regController('SaleOrder', {
 	onSaveButtonTap: function(options) {
 
 		var view = options.view;
-		var offerStore = Ext.getStore('Offer');
+		var offerStore = view.productStore;
 		var saleOrderPosStore = Ext.getStore('SaleOrderPosition');
 		var offerProducts = offerStore.getUpdatedRecords();
 		
@@ -22,6 +22,39 @@ Ext.regController('SaleOrder', {
 		offerStore.removeAll();
 
 		Ext.dispatch(Ext.apply(options, {action: 'onBackButtonTap'}));
+	},
+	onShowSaleOrderButtonTap: function(options) {
+		
+		var view = options.view;
+		view.isShowSaleOrder = view.isShowSaleOrder ? false : true;
+		view.showSaleOrderBtn.setText(view.isShowSaleOrder ? 'Показать все товары' : 'Показать заказ');
+
+		view.productCategoryList.deselect(view.productCategoryList.getSelectedRecords());
+		
+		view.productStore.clearFilter(true);
+		if(view.isShowSaleOrder) {
+
+			view.productStore.filter(new Ext.util.Filter({
+			    filterFn: function(item) {
+			        return item.get('volume') > 0;
+			    }
+			}));
+
+			view.offerCategoryStore.remoteFilter = false;
+			view.offerCategoryStore.filter(new Ext.util.Filter({
+			    filterFn: function(item) {
+			    	return view.productStore.findExact('category', item.get('category')) > -1 ? true : false;
+			    }
+			}));
+		} else {
+
+			view.offerCategoryStore.remoteFilter = true;
+			view.offerCategoryStore.clearFilter();
+			//view.offerCategoryStore.load({limit: 0, filters: [{property: 'customer', value: view.saleOrder.get('customer')}]});
+		}
+
+		view.productPanel.removeAll(true);
+		view.productPanel.doLayout();
 	},
 	onListItemTap: function(options) {
 		
@@ -48,13 +81,16 @@ Ext.regController('SaleOrder', {
 			});
 			
 			oldCard.setLoading(true);
-			
-			Ext.getStore('Offer').remoteFilter = false;
-			Ext.getStore('Offer').load({limit: 0, filters: [{property: 'customer', value: options.saleOrder.get('customer')}], callback: function() {
-				oldCard.setLoading(false);
-				IOrders.viewport.setActiveItem(newCard);
-			}});
-		}
+			newCard.productStore = createStore('Offer', {
+				remoteFilter: false,
+				getGroupString: function(rec) {
+					return rec.get('firstName');
+				},
+				sorters: [{property: 'firstName', direction: 'ASC'}],
+				filters: [{property: 'customer', value: options.saleOrder.get('customer')}]
+			});
+			newCard.productStore.load({limit: 0, callback: function() {oldCard.setLoading(false);IOrders.viewport.setActiveItem(newCard);}});
+		};
 	},
 	
 	onListItemSwipe: function(options) {
@@ -74,14 +110,14 @@ Ext.regController('SaleOrder', {
 		Ext.get(options.item).down('.volume').dom.innerHTML = newVolume;
 
 		Ext.dispatch(Ext.apply(options, {
-			action: 'calculatetotalCost',
+			action: 'calculateTotalCost',
 			record: rec,
 			priceDifference: newVolume * parseInt(rec.get('rel')) * parseFloat(rec.get('price')) 
 					- oldVolume * parseInt(rec.get('rel')) * parseFloat(rec.get('price'))
 		}));
 	},
 	
-	calculatetotalCost: function(options) {
+	calculateTotalCost: function(options) {
 
 		var view = options.list.up('saleorderview');
 		var bottomToolbar = view.getDockedComponent('bottomToolbar');
@@ -90,7 +126,7 @@ Ext.regController('SaleOrder', {
 		bottomToolbar.setTitle(bottomToolbar.titleTpl.apply({totalCost: newtotalCost.toFixed(2)}));
 		view.saleOrder.set('totalCost', newtotalCost.toFixed(2));
 		//TODO
-		var productCategoryRecord = Ext.getStore('OfferCategory').findRecord('category',options.record.get('category'));
+		var productCategoryRecord = view.offerCategoryStore.findRecord('category',options.record.get('category'));
 		productCategoryRecord.set('totalCost', (parseFloat(productCategoryRecord.get('totalCost')) + options.priceDifference).toFixed(2));
 	},
 	
@@ -99,12 +135,17 @@ Ext.regController('SaleOrder', {
 		var list = options.list;
 		var rec = list.getRecord(options.item);
 		var view = list.up('saleorderview');
-		var productStore = Ext.getStore('Offer');
+		var productStore = view.productStore;
 
 		productStore.clearFilter(true);
-		productStore.filter([
-			{property: 'category', value: rec.get('category')}
-		]);
+		
+		var filters = [{property: 'category', value: rec.get('category')}];
+		view.isShowSaleOrder && filters.push(new Ext.util.Filter({
+		    filterFn: function(item) {
+		        return item.get('volume') > 0;
+		    }
+		}));
+		productStore.filter(filters);
 
 		view.productPanel.removeAll(true);
 		view.productList = view.productPanel.add({

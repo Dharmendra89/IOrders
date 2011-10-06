@@ -11,15 +11,30 @@ Ext.regController('Navigator', {
 	},
 	onSaveButtonTap: function(options) {
 
-		var btn = options.btn;
-		btn.setText('Редактировать');
-		Ext.apply(btn, {name: 'Edit'});
+		var view = options.view;
+		var form = view.form;
+		var formRec = form.getRecord();
+		
+		form.updateRecord(formRec);
 
-		var toolbar = btn.up('toolbar');
-		toolbar.getComponent('Cancel').hide();
-
-		Ext.dispatch(Ext.apply(options, {action: 'saveObjectRecord'}));
-		Ext.dispatch(Ext.apply(options, {action: 'setEditable', editable: false}));
+		var errors = formRec.validate();
+		if(errors.isValid()) {
+			var btn = options.btn;
+			btn.setText('Редактировать');
+			Ext.apply(btn, {name: 'Edit'});
+	
+			var toolbar = btn.up('toolbar');
+			toolbar.getComponent('Cancel').hide();
+	
+			formRec.save();
+			Ext.dispatch(Ext.apply(options, {action: 'setEditable', editable: false}));
+		} else {
+			var msg = '';
+			errors.each(function(err) {
+				msg += 'Поле ' + err.field + ' ' + err.message;
+			});
+			Ext.Msg.alert('Ошибка валидации', msg, Ext.emptyFn);
+		}
 	},
 	onEditButtonTap: function(options) {
 		
@@ -48,16 +63,6 @@ Ext.regController('Navigator', {
 	},
 	setEditable: function(options) {
 		options.view.form.setDisabled(!options.editable);
-	},
-	saveObjectRecord: function(options) {
-
-		var view = options.view;
-		var form = view.form;
-		var formRec = form.getRecord();
-
-		form.updateRecord(formRec);
-		
-		formRec.save();
 	},
 	onAddButtonTap: function(options) {
 

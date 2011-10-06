@@ -1,14 +1,16 @@
 var createModels = function(tablesStore) {
 
 	tablesStore.each(function(table) {
-		var fields = [], tableName = table.getId();
+		var fields = [], validations = [], tableName = table.getId();
 		
 		table.columns().each(function(column) {
 			fields.push({
 				name: column.get('name'),
 				type: column.get('type')
 			});
-		});	
+			
+			column.get('name') == 'date' && validations.push({type: 'length', field: column.get('name'), min: 1, message: 'обязательное для заполнения'});
+		});
 		
 		Ext.regModel(tableName, {
 			fields: fields,
@@ -16,7 +18,8 @@ var createModels = function(tablesStore) {
 			proxy: {
 				type: 'sql',
 				engine: IOrders.dbeng
-			}
+			},
+			validations: validations
 		});
 		
 		regStore(tableName);

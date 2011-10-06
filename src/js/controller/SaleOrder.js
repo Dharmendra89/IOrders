@@ -1,6 +1,5 @@
 Ext.regController('SaleOrder', {
 	onBackButtonTap: function(options) {
-
 		IOrders.viewport.setActiveItem(Ext.create(options.view.ownerViewConfig), IOrders.viewport.anims.back);
 	},
 	onSaveButtonTap: function(options) {
@@ -13,8 +12,13 @@ Ext.regController('SaleOrder', {
 		var offerProducts = offerStore.getUpdatedRecords();
 		
 		Ext.each(offerProducts, function(product) {
-			saleOrderPosStore.add(Ext.ModelMgr.create(Ext.apply({saleorder: view.saleOrder.getId()}, product.data), 'SaleOrderPosition'));
+			saleOrderPosStore.add(Ext.ModelMgr.create(Ext.apply({
+				saleorder: view.saleOrder.getId(),
+				cost: parseFloat(product.get('rel') * product.get('factor') * product.get('price')).toFixed(2) 
+				}, product.data), 'SaleOrderPosition'));
 		});
+		
+		view.saleOrder.save();
 
 		saleOrderPosStore.sync();
 		saleOrderPosStore.removeAll();
@@ -26,14 +30,16 @@ Ext.regController('SaleOrder', {
 	onShowSaleOrderButtonTap: function(options) {
 		
 		var view = options.view;
+		view.setLoading(true);
 		view.isShowSaleOrder = view.isShowSaleOrder ? false : true;
 		view.showSaleOrderBtn.setText(view.isShowSaleOrder ? 'Показать все товары' : 'Показать заказ');
 
 		view.productCategoryList.deselect(view.productCategoryList.getSelectedRecords());
 		
 		view.productStore.clearFilter(true);
+		view.productCategoryList.scroller.scrollTo({x: 0, y: 0});
 		if(view.isShowSaleOrder) {
-
+			
 			view.productStore.filter(new Ext.util.Filter({
 			    filterFn: function(item) {
 			        return item.get('volume') > 0;
@@ -56,6 +62,7 @@ Ext.regController('SaleOrder', {
 			view.productPanel.removeAll(true);
 			view.productPanel.doLayout();
 		}
+		view.setLoading(false);
 	},
 	onListItemTap: function(options) {
 		
@@ -146,7 +153,7 @@ Ext.regController('SaleOrder', {
 		var rec = options.categoryRec;
 		var view = options.view;
 		var productStore = view.productStore;
-		
+		view.productPanel.setLoading(true);
 		productStore.remoteFilter = false;
 		productStore.clearFilter(true);
 		
@@ -163,6 +170,7 @@ Ext.regController('SaleOrder', {
 		view.productList = view.productPanel.add({
 			xtype: 'offerproductlist', store: productStore
 		});
+		view.productPanel.setLoading(false);
 		view.productPanel.doLayout();
 
 		view.productList.mon(view.productList.el, 'tap', view.onListHeaderTap, view, {

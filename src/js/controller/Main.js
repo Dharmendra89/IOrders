@@ -27,12 +27,26 @@ Ext.regController('Main', {
 					if(target.hasCls('x-button')) {
 
 						if(target.hasCls('extend')) {
-							Ext.dispatch({controller: 'Navigator', action: 'saveObjectRecord', view: navView});
+							var form = navView.form;
+							var formRec = form.getRecord();
+							
+							form.updateRecord(formRec);
 
-							Ext.dispatch(Ext.apply(options, {
-								controller: 'SaleOrder',
-								saleOrder: navView.objectRecord
-							}));
+							var errors = formRec.validate();
+							if(errors.isValid()) {
+
+								formRec.save();
+								Ext.dispatch(Ext.apply(options, {
+									controller: 'SaleOrder',
+									saleOrder: navView.objectRecord
+								}));
+							} else {
+								var msg = '';
+								errors.each(function(err) {
+									msg += 'Поле ' + err.field + ' ' + err.message;
+								});
+								Ext.Msg.alert('Ошибка валидации', msg, Ext.emptyFn);
+							}
 						}
 					} else {
 						Ext.dispatch(Ext.apply(options, {

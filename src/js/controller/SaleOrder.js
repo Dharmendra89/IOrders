@@ -7,7 +7,7 @@ Ext.regController('SaleOrder', {
 
 		var view = options.view;
 		var offerStore = view.productStore;
-		var saleOrderPosStore = Ext.getStore('SaleOrderPosition'); 
+		var saleOrderPosStore = Ext.getStore('SaleOrderPosition');
 		
 		offerStore.clearFilter(true);
 		var offerProducts = offerStore.getUpdatedRecords();
@@ -83,7 +83,7 @@ Ext.regController('SaleOrder', {
 			
 			oldCard.setLoading(true);
 			newCard.productStore = createStore('Offer', {
-				remoteFilter: false,
+				remoteFilter: true,
 				remoteSort: true,
 				getGroupString: function(rec) {
 					return rec.get('firstName');
@@ -146,7 +146,8 @@ Ext.regController('SaleOrder', {
 		var rec = options.categoryRec;
 		var view = options.view;
 		var productStore = view.productStore;
-
+		
+		productStore.remoteFilter = false;
 		productStore.clearFilter(true);
 		
 		var filters = [];

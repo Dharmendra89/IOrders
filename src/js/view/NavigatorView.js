@@ -16,6 +16,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 		
 		if(this.isObjectView) {
 			
+			this.cls = 'objectView';
 			this.dockedItems[0].title = table.get('name');
 			formItems.push(createFieldSet(table.columns(), this.editable));
 			
@@ -32,6 +33,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 			
 		} else if (this.isSetView) {
 			
+			this.cls = 'setView';
 			this.dockedItems[0].title = tablesStore.getById(this.tableRecord).get('nameSet');
 			
 			if(this.objectRecord.modelName != 'MainMenu') {
@@ -59,7 +61,11 @@ var NavigatorView = Ext.extend(AbstractView, {
 		}
 		
 		this.items = [
-			this.form = new Ext.form.FormPanel({cls: 'x-navigator-form', scroll: true, items: formItems})
+			this.form = new Ext.form.FormPanel({
+				cls: 'x-navigator-form '+this.cls,
+				scroll: true,
+				items: formItems
+			})
 		];
 	},
 	

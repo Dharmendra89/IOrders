@@ -169,7 +169,7 @@ var createTitlePanel = function(t) {
 			xtype: 'panel',
 			cls: 'x-title-panel',
 			html: htmlTpl.apply({title: t})
-	}
+	};
 };
 
 var createNavigatorView = function(rec, oldCard, isSetView, editable) {
@@ -194,4 +194,30 @@ var createNavigatorView = function(rec, oldCard, isSetView, editable) {
 		};
 		
 	return view;
+};
+
+var getGroupConfig = function(model) {
+	switch(model) {
+		case 'SaleOrder' : {
+			return {
+				getGroupString: function(rec) {
+					return rec.get('date');
+				},
+				sorters: [{property: 'date', direction: 'ASC'}],
+				field: 'date'
+			};
+		}
+		case 'Product' : {
+			return {
+				getGroupString: function(rec) {
+					return rec.get('firstName');
+				},
+				sorters: [{property: 'firstName', direction: 'ASC'}],
+				field: 'firtName'
+			};
+		}
+		default : {
+			return {};
+		}
+	}
 };

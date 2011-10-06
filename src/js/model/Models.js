@@ -43,20 +43,14 @@ var createStores = function(tablesStore) {
 		}
 	});
 	
-	Ext.apply(Ext.getStore('Offer'), {
-		getGroupString: function(rec) {
-			return rec.get('firstName');
-		}
-	});
-	
-	Ext.getStore('Offer').sort('firstName', 'ASC');
-	
 };
 
 var regStore = function(name, config) {
 	
 	Ext.regStore(name, Ext.apply({
 		model: name,
+		remoteFilter: true,
+		remoteSort: true, 
 		proxy: {
 			type: 'sql',
 			engine: IOrders.dbeng
@@ -67,6 +61,6 @@ var regStore = function(name, config) {
 
 var createStore = function(name, config) {
 	return new Ext.data.Store(
-		Ext.apply({remoteFilter: true, clearOnPageLoad: false, model: name, proxy: {type: 'sql', engine: IOrders.dbeng}}, config)
+		Ext.apply({remoteFilter: true, remoteSort: true, clearOnPageLoad: false, model: name, proxy: {type: 'sql', engine: IOrders.dbeng}}, config)
 	);
 }

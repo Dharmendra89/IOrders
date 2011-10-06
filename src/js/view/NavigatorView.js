@@ -38,15 +38,18 @@ var NavigatorView = Ext.extend(AbstractView, {
 				formItems.push(createFilterField(this.objectRecord));
 			}
 			
-			this.setViewStore = createStore(this.tableRecord);
+			var listGroupedConfig = getGroupConfig(this.tableRecord);
+			
+			this.setViewStore = createStore(this.tableRecord, listGroupedConfig);
 			
 			formItems.push({
 				xtype: 'list',
 				plugins: new Ext.plugins.ListPagingPlugin({autoPaging: true}),
 				scroll: false,
 				cls: 'x-table-list',
+				grouped: listGroupedConfig.field ? true : false,
 				allowDeselect: false,
-				itemTpl: getItemTpl ( this.tableRecord, table ),
+				itemTpl: getItemTpl(this.tableRecord, table),
 				store: this.setViewStore
 			});
 			

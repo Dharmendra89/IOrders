@@ -57,11 +57,11 @@ Ext.override(Ext.plugins.ListPagingPlugin, {
 		var store = this.list.store;
 		
 		if( !this.rendered) {
-			this.render()
+			this.render();
 		}
 		
 		if (!(store.pageSize && store.data.items.length % store.pageSize))
-			this.el.appendTo(this.list.getTargetEl())
+			this.el.appendTo(this.list.getTargetEl());
 		else
 			this.el.remove();
 		

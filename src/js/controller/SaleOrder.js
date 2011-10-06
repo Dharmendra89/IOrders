@@ -8,9 +8,9 @@ Ext.regController('SaleOrder', {
 		var view = options.view;
 		var offerStore = view.productStore;
 		var saleOrderPosStore = Ext.getStore('SaleOrderPosition');
-		var offerProducts = offerStore.getUpdatedRecords();
 		
 		offerStore.clearFilter(true);
+		var offerProducts = offerStore.getUpdatedRecords();
 		
 		Ext.each(offerProducts, function(product) {
 			saleOrderPosStore.add(Ext.ModelMgr.create(Ext.apply({saleorder: view.saleOrder.getId()}, product.data), 'SaleOrderPosition'));
@@ -46,15 +46,16 @@ Ext.regController('SaleOrder', {
 			    	return view.productStore.findExact('category', item.get('category')) > -1 ? true : false;
 			    }
 			}));
+			
+			Ext.dispatch(Ext.apply(options, {action: 'addOfferProductList', view: view}));
 		} else {
 
 			view.offerCategoryStore.remoteFilter = true;
 			view.offerCategoryStore.clearFilter();
-			//view.offerCategoryStore.load({limit: 0, filters: [{property: 'customer', value: view.saleOrder.get('customer')}]});
-		}
 
-		view.productPanel.removeAll(true);
-		view.productPanel.doLayout();
+			view.productPanel.removeAll(true);
+			view.productPanel.doLayout();
+		}
 	},
 	onListItemTap: function(options) {
 		
@@ -135,11 +136,20 @@ Ext.regController('SaleOrder', {
 		var list = options.list;
 		var rec = list.getRecord(options.item);
 		var view = list.up('saleorderview');
+		
+		Ext.dispatch(Ext.apply(options, {action: 'addOfferProductList', view: view, categoryRec: rec}));
+	},
+
+	addOfferProductList: function(options) {
+
+		var rec = options.categoryRec;
+		var view = options.view;
 		var productStore = view.productStore;
 
 		productStore.clearFilter(true);
 		
-		var filters = [{property: 'category', value: rec.get('category')}];
+		var filters = [];
+		rec && filters.push({property: 'category', value: rec.get('category')});
 		view.isShowSaleOrder && filters.push(new Ext.util.Filter({
 		    filterFn: function(item) {
 		        return item.get('volume') > 0;

@@ -17,7 +17,7 @@ Ext.regController('Main', {
 		var list = options.list,
 			rec = options.list.getRecord(options.item),
 		    navView = list.up('navigatorview'),
-		    saleOrderView = list.up('saleorderview')
+		    saleOrderView = list.up('saleorderview'),
 		    listEl = list.getEl();
 		
 		if(navView) {
@@ -63,5 +63,4 @@ Ext.regController('Main', {
 			Ext.dispatch(Ext.apply(options, {controller: 'SaleOrder'}));
 		}
 	}
-	
 });

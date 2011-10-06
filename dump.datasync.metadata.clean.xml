@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.29" expect-megabytes="15">
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.3" expect-megabytes="15">
   <tables set-of="table">
     <table id="Warehouse" name="Склад" nameSet="Склады">
       <columns set-of="column">
@@ -93,7 +93,7 @@
     <table id="Debt" name="Задолженность" nameSet="Задолженность">
       <columns set-of="column">
         <column id="Debtid" name="id" type="int"/>
-        <column id="Debtddate" name="ddate" label="Дата" type="string"/>
+        <column id="Debtddate" name="ddate" label="Дата" type="date"/>
         <column id="Debtndoc" name="ndoc" label="Документ№" type="string"/>
         <column id="DebtfullSumm" name="fullSumm" label="Сумма" type="float"/>
         <column id="DebtisWhite" name="isWhite" label="Нужен чек" type="boolean"/>
@@ -120,7 +120,7 @@
         <column id="SaleOrderxid" name="xid"/>
         <column id="SaleOrderincassNeeded" name="incassNeeded" label="Требуется инкассация" type="boolean"/>
         <column id="SaleOrderisWhite" name="isWhite" label="Нужен счет-фактура" type="boolean"/>
-        <column id="SaleOrderdate" name="date" label="Дата" type="string"/>
+        <column id="SaleOrderdate" name="date" label="Дата" type="date"/>
         <column id="SaleOrdertotalCost" name="totalCost" label="Стоимость" type="float"/>
       </columns>
       <deps set-of="dep">

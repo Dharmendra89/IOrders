@@ -1,4 +1,7 @@
 //TODO
+Ext.util.Format.defaultDateFormat = 'd/m/Y';
+Date.monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
+
 var getValueFromParent = function(field, value) {
 	var parentStore = Ext.getStore(field[0].toUpperCase() + field.substring(1));
 	var rec = parentStore.getById(value);
@@ -23,7 +26,7 @@ function getItemTpl (modelName, table) {
 		}
 		case 'Debt': {
 			return '<div><span>{remSumm} руб.</span><tpl if="isWhite"><span>Чек</span></tpl></div>'
-				+'<small><span>Полная сумма: {fullSumm}</span><span>Дата: {ddate}</span><span>№: {ndoc}</span></small>';
+				+'<small><span>Полная сумма: {fullSumm}</span><span>Дата: {[Ext.util.Format.date(values.ddate)]}</span><span>№: {ndoc}</span></small>';
 		}
 		case 'Price': {
 			var tpl = '<div>{price} руб.</div>'
@@ -40,7 +43,7 @@ function getItemTpl (modelName, table) {
 		}
 		case 'SaleOrder': {
 			return '<div><span>Клиент: {[getValueFromParent("customer", values.customer)]}</span></div>'
-				+'<small><span>На дату: {date}</span><span>Сумма: {totalCost}</span><span>Обновлено: {ts}</span></small>';
+				+'<small><span>На дату: {[Ext.util.Format.date(values.date)]}</span><span>Сумма: {totalCost}</span></small>';
 		}
 		case 'OfferCategory': {
 			return '<div>{name}</div><div class="price">'
@@ -105,10 +108,15 @@ var createFieldSet = function(columnsStore) {
 					fieldConfig = {xtype: 'togglefield'};
 					break;
 				}
-				case 'string' : {
-					if(column.get('name') == 'date') {
-						fieldConfig = {xtype: 'Ext.ux.form.Date'};
-					}
+				case 'date' : {
+					fieldConfig = {
+						xtype: 'datepickerfield',
+						picker: {
+							yearFrom: 2011,
+							yearTo  : 2012,
+							slotOrder: ['day', 'month', 'year']
+						}
+					};
 					break;
 				}
 				default : {
@@ -214,9 +222,9 @@ var getGroupConfig = function(model) {
 		case 'SaleOrder' : {
 			return {
 				getGroupString: function(rec) {
-					return rec.get('date');
+					return Ext.util.Format.date(rec.get('date'));
 				},
-				sorters: [{property: 'date', direction: 'ASC'}],
+				sorters: [{property: 'date', direction: 'DESC'}],
 				field: 'date'
 			};
 		}

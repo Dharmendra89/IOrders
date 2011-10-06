@@ -24,20 +24,38 @@ var createModels = function(tablesStore) {
 
 };
 
+function continueLoad (store,r,s){
+	if (s) {
+		console.log ('Store '+store.storeId+' load success: '+r.length);
+		
+		if (r.length >= store.pageSize) {
+			store.currentPage++;
+			
+			store.load({
+				page : store.currentPage,
+				start: (store.currentPage - 1) * this.pageSize,
+				limit: this.pageSize,
+				addRecords: true,
+				listeners: {
+					load: continueLoad
+				}
+			})
+		}
+	}
+	else
+		console.log ('Store '+store.storeId+' load failure');
+}
+
+
 var createStores = function(tablesStore) {
 	
 	tablesStore.each(function(table) {
 		if (!(table.get('type') == 'view') && table.columns().data.map[table.getId() + 'name'] && table.deps().data.length) {
 			regStore(table.getId(), {
 				autoLoad:true,
-				pageSize: 0,
+				pageSize: 500,
 				listeners: {
-					load: function(store,r,s){
-						if (s)
-							console.log ('Store '+store.storeId+' load success: '+r.length);
-						else
-							console.log ('Store '+store.storeId+' load failure');
-					}
+					load: continueLoad
 				}
 			});
 		}

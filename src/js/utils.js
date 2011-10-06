@@ -99,14 +99,27 @@ var createFieldSet = function(columnsStore) {
 				label: column.get('label')
 			};
 			
+			var fieldConfig;
+			switch(column.get('type')) {
+				case 'boolean' : {
+					fieldConfig = {xtype: 'togglefield'};
+					break;
+				}
+				case 'string' : {
+					if(column.get('name') == 'date') {
+						fieldConfig = {xtype: 'Ext.ux.form.Date'};
+					}
+					break;
+				}
+				default : {
+					fieldConfig = {xtype: 'textfield'};
+					break;
+				}
+			}
+			
 			Ext.apply(field, column.get('parent') 
-					? {
-						xtype: 'selectfield',
-						store: Ext.getStore(column.get('parent')),
-						valueField: 'id',
-						displayField: 'name'
-					} 
-					: (column.get('type') === 'boolean' ? {xtype: 'togglefield'} : {xtype: 'textfield'})
+					? {xtype: 'selectfield', store: Ext.getStore(column.get('parent')), valueField: 'id', displayField: 'name'} 
+					: fieldConfig
 			);
 			fsItems.push(field);
 		}

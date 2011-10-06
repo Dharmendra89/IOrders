@@ -62,5 +62,20 @@ Ext.regController('Main', {
 		if(listEl.hasCls('x-product-list')) {
 			Ext.dispatch(Ext.apply(options, {controller: 'SaleOrder'}));
 		}
+	},
+
+	onDatePickerTap: function(options) {
+
+		var datePicker = new Ext.ux.DatePicker({
+            floating: true, hidden: true, width: 300,
+            dateField: options.dateField,
+            listeners: {
+                change: function(dp, date) {
+                	dp.dateField.setValue(date.format('d.m.Y')); 
+                }
+            }
+        });
+        datePicker.showBy(options.img);
+        datePicker.setValue(new Date().add(Date.DAY, 1));
 	}
 });

@@ -28,7 +28,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 			this.objectRecord.modelName === 'MainMenu' && (this.dockedItems[0].items = []);
 			
 			if (!this.editable || this.objectRecord.modelName == 'SaleOrder')
-				formItems.push(createDepsList(table.deps(), tablesStore, this.objectRecord, this.editable));
+				formItems.push(createDepsList(table.deps(), tablesStore, this.objectRecord));
 			
 		} else if (this.isSetView) {
 			

@@ -153,7 +153,7 @@ var createFilterField = function(objectRecord) {
 	};
 };
 
-function createDepsList(depsStore, tablesStore, objectRecord, editable) {
+function createDepsList(depsStore, tablesStore, objectRecord) {
 
 	var data = [];
 
@@ -165,7 +165,7 @@ function createDepsList(depsStore, tablesStore, objectRecord, editable) {
 			&& data.push({
 				name: depTable.get('nameSet'),
 				table_id: depTable.get('id'),
-				extendable: depTable.get('extendable') && (objectRecord.modelName != 'SaleOrder' || editable)
+				extendable: depTable.get('extendable')
 			});
 	});
 

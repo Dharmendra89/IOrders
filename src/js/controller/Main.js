@@ -27,7 +27,7 @@ Ext.regController('Main', {
 					if(target.hasCls('x-button')) {
 
 						if(target.hasCls('extend')) {
-							navView.objectRecord.phantom && Ext.dispatch({controller: 'Navigator', action: 'saveObjectRecord', view: navView});
+							Ext.dispatch({controller: 'Navigator', action: 'saveObjectRecord', view: navView});
 
 							Ext.dispatch(Ext.apply(options, {
 								controller: 'SaleOrder',

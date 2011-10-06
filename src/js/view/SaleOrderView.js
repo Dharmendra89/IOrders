@@ -129,7 +129,7 @@ var SaleOrderView = Ext.extend(AbstractView, {
 	initComponent: function() {
 
 		SaleOrderView.superclass.initComponent.apply(this, arguments);
-	},
+	}/*,
 	layoutOrientation: function(orientation, w, h) {
 
 		if (!Ext.is.Phone) {
@@ -150,6 +150,6 @@ var SaleOrderView = Ext.extend(AbstractView, {
 		}
 
 		SaleOrderView.superclass.layoutOrientation.apply(this, arguments);
-	}
+	}*/
 });
 Ext.reg('saleorderview', SaleOrderView);

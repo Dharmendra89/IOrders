@@ -13,8 +13,7 @@ Ext.regController('SaleOrder', {
 		
 		Ext.each(offerProducts, function(product) {
 			saleOrderPosStore.add(Ext.ModelMgr.create(Ext.apply({
-				saleorder: view.saleOrder.getId(),
-				cost: parseFloat(product.get('rel') * product.get('factor') * product.get('price')).toFixed(2) 
+				saleorder: view.saleOrder.getId(), 
 				}, product.data), 'SaleOrderPosition'));
 		});
 		
@@ -98,14 +97,49 @@ Ext.regController('SaleOrder', {
 				sorters: [{property: 'firstName', direction: 'ASC'}],
 				filters: [{property: 'customer', value: options.saleOrder.get('customer')}]
 			});
-			newCard.productStore.load({limit: 0, callback: function() {oldCard.setLoading(false);IOrders.viewport.setActiveItem(newCard);}});
+			
+			var saleOrderPositionStore = createStore('SaleOrderPosition', {
+				remoteFilter: true,
+				filters: [{property: 'saleorder', value: options.saleOrder.getId()}]
+			});
+
+			newCard.productStore.load({
+				limit: 0,
+				callback: function(r, o, s) {
+
+					s && saleOrderPositionStore.load({
+						limit: 0,
+						callback: function(records, operation, s) {
+
+							if(s) {
+								Ext.each(records, function(rec, idx, all) {
+									var offerRec = newCard.productStore.findRecord('product', rec.get('product'));
+									offerRec && offerRec.set('volume', rec.get('volume'));
+									offerRec && offerRec.set('cost', rec.get('cost'));
+									Ext.dispatch({
+										controller: 'SaleOrder',
+										action: 'calculateTotalCost',
+										view: newCard,
+										record: offerRec,
+										priceDifference: offerRec.get('cost')
+									});
+								});
+
+								oldCard.setLoading(false);
+								IOrders.viewport.setActiveItem(newCard);
+							}
+						}
+					});
+				}
+			});
 		};
 	},
 	
 	onListItemSwipe: function(options) {
 
 		var rec = options.list.getRecord(options.item);
-		var oldVolume = parseInt(rec.get('volume'));
+		var oldVolume = parseInt(rec.get('volume') ? rec.get('volume') : '0');
+		var oldCost = parseFloat(rec.get('cost') ? rec.get('cost') : '0');
 		var newVolume = 0;
 		var factor = parseInt(rec.get('factor'));
 		var sign = 1;
@@ -119,25 +153,26 @@ Ext.regController('SaleOrder', {
 		Ext.get(options.item).down('.volume').dom.innerHTML = newVolume;
 		
 		var newCost = newVolume * parseInt(rec.get('rel')) * parseFloat(rec.get('price'));
+		rec.set('cost', newCost.toFixed(2));
 		Ext.get(options.item).down('.cost').dom.innerHTML = newCost.toFixed(2);
 
 		Ext.dispatch(Ext.apply(options, {
 			action: 'calculateTotalCost',
 			record: rec,
-			priceDifference: newCost - oldVolume * parseInt(rec.get('rel')) * parseFloat(rec.get('price'))
+			priceDifference: newCost - oldCost
 		}));
 	},
 	
 	calculateTotalCost: function(options) {
 
-		var view = options.list.up('saleorderview');
+		var view = options.list ? options.list.up('saleorderview') : options.view;
 		var bottomToolbar = view.getDockedComponent('bottomToolbar');
 		var newtotalCost = parseFloat(view.saleOrder.get('totalCost')) + options.priceDifference;
 
 		bottomToolbar.setTitle(bottomToolbar.titleTpl.apply({totalCost: newtotalCost.toFixed(2)}));
 		view.saleOrder.set('totalCost', newtotalCost.toFixed(2));
 		//TODO
-		var productCategoryRecord = view.offerCategoryStore.findRecord('category',options.record.get('category'));
+		var productCategoryRecord = view.offerCategoryStore.findRecord('category', options.record.get('category'));
 		productCategoryRecord.set('totalCost', (parseFloat(productCategoryRecord.get('totalCost')) + options.priceDifference).toFixed(2));
 	},
 	

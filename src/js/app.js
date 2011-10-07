@@ -24,13 +24,6 @@ Ext.regApplication({
 		
 		var tStore = Ext.getStore('tables');
 		
-		this.xi = new Ext.data.XmlInterface({
-			username: 'preorderer',
-			password: '123',
-			view: 'iorders',
-			noServer: true
-		});
-		
 		this.dbeng = new Ext.data.Engine({
 			listeners: {
 				dbstart: function(db) {
@@ -45,28 +38,31 @@ Ext.regApplication({
 				}
 			}
 		});
-		
-		this.getMetadata = {
-			success: function() {
-				var me=this;
-				
-				me.request({
-					command: 'metadata',
-					success: function(response) {
-						var m = response.responseXML;
-						
-						console.log(m);
-						
-						var metadata = me.xml2obj(m).metadata;
-						composeMainMenu(metadata.tables);
-						
-						IOrders.dbeng.startDatabase(metadata);
-						
-					}
-				});
-			}
-		};
 
-		this.xi.reconnect(this.getMetadata);
+		
+		var metadata = Ext.decode(localStorage.getItem('metadata'));
+		if(!metadata) {
+			
+			var asheet = new Ext.ActionSheet({
+			    items: [
+			        {xtype: 'fieldset', 
+			        	items: [
+	                    	{xtype: 'textfield', id: 'login', name: 'login', label: 'Логин'},
+	                    	{xtype: 'passwordfield', id: 'password', name: 'password', label: 'Пароль'}
+                    	]
+			        },
+			        {text: 'Логин', name: 'Login'}
+			    ]
+			});
+			asheet.show();
+		} else {
+			this.xi = new Ext.data.XmlInterface({
+				username: localStorage.getItem('login'),
+				password: localStorage.getItem('password'),
+				view: 'iorders',
+				noServer: true
+			});
+			IOrders.dbeng.startDatabase(metadata);
+		}
 	}
 });

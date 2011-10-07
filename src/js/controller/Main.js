@@ -8,8 +8,57 @@ Ext.regController('Main', {
 			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('Button', options.btn.name + 'Button')}));
 		} else if(view.isXType('saleorderview')) {
 			Ext.dispatch(Ext.apply(options, {controller: 'SaleOrder', action: options.action.replace('Button', options.btn.name + 'Button')}));
+		} else {
+			Ext.dispatch(Ext.apply(options, {action: options.action.replace('Button', options.btn.name + 'Button')}));
 		}
 		
+	},
+	
+	onLoginButtonTap: function(options) {
+
+		var btn = options.btn;
+		var asheet = btn.up('actionsheet');
+		var fieldset = asheet.down('fieldset');
+
+		var login = fieldset.getComponent('login');
+		var password = fieldset.getComponent('password');
+
+		localStorage.setItem('login', login);
+		localStorage.setItem('password', password);
+
+		IOrders.xi = new Ext.data.XmlInterface({
+			username: login,
+			password: password,
+			view: 'iorders',
+			noServer: true
+		});
+		
+		IOrders.getMetadata = {
+			success: function() {
+				var me=this;
+				
+				me.request({
+					command: 'metadata',
+					success: function(response) {
+						var m = response.responseXML;
+						
+						console.log(m);
+						
+						var metadata = me.xml2obj(m).metadata;
+						composeMainMenu(metadata.tables);
+						
+						localStorage.setItem('metadata', Ext.encode(metadata));
+						
+						IOrders.dbeng.startDatabase(metadata);
+						
+					}
+				});
+			}
+		};
+
+		IOrders.xi.reconnect(IOrders.getMetadata);
+		
+		asheet.hide();
 	},
 	
 	onListItemTap: function(options) {

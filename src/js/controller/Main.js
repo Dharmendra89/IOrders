@@ -91,5 +91,23 @@ Ext.regController('Main', {
         });
         datePicker.showBy(options.img);
         datePicker.setValue(new Date().add(Date.DAY, 1));
+	},
+
+	onFieldLabelTap: function(options) {
+
+		var field = options.field;
+		var navView = field.up('navigatorview');
+		if(navView) {
+			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('Field', field.xtype), view: navView}));
+		}
+	},
+
+	onFieldInputTap: function(options) {
+
+		var field = options.field;
+		var navView = field.up('navigatorview');
+		if(navView) {
+			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('Field', field.xtype), view: navView}));
+		}
 	}
 });

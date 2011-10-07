@@ -28,7 +28,40 @@ Ext.override(Ext.form.Select, {
 		}
 
 		this.showComponent();
-	}
+	},
+	onRender: function(){
+        Ext.form.Select.superclass.onRender.apply(this, arguments);
+        
+        var name = this.hiddenName;
+        if (name) {
+            this.hiddenField = this.el.insertSibling({
+                name: name,
+                tag: 'input',
+                type: 'hidden'
+            }, 'after');
+        }
+        
+        this.labelEl.on('tap', function(evt, el, o) {
+        	Ext.dispatch({
+        		controller: 'Main',
+        		action: 'onFieldLabelTap',
+        		field: this
+        	});
+        }, this);
+    },
+
+    onMaskTap: function() {
+        if (this.disabled) {
+        	Ext.dispatch({
+        		controller: 'Main',
+        		action: 'onFieldInputTap',
+        		field: this
+        	});
+            return;
+        }
+        
+        this.showComponent();
+    }
 });
 
 Ext.override(Ext.form.Toggle, {

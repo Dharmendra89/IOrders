@@ -136,5 +136,26 @@ Ext.regController('Navigator', {
 				}
 			});
 		}
+	},
+	
+	onselectfieldLabelTap: function(options) {
+
+		var field = options.field;
+		var view = options.view;
+
+		var newCard = Ext.create(createNavigatorView(view.objectRecord, IOrders.viewport.getActiveItem(),
+				true, false, 
+				{objectRecord: Ext.ModelMgr.create({id: 1}, 'MainMenu'), tableRecord: field.name[0].toUpperCase() + field.name.substring(1)}
+		));
+		Ext.dispatch(Ext.apply(options, {action: 'loadSetViewStore', newCard: newCard}));
+	},
+
+	onselectfieldInputTap: function(options) {
+
+		var field = options.field;
+		var record = Ext.getStore(field.name[0].toUpperCase() + field.name.substring(1)).getById(field.getValue());
+
+		var newCard = Ext.create(createNavigatorView(record, IOrders.viewport.getActiveItem(), false, false, {}));
+		IOrders.viewport.setActiveItem(newCard);
 	}
 });

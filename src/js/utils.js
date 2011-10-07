@@ -194,9 +194,9 @@ var createTitlePanel = function(t) {
 	};
 };
 
-var createNavigatorView = function(rec, oldCard, isSetView, editable) {
+var createNavigatorView = function(rec, oldCard, isSetView, editable, config) {
 
-	var view = {
+	var view = Ext.apply({
 			xtype: 'navigatorview',
 			isObjectView: isSetView ? undefined : true,
 			isSetView: isSetView ? true : undefined,
@@ -213,7 +213,7 @@ var createNavigatorView = function(rec, oldCard, isSetView, editable) {
 				tableRecord: oldCard.tableRecord,
 				ownerViewConfig: oldCard.ownerViewConfig
 			}
-		};
+		}, config);
 		
 	return view;
 };

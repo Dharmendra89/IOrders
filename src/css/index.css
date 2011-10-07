@@ -19,6 +19,12 @@
 	font-weight: bold;
 }
 
+.x-list-item .hbox .cost {
+	color: red;
+	padding: 10px 16px 0;
+	font-weight: bold;
+}
+
 .hbox .data {
 	-webkit-box-flex: 1;
 }

@@ -58,6 +58,7 @@ function getItemTpl (modelName, table) {
 					   + '<tpl if="rel &gt; 1"><span>Вложение: {rel}; </span></tpl>' + '<span>Кратность: {factor} </span>'
 				     + '</small>'
 				   + '</div>'
+				   + '<div class="cost">{cost}</div>'
 				   + '<div class="volume">{volume}</div>'
 				 + '</div>';
 		}

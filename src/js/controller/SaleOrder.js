@@ -117,12 +117,14 @@ Ext.regController('SaleOrder', {
 
 		rec.set('volume', newVolume);
 		Ext.get(options.item).down('.volume').dom.innerHTML = newVolume;
+		
+		var newCost = newVolume * parseInt(rec.get('rel')) * parseFloat(rec.get('price'));
+		Ext.get(options.item).down('.cost').dom.innerHTML = newCost.toFixed(2);
 
 		Ext.dispatch(Ext.apply(options, {
 			action: 'calculateTotalCost',
 			record: rec,
-			priceDifference: newVolume * parseInt(rec.get('rel')) * parseFloat(rec.get('price')) 
-					- oldVolume * parseInt(rec.get('rel')) * parseFloat(rec.get('price'))
+			priceDifference: newCost - oldVolume * parseInt(rec.get('rel')) * parseFloat(rec.get('price'))
 		}));
 	},
 	

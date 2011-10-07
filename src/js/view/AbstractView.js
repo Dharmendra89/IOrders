@@ -14,6 +14,12 @@ var AbstractView = Ext.extend(Ext.Panel, {
 				name: 'Back',
 				iconCls: 'reply',
 				scope: this
+			},
+			{
+				ui: 'home', iconMask: true,
+				name: 'Home',
+				iconCls: 'home',
+				scope: this
 			}]
 		}].concat(this.dockedItems);
 	},

@@ -37,7 +37,8 @@ Ext.override(Ext.form.Select, {
         Ext.dispatch({
         	controller: 'Main',
         	action: 'onSelectFieldValueChange',
-        	field: this
+        	field: this,
+        	filter: true
         });
     },
 
@@ -84,6 +85,23 @@ Ext.override(Ext.form.Select, {
         this.showComponent();
     }
 });
+
+var FilterField = Ext.extend(Ext.form.Select, {
+	onRender: function() {
+
+		FilterField.superclass.onRender.apply(this, arguments);
+		this.removeFilterBtn = this.labelEl.insertHtml('beforeBegin', '<div class="x-button remove-filter">X</div>', true);
+		this.removeFilterBtn.on('tap', function(evt, el, o) {
+        	Ext.dispatch({
+        		controller: 'Main',
+        		action: 'onSelectFieldValueChange',
+        		field: this,
+        		removeFilter: true
+        	});
+        }, this);
+	}
+});
+Ext.reg('filterfield', FilterField);
 
 Ext.override(Ext.form.Toggle, {
 	setValue: function(value) {

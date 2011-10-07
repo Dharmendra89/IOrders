@@ -79,3 +79,7 @@
 .x-navigator-form .x-item-disabled textarea, .x-navigator-form .x-item-disabled .x-field-clear-container {
 	color: black;
 }
+
+.x-field-select .remove-filter {
+	padding: 0.7em 1em;
+}

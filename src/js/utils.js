@@ -144,7 +144,8 @@ var createFilterField = function(objectRecord) {
 	return {
 		xtype: 'fieldset',
 		items: {
-			xtype: 'selectfield',
+			xtype: 'filterfield',
+			useClearIcon: true,
 			id: 'Filter',
 			store: modelName,
 			name: 'id',

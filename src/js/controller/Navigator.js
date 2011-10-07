@@ -9,6 +9,13 @@ Ext.regController('Navigator', {
 			IOrders.viewport.setActiveItem(newCard, IOrders.viewport.anims.back);
 		}
 	},
+	onHomeButtonTap: function(options) {
+
+		IOrders.viewport.setActiveItem(new NavigatorView({
+			isObjectView: true,
+			objectRecord: Ext.ModelMgr.create({id: 1}, 'MainMenu')
+		}), IOrders.viewport.anims.back);
+	},
 	onSaveButtonTap: function(options) {
 
 		var view = options.view;
@@ -169,6 +176,11 @@ Ext.regController('Navigator', {
 		
 		store.clearFilter(true);
 		store.currentPage = 1;
-		store.filter([{property: filterRecord.modelName.toLowerCase(), value: field.getValue()}]);
+
+		var filters = [];
+		options.filter && filters.push({property: filterRecord.modelName.toLowerCase(), value: field.getValue()});
+
+		options.removeFilter && view.form.remove(0);
+		store.filter(filters);
 	}
 });

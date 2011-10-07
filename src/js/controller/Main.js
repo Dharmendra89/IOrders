@@ -98,7 +98,7 @@ Ext.regController('Main', {
 		var field = options.field;
 		var navView = field.up('navigatorview');
 		if(navView) {
-			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('Field', field.xtype), view: navView}));
+			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('Field', 'selectfield'), view: navView}));
 		}
 	},
 
@@ -117,6 +117,6 @@ Ext.regController('Main', {
 		var navView = field.up('navigatorview');
 		if(navView) {
 			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('SelectField', field.id), view: navView}));
-		} 
+		}
 	}
 });

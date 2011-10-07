@@ -18,7 +18,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 			
 			this.cls = 'objectView';
 			this.dockedItems[0].title = table.get('name');
-			formItems.push(createFieldSet(table.columns(), this.editable));
+			this.objectRecord.modelName !== 'MainMenu' && formItems.push(createFieldSet(table.columns(), this.editable));
 			
 			this.dockedItems[0].items.push(
 					{xtype: 'spacer'},

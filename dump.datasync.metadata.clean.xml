@@ -25,6 +25,7 @@
       </columns>
       <deps set-of="dep">
         <dep table_id="PartnerPriceList" id="PartnerPriceListpricelistSet"/>
+        <dep table_id="Price" id="PricepricelistSet"/>
       </deps>
     </table>
     <table id="Pricelist" name="Прайс-лист" nameSet="Прайс-листы">
@@ -34,6 +35,7 @@
       </columns>
       <deps set-of="dep">
         <dep table_id="PartnerPriceList" id="PartnerPriceListpricelist"/>
+        <dep table_id="Price" id="Pricepricelist"/>
       </deps>
     </table>
     <table id="Category" name="Категория товаров" nameSet="Категории товаров">
@@ -149,9 +151,8 @@
         <column id="Offerrel" name="rel" label="Шт. в упаковке" type="int"/>
         <column id="Offerfactor" name="factor" label="Кратность" type="int"/>
         <column id="OfferstockLevel" name="stockLevel" type="int"/>
-        <column id="Offercost" name="cost" label="Стоимость" type="decimal"/>
       </columns>
-      <sql>select c.id as customer, g.category, p.price, g.id as Product, g.firstName, g.name, g.rel, g.factor, s.stockLevel, null as cost from Customer c join PartnerPriceList ppl on ppl.partner = c.partner join Price p on p.pricelistSet = ppl.pricelistSet and p.priceList = ppl.priceList join Product g on g.id = p.product join Stock s on s.product = g.id and s.warehouse = c.warehouse and s.stockLevel &gt; 0</sql>
+      <sql>select c.id as customer, g.category, p.price, g.id as Product, g.firstName, g.name, g.rel, g.factor, s.stockLevel, 0 as isActive, null as cost from Customer c join PartnerPriceList ppl on ppl.partner = c.partner join Price p on p.pricelistSet = ppl.pricelistSet and p.priceList = ppl.priceList join Product g on g.id = p.product join Stock s on s.product = g.id and s.warehouse = c.warehouse and s.stockLevel &gt; 0</sql>
     </view>
     <view id="OfferCategory">
       <columns set-of="column">

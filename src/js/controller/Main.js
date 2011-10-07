@@ -109,5 +109,14 @@ Ext.regController('Main', {
 		if(navView) {
 			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('Field', field.xtype), view: navView}));
 		}
+	},
+
+	onSelectFieldValueChange: function(options) {
+
+		var field = options.field;
+		var navView = field.up('navigatorview');
+		if(navView) {
+			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('SelectField', field.id), view: navView}));
+		} 
 	}
 });

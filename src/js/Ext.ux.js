@@ -21,7 +21,27 @@ Ext.override(Ext.Button, {
 });
 
 Ext.override(Ext.form.Select, {
-	onMaskTap: function() {
+
+	onListSelect: function(selModel, selected) {
+        if (selected) {
+            this.setValue(selected.get(this.valueField));
+            this.fireEvent('change', this, this.getValue());
+        }
+        
+        this.listPanel.hide({
+            type: 'fade',
+            out: true,
+            scope: this
+        });
+        
+        Ext.dispatch({
+        	controller: 'Main',
+        	action: 'onSelectFieldValueChange',
+        	field: this
+        });
+    },
+
+    onMaskTap: function() {
 
 		if(this.disabled || this.disablePicker) {
 			return;
@@ -29,6 +49,7 @@ Ext.override(Ext.form.Select, {
 
 		this.showComponent();
 	},
+
 	onRender: function(){
         Ext.form.Select.superclass.onRender.apply(this, arguments);
         

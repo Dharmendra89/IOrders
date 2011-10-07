@@ -142,10 +142,11 @@ Ext.regController('Navigator', {
 
 		var field = options.field;
 		var view = options.view;
+		var tableRecord = view.isSetView ? view.objectRecord.modelName : field.name[0].toUpperCase() + field.name.substring(1);
 
 		var newCard = Ext.create(createNavigatorView(view.objectRecord, IOrders.viewport.getActiveItem(),
 				true, false, 
-				{objectRecord: Ext.ModelMgr.create({id: 1}, 'MainMenu'), tableRecord: field.name[0].toUpperCase() + field.name.substring(1)}
+				{objectRecord: Ext.ModelMgr.create({id: 1}, 'MainMenu'), tableRecord: tableRecord}
 		));
 		Ext.dispatch(Ext.apply(options, {action: 'loadSetViewStore', newCard: newCard}));
 	},
@@ -157,5 +158,17 @@ Ext.regController('Navigator', {
 
 		var newCard = Ext.create(createNavigatorView(record, IOrders.viewport.getActiveItem(), false, false, {}));
 		IOrders.viewport.setActiveItem(newCard);
+	},
+
+	onFilterValueChange: function(options) {
+
+		var field = options.field;
+		var view = options.view;
+		var filterRecord = view.objectRecord;
+		var store = view.setViewStore;
+		
+		store.clearFilter(true);
+		store.currentPage = 1;
+		store.filter([{property: filterRecord.modelName.toLowerCase(), value: field.getValue()}]);
 	}
 });

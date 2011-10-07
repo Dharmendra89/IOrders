@@ -145,6 +145,7 @@ var createFilterField = function(objectRecord) {
 		xtype: 'fieldset',
 		items: {
 			xtype: 'selectfield',
+			id: 'Filter',
 			store: modelName,
 			name: 'id',
 			label: Ext.getStore('tables').getById(modelName).get('name'),

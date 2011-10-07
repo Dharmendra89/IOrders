@@ -74,6 +74,7 @@ Ext.regController('Navigator', {
 	onAddButtonTap: function(options) {
 
 		var rec = Ext.ModelMgr.create({}, options.view.tableRecord);
+		rec.modelName === 'SaleOrder' && rec.set('date', getNextWorkDay());
 		var oldCard = IOrders.viewport.getActiveItem();
 		var newCard = Ext.create(createNavigatorView(rec, oldCard, false, true));
 
@@ -94,7 +95,10 @@ Ext.regController('Navigator', {
 
 				rec = Ext.ModelMgr.create({}, options.list.getRecord(options.item).get('table_id'));				
 				rec.set(view.objectRecord.modelName.toLowerCase(), view.objectRecord.getId());
-				rec.set('totalCost', '0');
+				if(rec.modelName === 'SaleOrder') {
+					rec.set('totalCost', '0');
+					rec.set('date', getNextWorkDay());
+				}
 			}
 		} else {
 			rec = options.list.getRecord(options.item);

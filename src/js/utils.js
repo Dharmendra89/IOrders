@@ -245,3 +245,11 @@ var getGroupConfig = function(model) {
 		}
 	}
 };
+
+var getNextWorkDay = function() {
+	var today = new Date();
+	var todayWeekDay = today.getDay();
+	
+	var addDays = todayWeekDay >= 5 && todayWeekDay <= 6 ? 7 + 1 - todayWeekDay : 1;
+	return today.add(Date.DAY, addDays);
+};

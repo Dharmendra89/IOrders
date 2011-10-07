@@ -17,11 +17,11 @@ Ext.regController('Main', {
 	onLoginButtonTap: function(options) {
 
 		var btn = options.btn;
-		var asheet = btn.up('actionsheet');
-		var fieldset = asheet.down('fieldset');
-
-		var login = fieldset.getComponent('login');
-		var password = fieldset.getComponent('password');
+		var form = btn.up('form');
+		
+		var formData = form.getValues();
+		var login = formData.login;
+		var password = formData.password;
 
 		localStorage.setItem('login', login);
 		localStorage.setItem('password', password);
@@ -57,8 +57,6 @@ Ext.regController('Main', {
 		};
 
 		IOrders.xi.reconnect(IOrders.getMetadata);
-		
-		asheet.hide();
 	},
 	
 	onListItemTap: function(options) {

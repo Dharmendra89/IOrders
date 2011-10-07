@@ -42,19 +42,18 @@ Ext.regApplication({
 		
 		var metadata = Ext.decode(localStorage.getItem('metadata'));
 		if(!metadata) {
-			
-			var asheet = new Ext.ActionSheet({
-			    items: [
-			        {xtype: 'fieldset', 
-			        	items: [
-	                    	{xtype: 'textfield', id: 'login', name: 'login', label: 'Логин'},
-	                    	{xtype: 'passwordfield', id: 'password', name: 'password', label: 'Пароль'}
-                    	]
-			        },
-			        {text: 'Логин', name: 'Login'}
-			    ]
-			});
-			asheet.show();
+			this.viewport.setActiveItem(Ext.create({
+				xtype: 'form',
+				items: [
+					{xtype: 'fieldset', 
+						items: [
+					    	{xtype: 'textfield', id: 'login', name: 'login', label: 'Логин'},
+					    	{xtype: 'passwordfield', id: 'password', name: 'password', label: 'Пароль'}
+						]
+					},
+					{xtype: 'button', text: 'Логин', name: 'Login'}
+				]
+			}));
 		} else {
 			this.xi = new Ext.data.XmlInterface({
 				username: localStorage.getItem('login'),

@@ -154,3 +154,11 @@ Ext.override(Ext.plugins.ListPagingPlugin, {
 	}
 	
 });
+
+Ext.override(Ext.form.FormPanel, {
+	getElConfig: function() {
+        return Ext.apply(Ext.form.FormPanel.superclass.getElConfig.call(this), {
+            tag: 'div'
+        });
+    },
+});

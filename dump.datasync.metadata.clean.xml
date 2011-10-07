@@ -115,23 +115,23 @@
         <dep table_id="SaleOrder" id="SaleOrdercustomer"/>
       </deps>
     </table>
-    <table id="SaleOrder" name="Предзаказ" nameSet="Предзаказы" extendable="true">
+    <table id="SaleOrder" name="Заказ" nameSet="Заказы" extendable="true">
       <columns set-of="column">
         <column id="SaleOrdercustomer" name="customer" label="Клиент" type="int" parent="Customer"/>
         <column id="SaleOrderid" name="id" type="string"/>
         <column id="SaleOrderxid" name="xid"/>
         <column id="SaleOrderincassNeeded" name="incassNeeded" label="Требуется инкассация" type="boolean"/>
         <column id="SaleOrderisWhite" name="isWhite" label="Нужен счет-фактура" type="boolean"/>
-        <column id="SaleOrderdate" name="date" label="Дата" type="date"/>
+        <column id="SaleOrderdate" name="date" label="Дата доставки" type="date"/>
         <column id="SaleOrdertotalCost" name="totalCost" label="Стоимость" type="float"/>
       </columns>
       <deps set-of="dep">
         <dep table_id="SaleOrderPosition" id="SaleOrderPositionsaleorder"/>
       </deps>
     </table>
-    <table id="SaleOrderPosition" name="Позиция предзаказа" nameSet="Позиции предзаказа" extendable="true">
+    <table id="SaleOrderPosition" name="Позиция заказа" nameSet="Позиции заказа" extendable="true">
       <columns set-of="column">
-        <column id="SaleOrderPositionsaleorder" name="saleorder" label="Предзаказ" type="string" parent="SaleOrder"/>
+        <column id="SaleOrderPositionsaleorder" name="saleorder" label="Заказ" type="string" parent="SaleOrder"/>
         <column id="SaleOrderPositionvolume" name="volume" label="Кол-во" type="int"/>
         <column id="SaleOrderPositioncost" name="cost" label="Стоимость" type="float"/>
         <column id="SaleOrderPositionxid" name="xid"/>
@@ -151,6 +151,7 @@
         <column id="Offerrel" name="rel" label="Шт. в упаковке" type="int"/>
         <column id="Offerfactor" name="factor" label="Кратность" type="int"/>
         <column id="OfferstockLevel" name="stockLevel" type="int"/>
+        <column id="Offercost" name="cost" label="Стоимость" type="float"/>
       </columns>
       <sql>select c.id as customer, g.category, p.price, g.id as Product, g.firstName, g.name, g.rel, g.factor, s.stockLevel, 0 as isActive, null as cost from Customer c join PartnerPriceList ppl on ppl.partner = c.partner join Price p on p.pricelistSet = ppl.pricelistSet and p.priceList = ppl.priceList join Product g on g.id = p.product join Stock s on s.product = g.id and s.warehouse = c.warehouse and s.stockLevel &gt; 0</sql>
     </view>

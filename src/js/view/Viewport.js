@@ -5,7 +5,7 @@ var Viewport = Ext.extend(Ext.Panel , {
 	layout: 'card', fullscreen: true,
 	anims: {
 		back: {type: 'slide', duration: 500, direction: 'right'},
-		home: {type: 'flip', duration: 500, direction: 'right'},
+		home: {type: 'flip', duration: 500, direction: 'right'}
 	},
 	cardSwitchAnimation: {type: 'slide', duration: 500, direction: 'left'},
 	/**

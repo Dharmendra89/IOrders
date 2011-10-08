@@ -114,15 +114,17 @@ Ext.regController('SaleOrder', {
 							if(s) {
 								Ext.each(records, function(rec, idx, all) {
 									var offerRec = newCard.productStore.findRecord('product', rec.get('product'));
-									offerRec && offerRec.set('volume', rec.get('volume'));
-									offerRec && offerRec.set('cost', rec.get('cost'));
-									Ext.dispatch({
-										controller: 'SaleOrder',
-										action: 'calculateTotalCost',
-										view: newCard,
-										record: offerRec,
-										priceDifference: offerRec.get('cost')
-									});
+									if (offerRec) {
+										offerRec.set('volume', rec.get('volume'));
+										offerRec.set('cost', rec.get('cost'));
+										Ext.dispatch({
+											controller: 'SaleOrder',
+											action: 'calculateTotalCost',
+											view: newCard,
+											record: offerRec,
+											priceDifference: offerRec.get('cost')
+										});
+									}
 								});
 
 								oldCard.setLoading(false);
@@ -143,19 +145,19 @@ Ext.regController('SaleOrder', {
 		var newVolume = 0;
 		var factor = parseInt(rec.get('factor'));
 		var sign = 1;
-
+		
 		!oldVolume && (oldVolume = 0);
 		options.event.direction === 'left' && (sign = -1);
 		newVolume = oldVolume + sign * factor;
 		newVolume < 0 && (newVolume = 0);
-
+		
 		rec.set('volume', newVolume);
-		Ext.get(options.item).down('.volume').dom.innerHTML = newVolume;
 		
 		var newCost = newVolume * parseInt(rec.get('rel')) * parseFloat(rec.get('price'));
 		rec.set('cost', newCost.toFixed(2));
-		Ext.get(options.item).down('.cost').dom.innerHTML = newCost.toFixed(2);
-
+		
+		options.list.refreshNode(options.idx);
+		
 		Ext.dispatch(Ext.apply(options, {
 			action: 'calculateTotalCost',
 			record: rec,

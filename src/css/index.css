@@ -19,10 +19,8 @@
 	font-weight: bold;
 }
 
-.x-list-item .hbox .cost {
-	color: red;
-	padding: 10px 16px 0;
-	font-weight: bold;
+.x-list-item--- .hbox .cost {
+	color: blue;
 }
 
 .hbox .data {
@@ -81,5 +79,6 @@
 }
 
 .x-field-select .remove-filter {
-	padding: 0.7em 1em;
+	padding-right: 0.75em;
+	padding-left: 0.75em;
 }

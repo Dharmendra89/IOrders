@@ -26,7 +26,7 @@ var offerProductList = Ext.extend(Ext.List, {
 		this.scroll.threshold = 80;
 	},
 	onUpdate : function(store, record) {
-        return false;
+        offerProductList.superclass.onUpdate.apply(this, arguments);
     }
 });
 

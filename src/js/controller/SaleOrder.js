@@ -13,8 +13,9 @@ Ext.regController('SaleOrder', {
 		
 		Ext.each(offerProducts, function(product) {
 			saleOrderPosStore.add(Ext.ModelMgr.create(Ext.apply({
-				saleorder: view.saleOrder.getId(), 
-				}, product.data), 'SaleOrderPosition'));
+				saleorder: view.saleOrder.getId()
+				}, product.data), 'SaleOrderPosition'
+			));
 		});
 		
 		view.saleOrder.save();
@@ -138,7 +139,7 @@ Ext.regController('SaleOrder', {
 	},
 	
 	onListItemSwipe: function(options) {
-
+		
 		var rec = options.list.getRecord(options.item);
 		var oldVolume = parseInt(rec.get('volume') ? rec.get('volume') : '0');
 		var oldCost = parseFloat(rec.get('cost') ? rec.get('cost') : '0');
@@ -146,23 +147,32 @@ Ext.regController('SaleOrder', {
 		var factor = parseInt(rec.get('factor'));
 		var sign = 1;
 		
+		options.list.scroller.disable();
+		
 		!oldVolume && (oldVolume = 0);
 		options.event.direction === 'left' && (sign = -1);
+		
 		newVolume = oldVolume + sign * factor;
 		newVolume < 0 && (newVolume = 0);
 		
-		rec.set('volume', newVolume);
-		
 		var newCost = newVolume * parseInt(rec.get('rel')) * parseFloat(rec.get('price'));
+		
+		rec.editing=true;
+		
+		rec.set('volume', newVolume);		
 		rec.set('cost', newCost.toFixed(2));
 		
-		options.list.refreshNode(options.idx);
+		rec.editing=false;
 		
 		Ext.dispatch(Ext.apply(options, {
 			action: 'calculateTotalCost',
 			record: rec,
 			priceDifference: newCost - oldCost
 		}));
+		
+		options.list.scroller.enable();
+		
+		Ext.defer (options.list.refreshNode, 250, options.list, [options.idx]);
 	},
 	
 	calculateTotalCost: function(options) {
@@ -192,7 +202,9 @@ Ext.regController('SaleOrder', {
 		var rec = options.categoryRec;
 		var view = options.view;
 		var productStore = view.productStore;
-		view.productPanel.setLoading(true);
+		
+		//view.setLoading(true);
+		
 		productStore.remoteFilter = false;
 		productStore.clearFilter(true);
 		
@@ -204,16 +216,22 @@ Ext.regController('SaleOrder', {
 		    }
 		}));
 		productStore.filter(filters);
+		
+		if (view.productList){
+			view.productList.scroller.scrollTo ({y:0});
+		}
+		else {
+			view.productPanel.removeAll(true);
+			view.productList = view.productPanel.add({
+				xtype: 'offerproductlist', store: productStore
+			});
+			view.productPanel.doLayout();
+		}
 
-		view.productPanel.removeAll(true);
-		view.productList = view.productPanel.add({
-			xtype: 'offerproductlist', store: productStore
-		});
-		view.productPanel.setLoading(false);
-		view.productPanel.doLayout();
-
-		view.productList.mon(view.productList.el, 'tap', view.onListHeaderTap, view, {
-			delegate: '.x-list-header'
-		});
+		//view.setLoading(false);
+		
+		//view.productList.mon(view.productList.el, 'tap', view.onListHeaderTap, view, {
+		//	delegate: '.x-list-header'
+		//});
 	}
 });

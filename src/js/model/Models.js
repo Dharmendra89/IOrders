@@ -50,17 +50,17 @@ function continueLoad (store,r,s){
 }
 
 
-var createStores = function(tablesStore) {
+var createStores = function(tablesStore, config) {
 	
 	tablesStore.each(function(table) {
 		if (!(table.get('type') == 'view') && table.columns().data.map[table.getId() + 'name'] && table.deps().data.length) {
-			regStore(table.getId(), {
+			regStore(table.getId(), Ext.apply({
 				autoLoad:true,
-				pageSize: 500,
+				pageSize: 0,
 				listeners: {
 					load: continueLoad
 				}
-			});
+			}, config));
 		}
 	});
 	

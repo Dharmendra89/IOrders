@@ -1,17 +1,12 @@
 Ext.regApplication({
 	name: 'IOrders',
 	
-	beforeLauch: function() {
-
-		this.viewport = Ext.create({xtype: 'viewport'});
-	},
-	
 	init: function() {
 		
 		var store = Ext.getStore('tables');
 		
 		createModels(store);
-		createStores(store);
+		createStores(store, { pageSize: 400 });
 		
 		this.viewport.setActiveItem(new NavigatorView({
 			isObjectView: true,
@@ -20,9 +15,12 @@ Ext.regApplication({
 	},
 	
 	launch: function() {
-		this.beforeLauch();
 		
-		var tStore = Ext.getStore('tables');
+		var tStore = Ext.getStore('tables'),
+			metadata = Ext.decode(localStorage.getItem('metadata'))
+		;
+		
+		this.viewport = Ext.create({xtype: 'viewport'});
 		
 		this.dbeng = new Ext.data.Engine({
 			listeners: {
@@ -38,10 +36,10 @@ Ext.regApplication({
 				}
 			}
 		});
-
 		
-		var metadata = Ext.decode(localStorage.getItem('metadata'));
+		
 		if(!metadata) {
+			
 			this.viewport.setActiveItem(Ext.create({
 				xtype: 'form',
 				items: [
@@ -54,7 +52,9 @@ Ext.regApplication({
 					{xtype: 'button', text: 'Логин', name: 'Login'}
 				]
 			}));
+			
 		} else {
+			
 			this.xi = new Ext.data.XmlInterface({
 				username: localStorage.getItem('login'),
 				password: localStorage.getItem('password'),

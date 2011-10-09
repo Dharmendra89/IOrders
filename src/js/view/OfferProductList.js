@@ -6,6 +6,7 @@ var offerProductList = Ext.extend(Ext.List, {
 	itemTpl: getItemTpl('OfferProduct'),
 	grouped: true,
 	disableSelection: true,
+	pinHeaders: false,
 	
 	/**
 	 * Overridden

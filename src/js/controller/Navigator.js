@@ -186,5 +186,19 @@ Ext.regController('Navigator', {
 
 		options.removeFilter && view.form.remove(0);
 		store.filter(filters);
-	}
+	},
+	
+	onSyncButtonTap: function(options) {
+		IOrders.xi.upload ({
+			engine: IOrders.dbeng,
+			success: function(s) {
+				Ext.Msg.alert('Загрузка завершена', 'Передано записей: '+s.getCount())
+			},
+			failure: function(e) {
+				Ext.Msg.alert('Загрузка не удалась', e)
+			}
+		})
+	},
+	
+
 });

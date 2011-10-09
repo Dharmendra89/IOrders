@@ -18,7 +18,8 @@ var NavigatorView = Ext.extend(AbstractView, {
 			
 			this.cls = 'objectView';
 			this.dockedItems[0].title = table.get('name');
-			this.objectRecord.modelName !== 'MainMenu' && formItems.push(createFieldSet(table.columns(), this.editable));
+			if (this.objectRecord.modelName != 'MainMenu')
+				formItems.push(createFieldSet(table.columns(), this.editable));
 			
 			this.dockedItems[0].items.push(
 					{xtype: 'spacer'},
@@ -26,7 +27,14 @@ var NavigatorView = Ext.extend(AbstractView, {
 					{id: 'SaveEdit', name: this.editable ? 'Save' : 'Edit', text: this.editable ? 'Сохранить' : 'Редактировать', scope: this}
 			);
 			
-			this.objectRecord.modelName === 'MainMenu' && (this.dockedItems[0].items = []);
+			this.objectRecord.modelName === 'MainMenu' && (this.dockedItems[0].items = [
+				{xtype: 'spacer'},
+				{
+					iconMask: true,
+					name: 'Sync',
+					iconCls: 'action',
+					scope: this
+				}]);
 			
 			if (!this.editable || this.objectRecord.modelName == 'SaleOrder')
 				formItems.push(createDepsList(table.deps(), tablesStore, this.objectRecord));

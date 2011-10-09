@@ -175,7 +175,7 @@ Ext.regController('SaleOrder', {
 				this.refreshNode(idx);
 				this.scroller.enable();
 			},
-			250, options.list, [options.idx]
+			150, options.list, [options.idx]
 		);
 	},
 	

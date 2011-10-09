@@ -189,12 +189,16 @@ Ext.regController('SaleOrder', {
 	},
 	
 	onProductCategoryListItemTap: function(options) {
-
+		
 		var list = options.list;
 		var rec = list.getRecord(options.item);
 		var view = list.up('saleorderview');
 		
-		Ext.dispatch(Ext.apply(options, {action: 'addOfferProductList', view: view, categoryRec: rec}));
+		view.setLoading(true);
+		
+		Ext.apply(options, {action: 'addOfferProductList', view: view, categoryRec: rec});
+		
+		Ext.defer(Ext.dispatch, 100, this, [options]);
 	},
 
 	addOfferProductList: function(options) {
@@ -203,7 +207,6 @@ Ext.regController('SaleOrder', {
 		var view = options.view;
 		var productStore = view.productStore;
 		
-		//view.setLoading(true);
 		
 		productStore.remoteFilter = false;
 		productStore.clearFilter(true);
@@ -227,8 +230,8 @@ Ext.regController('SaleOrder', {
 			});
 			view.productPanel.doLayout();
 		}
-
-		//view.setLoading(false);
+		
+		view.setLoading(false);
 		
 		//view.productList.mon(view.productList.el, 'tap', view.onListHeaderTap, view, {
 		//	delegate: '.x-list-header'

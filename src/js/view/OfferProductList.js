@@ -12,18 +12,34 @@ var offerProductList = Ext.extend(Ext.List, {
 	 */
 	initComponent: function() {
 		
+		var me = this;
+		
 		this.listeners = {
 			itemswipe: function(list, idx, item, event) {
 				
-				Ext.dispatch({
-					controller: 'Main', action: 'onListItemSwipe',
-					list: list, idx: idx, item: item, event: event
-				});
+				if (!list.disableSwipe) {
+					Ext.dispatch({
+						controller: 'Main', action: 'onListItemSwipe',
+						list: list, idx: idx, item: item, event: event
+					});
+				}
 			}
 		};
 		
 		offerProductList.superclass.initComponent.apply(this, arguments);
+		
 		this.scroll.threshold = 10;
+		
+		this.scroll.listeners  = {
+			scroll:function(s, o) {
+				if (o.y)
+					me.disableSwipe = true;
+			},
+			scrollend: function(s, o){
+				me.disableSwipe = false;
+			}
+		}
+		
 	},
 	
 	onUpdate : function(store, record) {

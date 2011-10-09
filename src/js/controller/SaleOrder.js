@@ -170,9 +170,13 @@ Ext.regController('SaleOrder', {
 			priceDifference: newCost - oldCost
 		}));
 		
-		options.list.scroller.enable();
-		
-		Ext.defer (options.list.refreshNode, 250, options.list, [options.idx]);
+		Ext.defer (function (idx)
+			{
+				this.refreshNode(idx);
+				this.scroller.enable();
+			},
+			250, options.list, [options.idx]
+		);
 	},
 	
 	calculateTotalCost: function(options) {

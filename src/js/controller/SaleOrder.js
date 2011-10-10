@@ -66,7 +66,7 @@ Ext.regController('SaleOrder', {
 			
 			view.offerCategoryStore.clearFilter();
 			
-			view.productCategoryList.select(
+			view.productCategoryList.getSelectionModel().select(
 				view.productCategoryList.selectionSnaphot
 			);
 			
@@ -145,7 +145,6 @@ Ext.regController('SaleOrder', {
 					if (s) {
 						
 						newCard.productStore.remoteFilter = false;
-						newCard.productStore.filter(newCard.productStore.volumeFilter);
 						
 						saleOrderPositionStore.load({
 							limit: 0,
@@ -166,6 +165,7 @@ Ext.regController('SaleOrder', {
 										}
 									});
 									
+									newCard.productStore.filter(newCard.productStore.volumeFilter);
 									oldCard.setLoading(false);
 									IOrders.viewport.setActiveItem(newCard);
 									

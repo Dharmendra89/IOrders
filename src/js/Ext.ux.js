@@ -162,3 +162,7 @@ Ext.override(Ext.form.FormPanel, {
         });
     },
 });
+
+
+Ext.MessageBox.YESNO[1].text = 'Да'
+Ext.MessageBox.YESNO[0].text = 'Нет'

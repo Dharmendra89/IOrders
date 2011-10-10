@@ -65,7 +65,8 @@ Ext.regController('Main', {
 			rec = options.list.getRecord(options.item),
 		    navView = list.up('navigatorview'),
 		    saleOrderView = list.up('saleorderview'),
-		    listEl = list.getEl();
+		    listEl = list.getEl()
+		;
 		
 		if(navView) {
 			switch(rec.get('table_id')) {

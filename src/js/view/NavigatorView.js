@@ -18,6 +18,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 			
 			this.cls = 'objectView';
 			this.dockedItems[0].title = table.get('name');
+			
 			if (this.objectRecord.modelName != 'MainMenu')
 				formItems.push(createFieldSet(table.columns(), this.editable));
 			
@@ -32,14 +33,35 @@ var NavigatorView = Ext.extend(AbstractView, {
 				}
 			);
 			
-			this.objectRecord.modelName === 'MainMenu' && (this.dockedItems[0].items = [
-				{xtype: 'spacer'},
-				{
+			if (this.objectRecord.modelName === 'MainMenu') {
+				
+				this.syncButton = new Ext.Button ({
 					iconMask: true,
 					name: 'Sync',
 					iconCls: 'action',
 					scope: this
-				}]);
+				});
+				
+				this.dockedItems[0].items = [
+					{xtype: 'spacer'},
+					this.syncButton
+				];
+				
+				this.on ('activate', function(){
+					var me = this.syncButton,
+						p = new Ext.data.SQLiteProxy({
+							engine: IOrders.dbeng,
+							model: 'ToUpload'
+						})
+					;
+					
+					p.count(new Ext.data.Operation(), function(o) {
+						if (o.wasSuccessful())
+							me.setBadge(o.result)
+					});
+				});
+				
+			}
 			
 			if (!this.editable || this.objectRecord.modelName == 'SaleOrder')
 				formItems.push(createDepsList(table.deps(), tablesStore, this.objectRecord));

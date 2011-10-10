@@ -30,6 +30,10 @@ Ext.regController('Navigator', {
 			btn.setText('Редактировать');
 			Ext.apply(btn, {name: 'Edit'});
 	
+			options.view.depStore.each(function(rec) {
+				rec.set('editable', false);
+			});
+			
 			var toolbar = btn.up('toolbar');
 			toolbar.getComponent('Cancel').hide();
 	
@@ -48,6 +52,10 @@ Ext.regController('Navigator', {
 		var btn = options.btn;
 		btn.setText('Сохранить');
 		Ext.apply(btn, {name: 'Save'});
+		
+		options.view.depStore.each(function(rec) {
+			rec.set('editable', true);
+		});
 
 		var toolbar = btn.up('toolbar');
 		toolbar.getComponent('Cancel').show();
@@ -62,6 +70,10 @@ Ext.regController('Navigator', {
 		toolbar.getComponent('Cancel').hide();
 		
 		var saveEditBtn = toolbar.getComponent('SaveEdit');
+		
+		options.view.depStore.each(function(rec) {
+			rec.set('editable', false);
+		});
 		
 		saveEditBtn.setText('Редактировать');
 		Ext.apply(saveEditBtn, {name: 'Edit'});
@@ -200,14 +212,14 @@ Ext.regController('Navigator', {
 				Ext.Msg.alert('Загрузка завершена', 'Передано записей: '+s.getCount());
 			},
 			failure: function(s,e) {
-				Ext.Msg.alert('Загрузка не удалась', e)
+				Ext.Msg.alert('Загрузка не удалась', e);
 			},
 			recordSuccess: function(s) {
 				var cnt = parseInt(options.btn.getBadgeText());
 				
 				options.btn.setBadge(--cnt);
 			}
-		})
+		});
 	},
 	
 

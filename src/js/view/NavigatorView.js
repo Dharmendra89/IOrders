@@ -64,7 +64,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 			}
 			
 			if (!this.editable || this.objectRecord.modelName == 'SaleOrder')
-				formItems.push(createDepsList(table.deps(), tablesStore, this.objectRecord));
+				formItems.push(createDepsList(table.deps(), tablesStore, this));
 			
 		} else if (this.isSetView) {
 			
@@ -97,7 +97,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 		
 		this.items = [
 			this.form = new Ext.form.FormPanel({
-				cls: 'x-navigator-form '+this.cls,
+				cls: 'x-navigator-form ' + this.cls,
 				scroll: true,
 				items: formItems
 			})

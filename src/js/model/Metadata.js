@@ -60,6 +60,7 @@ Ext.regModel('Dep', {
 		{name: 'parent', type: 'string'},
 		{name: 'table_id', type: 'string'},
 		{name: 'extendable', type: 'boolean'},
+		{name: 'editable', type: 'boolean'},
 		{name: 'count', type: 'int'}
 	]
 });

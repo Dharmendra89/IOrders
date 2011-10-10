@@ -13,9 +13,9 @@ function getItemTpl (modelName, table) {
 	switch(modelName) {
 		case 'Dep': {
 			return '<div class="hbox dep">'
-					+ '<div class="data">{name}</div>'
-					+ '<tpl if="count &gt; 0 && !extendable"><div class="x-button disabled">{count}</div></tpl>'
-					+ '<tpl if="extendable"><div class="x-button extend add">{count} +</div></tpl>'
+					+ '<div class="data">{name}</div>' 
+					+ '<tpl if="count &gt; 0 && (extendable && !editable || !extendable)"><div class="x-button">{count}</div></tpl>'
+					+ '<tpl if="extendable && editable"><div class="x-button extend add">{count} +</div></tpl>'
 				 + '</div>';
 		}
 		case 'Warehouse': {
@@ -157,38 +157,41 @@ var createFilterField = function(objectRecord) {
 	};
 };
 
-function createDepsList(depsStore, tablesStore, objectRecord) {
+function createDepsList(depsStore, tablesStore, view) {
 
 	var data = [];
 
 	depsStore.each(function(dep) {
 
 		var depTable = tablesStore.getById(dep.get('table_id'));
-		
-		if(depTable.get('id') != 'SaleOrderPosition' || objectRecord.modelName == 'SaleOrder') {
+
+		if(depTable.get('id') != 'SaleOrderPosition' || view.objectRecord.modelName == 'SaleOrder') {
 			var dep = Ext.ModelMgr.create({
 				name: depTable.get('nameSet'),
 				table_id: depTable.get('id'),
-				extendable: depTable.get('extendable')
+				extendable: depTable.get('extendable'),
+				editable: view.editable || view.objectRecord.modelName == 'MainMenu'
 			}, 'Dep');
 
 			var modelProxy = Ext.ModelMgr.getModel(depTable.get('id')).prototype.getProxy();
 
 			var filters = [];
-			objectRecord.modelName != 'MainMenu' && filters.push({property: objectRecord.modelName.toLowerCase(), value: objectRecord.getId()});
+			view.objectRecord.modelName != 'MainMenu' && filters.push({property: view.objectRecord.modelName.toLowerCase(), value: view.objectRecord.getId()});
 
 			var operCount = new Ext.data.Operation({
 				depRec: dep,
 				filters: filters
 			});
-			
+
 			modelProxy.count(operCount, function(operation) {
 				operation.depRec.set('count', operation.result);
 			});
-			
+
 			data.push(dep);
 		}
 	});
+	
+	view.depStore = new Ext.data.Store({model: 'Dep', data: data}); 
 
 	return {
 		xtype: 'list',
@@ -196,10 +199,7 @@ function createDepsList(depsStore, tablesStore, objectRecord) {
 		scroll: false,
 		disableSelection: true,
 		itemTpl: getItemTpl('Dep'),
-		store: new Ext.data.Store({
-			model: 'Dep',
-			data: data
-		})
+		store: view.depStore
 	};
 };
 

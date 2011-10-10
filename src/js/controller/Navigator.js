@@ -194,7 +194,7 @@ Ext.regController('Navigator', {
 			success: function(s) {
 				Ext.Msg.alert('Загрузка завершена', 'Передано записей: '+s.getCount())
 			},
-			failure: function(e) {
+			failure: function(s,e) {
 				Ext.Msg.alert('Загрузка не удалась', e)
 			}
 		})

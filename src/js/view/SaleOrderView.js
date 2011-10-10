@@ -17,11 +17,11 @@ var SaleOrderView = Ext.extend(AbstractView, {
 			store: this.offerCategoryStore,
 			itemTpl: getItemTpl('OfferCategory')
 		});
-		this.productCategoryBtn = Ext.create({
+		/*this.productCategoryBtn = Ext.create({
 			xtype: 'button', hidden: Ext.is.Phone || Ext.Viewport.orientation == 'landscape',
 			defaultText: 'Группы продуктов', text: 'Группы продуктов',
 			handler: this.onProdCatButtonTap, scope: this
-		});
+		});*/
 		this.productPanel = Ext.create({xtype: 'panel', layout: 'fit', flex: 3});
 
 		this.items = [this.productCategoryList, this.productPanel];
@@ -32,7 +32,7 @@ var SaleOrderView = Ext.extend(AbstractView, {
 		});
 
 		this.dockedItems[0].items.push(
-			this.productCategoryBtn,
+			//this.productCategoryBtn,
 			{xtype: 'spacer'},
 			this.showSaleOrderBtn = new Ext.Button({name: 'ShowSaleOrder', text: 'Показать заказ', scope: this}),
 			{ui: 'save', name: 'Save', text: 'Сохранить', scope: this}

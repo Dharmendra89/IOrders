@@ -45,7 +45,7 @@ Ext.regApplication({
 				items: [
 					{xtype: 'fieldset', 
 						items: [
-					    	{xtype: 'textfield', id: 'login', name: 'login', label: 'Логин'},
+					    	{xtype: 'textfield', id: 'login', name: 'login', label: 'Логин', autoCorrect: false, autoCapitalize: false},
 					    	{xtype: 'passwordfield', id: 'password', name: 'password', label: 'Пароль'}
 						]
 					},

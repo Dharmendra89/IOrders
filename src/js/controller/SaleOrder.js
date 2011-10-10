@@ -1,14 +1,20 @@
 Ext.regController('SaleOrder', {
 	
 	onBackButtonTap: function(options) {
-		Ext.Msg.confirm (
+		var s = options.view.productStore,
+			back = function () {
+				IOrders.viewport.setActiveItem(Ext.create(options.view.ownerViewConfig), IOrders.viewport.anims.back);
+			}
+		;
+		
+		if (s && s.snapshot && s.snapshot.filterBy(s.filterDirty).items.length) Ext.Msg.confirm (
 			'Вопрос',
 			'Действительно нужно вернуться назад? Несохраненные данные будут потеряны',
 			function(b) {
 				if (b=='yes')
-					IOrders.viewport.setActiveItem(Ext.create(options.view.ownerViewConfig), IOrders.viewport.anims.back);
+					back()
 			}
-		);
+		); else back();
 	},
 	
 	onSaveButtonTap: function(options) {
@@ -27,6 +33,7 @@ Ext.regController('SaleOrder', {
 			));
 		});
 		
+		view.saleOrder.set ('totalCost', offerStore.sum('cost').toFixed(2));
 		view.saleOrder.save();
 		
 		saleOrderPosStore.sync();
@@ -72,7 +79,6 @@ Ext.regController('SaleOrder', {
 			
 			view.productStore.clearFilter(true);
 			view.productStore.filter(view.productStore.filtersSnapshot);
-			view.productStore.filtersSnapshot = false;
 			
 		}
 		
@@ -150,19 +156,27 @@ Ext.regController('SaleOrder', {
 							limit: 0,
 							callback: function(records, operation, s) {
 								if(s) {
+									
 									Ext.each(records, function(rec, idx, all) {
 										var offerRec = newCard.productStore.findRecord('product', rec.get('product'));
+										
 										if (offerRec) {
+											
+											offerRec.editing = true;
 											offerRec.set('volume', rec.get('volume'));
 											offerRec.set('cost', rec.get('cost'));
+											offerRec.commit(true);
+											
 											Ext.dispatch({
 												controller: 'SaleOrder',
 												action: 'calculateTotalCost',
 												view: newCard,
 												record: offerRec,
-												priceDifference: offerRec.get('cost')
+												addCost: offerRec.get('cost')
 											});
+											
 										}
+										
 									});
 									
 									newCard.productStore.filter(newCard.productStore.volumeFilter);
@@ -180,34 +194,34 @@ Ext.regController('SaleOrder', {
 	
 	onListItemSwipe: function(options) {
 		
-		var rec = options.list.getRecord(options.item);
-		var oldVolume = parseInt(rec.get('volume') ? rec.get('volume') : '0');
-		var oldCost = parseFloat(rec.get('cost') ? rec.get('cost') : '0');
-		var newVolume = 0;
-		var factor = parseInt(rec.get('factor'));
-		var sign = 1;
+		var rec = options.list.getRecord(options.item),
+		    volume = parseInt(rec.get('volume') ? rec.get('volume') : '0'),
+			oldCost = rec.get('cost'),
+		    factor = parseInt(rec.get('factor')),
+		    sign = 1
+		;
+		
+		oldCost > 0 || (oldCost = 0);
 		
 		options.list.scroller.disable();
 		
-		!oldVolume && (oldVolume = 0);
+		!volume && (volume = 0);
 		options.event.direction === 'left' && (sign = -1);
 		
-		newVolume = oldVolume + sign * factor;
-		newVolume < 0 && (newVolume = 0);
+		var volume = volume + sign * factor;
+		volume < 0 && (volume = 0);
 		
-		var newCost = newVolume * parseInt(rec.get('rel')) * parseFloat(rec.get('price'));
+		var cost = volume * parseInt(rec.get('rel')) * parseFloat(rec.get('price'));
 		
 		rec.editing=true;
-		
-		rec.set('volume', newVolume);		
-		rec.set('cost', newCost.toFixed(2));
-		
+		rec.set('volume', volume);		
+		rec.set('cost', cost.toFixed(2));
 		rec.editing=false;
 		
 		Ext.dispatch(Ext.apply(options, {
 			action: 'calculateTotalCost',
 			record: rec,
-			priceDifference: newCost - oldCost
+			addCost: cost - oldCost
 		}));
 		
 		Ext.defer (function (idx)
@@ -221,22 +235,26 @@ Ext.regController('SaleOrder', {
 	
 	calculateTotalCost: function(options) {
 		
-		var view = options.list ? options.list.up('saleorderview') : options.view;
-		var bottomToolbar = view.getDockedComponent('bottomToolbar');
-		var newtotalCost = parseFloat(view.saleOrder.get('totalCost')) + options.priceDifference;
+		var view = options.list ? options.list.up('saleorderview') : options.view,
+		    btb = view.getDockedComponent('bottomToolbar'),
+		    rec = view.offerCategoryStore.findRecord('category', options.record.get('category'));
+
+		rec.set(
+			'totalCost',
+			(rec.get('totalCost') + options.addCost).toFixed (2)
+		);
 		
-		bottomToolbar.setTitle(bottomToolbar.titleTpl.apply({totalCost: newtotalCost.toFixed(2)}));
-		view.saleOrder.set('totalCost', newtotalCost.toFixed(2));
-		//TODO
-		var productCategoryRecord = view.offerCategoryStore.findRecord('category', options.record.get('category'));
-		productCategoryRecord.set('totalCost', (parseFloat(productCategoryRecord.get('totalCost')) + options.priceDifference).toFixed(2));
+		btb.setTitle( btb.titleTpl.apply ({
+			totalCost: view.offerCategoryStore.sum('totalCost').toFixed(2)
+		}));
 	},
 	
 	onProductCategoryListItemTap: function(options) {
 		
-		var list = options.list;
-		var rec = list.getRecord(options.item);
-		var view = list.up('saleorderview');
+		var list = options.list,
+		    rec = list.getRecord(options.item),
+		    view = list.up('saleorderview')
+		;
 		
 		view.setLoading(true);
 		

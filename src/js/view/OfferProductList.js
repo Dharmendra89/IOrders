@@ -29,7 +29,7 @@ var offerProductList = Ext.extend(Ext.List, {
 		
 		offerProductList.superclass.initComponent.apply(this, arguments);
 		
-		this.scroll.threshold = 10;
+		this.scroll.threshold = 20;
 		
 		this.scroll.listeners  = {
 			scroll:function(s, o) {

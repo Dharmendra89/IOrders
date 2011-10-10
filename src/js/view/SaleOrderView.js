@@ -7,11 +7,17 @@ var SaleOrderView = Ext.extend(AbstractView, {
 	 * Own
 	 */
 	createItems: function() {
-
-		this.offerCategoryStore = createStore('OfferCategory', 
-				{filters:[{property: 'customer', value: this.saleOrder.get('customer')}]});
+		
+		this.offerCategoryStore = createStore('OfferCategory',{
+			remoteFilter: true,
+			filters:[{
+				property: 'customer',
+				value: this.saleOrder.get('customer')
+			}]
+		});
+		
 		this.offerCategoryStore.load({limit: 0});
-
+		
 		this.productCategoryList = Ext.create({
 			xtype: 'list', cls: 'x-product-category-list', allowDeselect: false, flex: 1,
 			store: this.offerCategoryStore,

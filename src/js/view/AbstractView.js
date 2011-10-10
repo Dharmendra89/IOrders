@@ -3,8 +3,9 @@ var AbstractView = Ext.extend(Ext.Panel, {
 	 * Own
 	 */
 	createDockedItmes: function() {
-
+		
 		this.dockedItems || (this.dockedItems = []);
+		
 		this.dockedItems = [{
 			xtype: 'toolbar',
 			dock: 'top',
@@ -14,14 +15,18 @@ var AbstractView = Ext.extend(Ext.Panel, {
 				name: 'Back',
 				iconCls: 'reply',
 				scope: this
-			},
-			{
+			}]
+		}].concat(this.dockedItems);
+		
+		if (!this.isXType('saleorderview'))
+			this.dockedItems[0].items.push ({
 				ui: 'home', iconMask: true,
 				name: 'Home',
 				iconCls: 'home',
 				scope: this
-			}]
-		}].concat(this.dockedItems);
+			})
+		;
+		
 	},
 	createItems: Ext.EmptyFn,
 	/**

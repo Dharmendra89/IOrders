@@ -22,9 +22,14 @@ var NavigatorView = Ext.extend(AbstractView, {
 				formItems.push(createFieldSet(table.columns(), this.editable));
 			
 			this.dockedItems[0].items.push(
-					{xtype: 'spacer'},
-					{id: 'Cancel', name: 'Cancel', text: 'Отменить', hidden: true, scope: this},
-					{id: 'SaveEdit', name: this.editable ? 'Save' : 'Edit', text: this.editable ? 'Сохранить' : 'Редактировать', scope: this}
+				{xtype: 'spacer'},
+				{id: 'Cancel', name: 'Cancel', text: 'Отменить', hidden: true, scope: this},
+				{
+					id: 'SaveEdit',
+					name: this.editable ? 'Save' : 'Edit',
+					text: this.editable ? 'Сохранить' : 'Редактировать',
+					scope: this
+				}
 			);
 			
 			this.objectRecord.modelName === 'MainMenu' && (this.dockedItems[0].items = [

@@ -13,6 +13,10 @@
 }
 
 
+.x-phone .x-form .x-panel-body {
+	padding: 0;
+}
+
 .x-list-item .hbox .volume {
 	color: green;
 	padding: 10px 16px 0;
@@ -56,20 +60,20 @@
 	color: red !important;
 }
 
-.x-list > .x-list-item {
+.x-desktop .x-list > .x-list-item {
     border: 1px solid #B4B4B4;
     border-bottom: none;
     font-weight: bold;
     padding: 10px;
 }
 
-.x-list > .x-list-item:first-child {
+.x-desktop .x-list > .x-list-item:first-child {
     border-top: 1px solid #B4B4B4;
     border-top-left-radius: 8px 8px;
     border-top-right-radius: 8px 8px;
 }
 
-.x-list > .x-list-item:last-child {
+.x-desktop .x-list > .x-list-item:last-child {
     border-bottom: 1px solid #B4B4B4;
     border-bottom-left-radius: 8px 8px;
     border-bottom-right-radius: 8px 8px;

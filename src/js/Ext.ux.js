@@ -160,9 +160,11 @@ Ext.override(Ext.form.FormPanel, {
         return Ext.apply(Ext.form.FormPanel.superclass.getElConfig.call(this), {
             tag: 'div'
         });
-    },
+    }
 });
 
 
-Ext.MessageBox.YESNO[1].text = 'Да'
-Ext.MessageBox.YESNO[0].text = 'Нет'
+Ext.MessageBox.YESNO[1].text = 'Да';
+Ext.MessageBox.YESNO[0].text = 'Нет';
+Ext.Picker.prototype.doneButton = 'OK';
+Ext.Picker.prototype.cancelButton = 'Отмена';

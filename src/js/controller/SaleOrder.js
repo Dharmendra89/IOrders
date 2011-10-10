@@ -8,8 +8,8 @@ Ext.regController('SaleOrder', {
 		;
 		
 		if (s && s.snapshot && s.snapshot.filterBy(s.filterDirty).items.length) Ext.Msg.confirm (
-			'Вопрос',
-			'Действительно нужно вернуться назад? Несохраненные данные будут потеряны',
+			'Внимание, вопрос',
+			'Действительно нужно вернуться назад? Если да, то несохраненные данные будут потеряны',
 			function(b) {
 				if (b=='yes')
 					back()

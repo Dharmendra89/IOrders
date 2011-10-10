@@ -86,7 +86,11 @@ Ext.regController('Navigator', {
 	onAddButtonTap: function(options) {
 
 		var rec = Ext.ModelMgr.create({}, options.view.tableRecord);
-		rec.modelName === 'SaleOrder' && rec.set('date', getNextWorkDay());
+		rec.set(options.view.objectRecord.modelName.toLowerCase(), options.view.objectRecord.getId());
+		if(rec.modelName === 'SaleOrder') {
+			rec.set('totalCost', '0');
+			rec.set('date', getNextWorkDay());
+		}
 		var oldCard = IOrders.viewport.getActiveItem();
 		var newCard = Ext.create(createNavigatorView(rec, oldCard, false, true));
 

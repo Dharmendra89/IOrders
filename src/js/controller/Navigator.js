@@ -196,6 +196,11 @@ Ext.regController('Navigator', {
 			},
 			failure: function(s,e) {
 				Ext.Msg.alert('Загрузка не удалась', e)
+			},
+			recordSuccess: function(s) {
+				var cnt = parseInt(options.btn.getBadgeText());
+				
+				options.btn.setBadge(--cnt);
 			}
 		})
 	},

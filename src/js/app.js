@@ -37,7 +37,6 @@ Ext.regApplication({
 			}
 		});
 		
-		
 		if(!metadata) {
 			
 			this.viewport.setActiveItem(Ext.create({

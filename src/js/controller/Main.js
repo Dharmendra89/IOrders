@@ -73,16 +73,15 @@ Ext.regController('Main', {
 				case 'SaleOrderPosition' : {
 					var target = Ext.get(options.event.target);
 					if(target.hasCls('x-button')) {
-
+						
 						if(target.hasCls('extend')) {
 							var form = navView.form;
 							var formRec = form.getRecord();
 							
 							form.updateRecord(formRec);
-
+							
 							var errors = formRec.validate();
 							if(errors.isValid()) {
-
 								formRec.save();
 								Ext.dispatch(Ext.apply(options, {
 									controller: 'SaleOrder',

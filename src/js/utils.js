@@ -1,6 +1,6 @@
 //TODO
 Ext.util.Format.defaultDateFormat = 'd/m/Y';
-Date.monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
+Date.monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
 var getValueFromParent = function(field, value) {
 	var parentStore = Ext.getStore(field[0].toUpperCase() + field.substring(1));
@@ -14,7 +14,8 @@ function getItemTpl (modelName, table) {
 		case 'Dep': {
 			return '<div class="hbox dep">'
 					+ '<div class="data">{name}</div>'
-					+ '<tpl if="extendable"><div class="x-button extend add">+</div></tpl>'
+					+ '<tpl if="count &gt; 0 && !extendable"><div class="x-button disabled">{count}</div></tpl>'
+					+ '<tpl if="extendable"><div class="x-button extend add">{count} +</div></tpl>'
 				 + '</div>';
 		}
 		case 'Warehouse': {
@@ -162,14 +163,31 @@ function createDepsList(depsStore, tablesStore, objectRecord) {
 
 	depsStore.each(function(dep) {
 
-		var depTable = tablesStore.getById( dep.get('table_id') );
+		var depTable = tablesStore.getById(dep.get('table_id'));
 		
-		(depTable.get('id') != 'SaleOrderPosition' || objectRecord.modelName == 'SaleOrder')
-			&& data.push({
+		if(depTable.get('id') != 'SaleOrderPosition' || objectRecord.modelName == 'SaleOrder') {
+			var dep = Ext.ModelMgr.create({
 				name: depTable.get('nameSet'),
 				table_id: depTable.get('id'),
 				extendable: depTable.get('extendable')
+			}, 'Dep');
+
+			var modelProxy = Ext.ModelMgr.getModel(depTable.get('id')).prototype.getProxy();
+
+			var filters = [];
+			objectRecord.modelName != 'MainMenu' && filters.push({property: objectRecord.modelName.toLowerCase(), value: objectRecord.getId()});
+
+			var operCount = new Ext.data.Operation({
+				depRec: dep,
+				filters: filters
 			});
+			
+			modelProxy.count(operCount, function(operation) {
+				operation.depRec.set('count', operation.result);
+			});
+			
+			data.push(dep);
+		}
 	});
 
 	return {

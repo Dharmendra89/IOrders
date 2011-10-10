@@ -99,9 +99,14 @@ Ext.regController('Navigator', {
 					rec.set('totalCost', '0');
 					rec.set('date', getNextWorkDay());
 				}
+			} else {
+				return;
 			}
 		} else {
 			rec = options.list.getRecord(options.item);
+			if(rec.get('count') == 0) {
+				return;
+			}
 		}		
 
 		var newCard = Ext.create(createNavigatorView(rec, IOrders.viewport.getActiveItem(), options.isSetView, editable));
@@ -192,7 +197,7 @@ Ext.regController('Navigator', {
 		IOrders.xi.upload ({
 			engine: IOrders.dbeng,
 			success: function(s) {
-				Ext.Msg.alert('Загрузка завершена', 'Передано записей: '+s.getCount())
+				Ext.Msg.alert('Загрузка завершена', 'Передано записей: '+s.getCount());
 			},
 			failure: function(s,e) {
 				Ext.Msg.alert('Загрузка не удалась', e)

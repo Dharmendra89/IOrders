@@ -42,7 +42,7 @@ function continueLoad (store,r,s){
 				listeners: {
 					load: continueLoad
 				}
-			})
+			});
 		}
 	}
 	else

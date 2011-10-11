@@ -24,7 +24,9 @@ Ext.regModel('Table', {
 		{name: 'name', type: 'string'},
 		{name: 'type', type: 'string'}, // view or table
 		{name: 'nameSet', type: 'string'},
-		{name: 'extendable', type: 'boolean'}
+		{name: 'extendable', type: 'boolean'},
+		{name: 'editable', type: 'boolean'},
+		{name: 'belongs', type: 'string'},
 	],
  	associations: [
 		{type: 'hasMany', model: 'Column', name: 'columns'},
@@ -61,7 +63,8 @@ Ext.regModel('Dep', {
 		{name: 'table_id', type: 'string'},
 		{name: 'extendable', type: 'boolean'},
 		{name: 'editable', type: 'boolean'},
-		{name: 'count', type: 'int'}
+		{name: 'count', type: 'int'},
+		{name: 'contains', type: 'boolean'},
 	]
 });
 

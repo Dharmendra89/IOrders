@@ -15,7 +15,7 @@
       <columns set-of="column">
         <column id="Stockwarehouse" name="warehouse" type="int" parent="Warehouse" label="Склад"/>
         <column id="Stockproduct" name="product" parent="Product" label="Товар"/>
-        <column id="StockstockLevel" name="stockLevel" type="int"/>
+        <column id="StockstockLevel" name="stockLevel" type="int" label="Уровень запаса"/>
       </columns>
     </table>
     <table id="PricelistSet" name="Ценовая категория" nameSet="Ценовые категории">
@@ -149,7 +149,7 @@
         <column id="Offername" name="name" type="string" label="Наименование"/>
         <column id="Offerrel" name="rel" type="int" label="Шт. в упаковке"/>
         <column id="Offerfactor" name="factor" type="int" label="Кратность"/>
-        <column id="OfferstockLevel" name="stockLevel" type="int"/>
+        <column id="OfferstockLevel" name="stockLevel" type="int" label="Уровень запаса"/>
         <column id="Offercost" name="cost" type="float" label="Стоимость"/>
       </columns>
       <sql>select c.id as customer, g.category, p.price, g.id as Product, g.firstName, g.name, g.rel, g.factor, s.stockLevel, 0 as isActive, null as cost from Customer c join PartnerPriceList ppl on ppl.partner = c.partner join Price p on p.pricelistSet = ppl.pricelistSet and p.priceList = ppl.priceList join Product g on g.id = p.product join Stock s on s.product = g.id and s.warehouse = c.warehouse and s.stockLevel &gt; 0</sql>

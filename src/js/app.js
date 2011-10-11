@@ -32,7 +32,7 @@ Ext.regApplication({
 					IOrders.init();
 					
 					if (db.clean)
-						IOrders.xi.download(IOrders.dbeng, IOrders.dbeng.processDowloadData);
+						IOrders.xi.download(IOrders.dbeng);
 				}
 			}
 		});

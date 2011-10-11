@@ -44,7 +44,13 @@ var NavigatorView = Ext.extend(AbstractView, {
 				
 				this.dockedItems[0].items = [
 					{xtype: 'spacer'},
-					this.syncButton
+					this.syncButton,
+					{
+						iconMask: true,
+						name: 'Prefs',
+						iconCls: 'settings',
+						scope: this
+					}
 				];
 				
 				this.on ('activate', function(){

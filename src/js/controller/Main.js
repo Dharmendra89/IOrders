@@ -2,15 +2,19 @@ Ext.regController('Main', {
 	
 	onButtonTap: function(options) {
 		
-		var view = options.view;
+		var view = options.view,
+			redirectTo = this;
 		
-		if(view.isXType('navigatorview')) {
-			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('Button', options.btn.name + 'Button')}));
-		} else if(view.isXType('saleorderview')) {
-			Ext.dispatch(Ext.apply(options, {controller: 'SaleOrder', action: options.action.replace('Button', options.btn.name + 'Button')}));
-		} else {
-			Ext.dispatch(Ext.apply(options, {action: options.action.replace('Button', options.btn.name + 'Button')}));
-		}
+		if ( view.isXType('navigatorview') ) {
+			redirectTo = 'Navigator';
+		} else if ( view.isXType('saleorderview') ) {
+			redirectTo = 'SaleOrder';
+		};
+		
+		Ext.dispatch(Ext.apply(options, {
+			controller: redirectTo,
+			action: options.action.replace('Button', options.btn.name + 'Button')
+		}));
 		
 	},
 
@@ -150,5 +154,79 @@ Ext.regController('Main', {
 		} else {
 			Ext.Msg.alert('Авторизация', 'Введите логин и пароль');
 		}
+	},
+	
+	prefsCb : {
+		success: function(r,o) {
+			Ext.Msg.alert(o.command, 'Success')
+		},
+		failure: function(r,o) {
+			Ext.Msg.alert(o.command, 'Failed: '+r.responseText)
+		}
+	},
+	
+	onXiDownloadButtonTap: function(options) {
+		IOrders.xi.download ( IOrders.dbeng );
+	},
+
+	onXiLoginButtonTap: function(options) {
+		IOrders.xi.login ( this.prefsCb );
+	},
+
+	onXiLogoffButtonTap: function(options) {
+		IOrders.xi.request ( Ext.apply ({
+				command: 'logoff'
+			},
+			this.prefsCb
+		))
+	},
+
+	onPrefsCloseButtonTap: function(options) {
+		options.btn.up('actionsheet').hide();
+	},
+
+	onXiMetaButtonTap: function(options) {
+		IOrders.xi.request( Ext.applyIf ({
+			command: 'metadata',
+			success: function(response) {
+				var m = response.responseXML;
+				
+				console.log(m);
+				
+				var metadata = this.xml2obj(m).metadata;
+				
+				composeMainMenu(metadata.tables);
+				
+				localStorage.setItem('metadata', Ext.encode(metadata));
+				
+				if ( metadata.version != IOrders.dbeng.db.version )
+					Ext.Msg.alert(
+						'Необходим перезапуск',
+						'Текущая версия: '+IOrders.dbeng.db.version+ ' '+
+						'Полуена версия: '+metadata.version,
+						function () { location.replace(location.href) }
+					);
+				else
+					Ext.Msg.alert('Метаданные в норме', 'Версия: ' + metadata.version);
+				
+			}},
+			this.prefsCb
+		))
+	},
+
+	onDbRebuildButtonTap: function(options) {
+		
+		IOrders.dbeng.clearListeners();
+		
+		IOrders.dbeng.startDatabase (
+			Ext.decode(localStorage.getItem('metadata')),
+			true
+		)
+	},
+
+	onReloadButtonTap: function(options) {
+		location.replace(location.href)
 	}
+
+
 });

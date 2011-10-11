@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.31" expect-megabytes="15">
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.32" expect-megabytes="15">
   <tables set-of="table">
     <table id="Warehouse" name="Склад" nameSet="Склады">
       <columns set-of="column">
@@ -76,6 +76,7 @@
       <columns set-of="column">
         <column id="Partnerid" name="id" type="int" key="true"/>
         <column id="Partnername" name="name" type="string" label="Название"/>
+        <column id="Partnerplong" name="plong" type="int" label="Отсрочка оплаты"/>
       </columns>
       <deps set-of="dep">
         <dep table_id="PartnerPriceList" id="PartnerPriceListpartner"/>

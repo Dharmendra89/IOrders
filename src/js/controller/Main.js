@@ -139,40 +139,13 @@ Ext.regController('Main', {
 		var password = formData.password;
 		
 		if(login && password) {
-
+			
 			localStorage.setItem('login', login);
 			localStorage.setItem('password', password);
-	
-			IOrders.xi = new Ext.data.XmlInterface({
-				username: login,
-				password: password,
-				view: 'iorders',
-				noServer: true
-			});
 			
-			IOrders.getMetadata = {
-				success: function() {
-					var me=this;
-					
-					me.request({
-						command: 'metadata',
-						success: function(response) {
-							var m = response.responseXML;
-							
-							console.log(m);
-							
-							var metadata = me.xml2obj(m).metadata;
-							composeMainMenu(metadata.tables);
-							
-							localStorage.setItem('metadata', Ext.encode(metadata));
-							
-							IOrders.dbeng.startDatabase(metadata);
-							
-						}
-					});
-				}
-			};
-	
+			IOrders.xi.username = login;
+			IOrders.xi.password = password;
+			
 			IOrders.xi.reconnect(IOrders.getMetadata);
 		} else {
 			Ext.Msg.alert('Авторизация', 'Введите логин и пароль');

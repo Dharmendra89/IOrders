@@ -37,6 +37,34 @@ Ext.regApplication({
 			}
 		});
 		
+		IOrders.xi = new Ext.data.XmlInterface({
+			view: 'iorders',
+			noServer: (location.protocol == 'http:')
+		});
+		
+		IOrders.getMetadata = {
+			success: function() {
+				var me=this;
+				
+				me.request({
+					command: 'metadata',
+					success: function(response) {
+						var m = response.responseXML;
+						
+						console.log(m);
+						
+						var metadata = me.xml2obj(m).metadata;
+						composeMainMenu(metadata.tables);
+						
+						localStorage.setItem('metadata', Ext.encode(metadata));
+						
+						IOrders.dbeng.startDatabase(metadata);
+						
+					}
+				});
+			}
+		};
+		
 		if(!metadata) {
 			
 			this.viewport.setActiveItem(Ext.create({
@@ -56,12 +84,11 @@ Ext.regApplication({
 			
 		} else {
 			
-			this.xi = new Ext.data.XmlInterface({
+			Ext.apply (this.xi, {
 				username: localStorage.getItem('login'),
-				password: localStorage.getItem('password'),
-				view: 'iorders',
-				noServer: true
+				password: localStorage.getItem('password')
 			});
+			
 			IOrders.dbeng.startDatabase(metadata);
 		}
 	}

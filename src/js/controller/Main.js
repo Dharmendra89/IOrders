@@ -13,50 +13,10 @@ Ext.regController('Main', {
 		}
 		
 	},
-	
+
 	onLoginButtonTap: function(options) {
 
-		var btn = options.btn;
-		var form = btn.up('form');
-		
-		var formData = form.getValues();
-		var login = formData.login;
-		var password = formData.password;
-
-		localStorage.setItem('login', login);
-		localStorage.setItem('password', password);
-
-		IOrders.xi = new Ext.data.XmlInterface({
-			username: login,
-			password: password,
-			view: 'iorders',
-			noServer: true
-		});
-		
-		IOrders.getMetadata = {
-			success: function() {
-				var me=this;
-				
-				me.request({
-					command: 'metadata',
-					success: function(response) {
-						var m = response.responseXML;
-						
-						console.log(m);
-						
-						var metadata = me.xml2obj(m).metadata;
-						composeMainMenu(metadata.tables);
-						
-						localStorage.setItem('metadata', Ext.encode(metadata));
-						
-						IOrders.dbeng.startDatabase(metadata);
-						
-					}
-				});
-			}
-		};
-
-		IOrders.xi.reconnect(IOrders.getMetadata);
+		options.btn.up('form').submit();
 	},
 	
 	onListItemTap: function(options) {
@@ -164,6 +124,58 @@ Ext.regController('Main', {
 		var navView = field.up('navigatorview');
 		if(navView) {
 			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('SelectField', field.id), view: navView}));
+		}
+	},
+
+	onBeforeSubmitForm: function(options) {
+
+		Ext.dispatch(Ext.apply(options, {action: options.action.replace('Form', options.form.name + 'Form')}));
+	},
+
+	onBeforeSubmitLoginForm: function(options) {
+
+		var formData = options.values;
+		var login = formData.login;
+		var password = formData.password;
+		
+		if(login && password) {
+
+			localStorage.setItem('login', login);
+			localStorage.setItem('password', password);
+	
+			IOrders.xi = new Ext.data.XmlInterface({
+				username: login,
+				password: password,
+				view: 'iorders',
+				noServer: true
+			});
+			
+			IOrders.getMetadata = {
+				success: function() {
+					var me=this;
+					
+					me.request({
+						command: 'metadata',
+						success: function(response) {
+							var m = response.responseXML;
+							
+							console.log(m);
+							
+							var metadata = me.xml2obj(m).metadata;
+							composeMainMenu(metadata.tables);
+							
+							localStorage.setItem('metadata', Ext.encode(metadata));
+							
+							IOrders.dbeng.startDatabase(metadata);
+							
+						}
+					});
+				}
+			};
+	
+			IOrders.xi.reconnect(IOrders.getMetadata);
+		} else {
+			Ext.Msg.alert('Авторизация', 'Введите логин и пароль');
 		}
 	}
 });

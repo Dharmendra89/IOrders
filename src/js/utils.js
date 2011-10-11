@@ -166,7 +166,7 @@ function createDepsList(depsStore, tablesStore, view) {
 		var depTable = tablesStore.getById(dep.get('table_id'));
 
 		if(depTable.get('id') != 'SaleOrderPosition' || view.objectRecord.modelName == 'SaleOrder') {
-			var dep = Ext.ModelMgr.create({
+			var depRec = Ext.ModelMgr.create({
 				name: depTable.get('nameSet'),
 				table_id: depTable.get('id'),
 				extendable: depTable.get('extendable'),
@@ -179,7 +179,7 @@ function createDepsList(depsStore, tablesStore, view) {
 			view.objectRecord.modelName != 'MainMenu' && filters.push({property: view.objectRecord.modelName.toLowerCase(), value: view.objectRecord.getId()});
 
 			var operCount = new Ext.data.Operation({
-				depRec: dep,
+				depRec: depRec,
 				filters: filters
 			});
 
@@ -187,7 +187,7 @@ function createDepsList(depsStore, tablesStore, view) {
 				operation.depRec.set('count', operation.result);
 			});
 
-			data.push(dep);
+			data.push(depRec);
 		}
 	});
 	

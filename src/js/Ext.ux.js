@@ -157,10 +157,26 @@ Ext.override(Ext.plugins.ListPagingPlugin, {
 
 Ext.override(Ext.form.FormPanel, {
 	getElConfig: function() {
-        return Ext.apply(Ext.form.FormPanel.superclass.getElConfig.call(this), {
-            tag: 'div'
-        });
-    }
+		return Ext.apply(Ext.form.FormPanel.superclass.getElConfig.call(this), {
+			tag: 'div'
+		});
+	},
+	listeners: {
+		beforesubmit: function(form, values, options) {
+			
+			if(form.ownSubmit) {
+				Ext.dispatch({
+					controller: 'Main',
+					action: 'onBeforeSubmitForm',
+					form: form,
+					values: values,
+					opt: options
+				});
+				return false;
+			}
+			return true;
+		}
+	}
 });
 
 

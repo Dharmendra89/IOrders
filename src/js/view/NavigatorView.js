@@ -57,7 +57,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 					
 					p.count(new Ext.data.Operation(), function(o) {
 						if (o.wasSuccessful())
-							me.setBadge(o.result)
+							me.setBadge(o.result);
 					});
 				});
 				

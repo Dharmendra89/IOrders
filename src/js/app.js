@@ -41,6 +41,8 @@ Ext.regApplication({
 			
 			this.viewport.setActiveItem(Ext.create({
 				xtype: 'form',
+				name: 'Login',
+				ownSubmit: true,
 				items: [
 					{xtype: 'fieldset', 
 						items: [

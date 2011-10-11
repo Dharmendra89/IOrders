@@ -14,8 +14,8 @@ function getItemTpl (modelName, table) {
 		case 'Dep': {
 			return '<div class="hbox dep">'
 					+ '<div class="data">{name}</div>' 
-					+ '<tpl if="count &gt; 0 && (extendable && !editable || !extendable)"><div class="x-button">{count}</div></tpl>'
-					+ '<tpl if="extendable && editable"><div class="x-button extend add">{count} +</div></tpl>'
+					+ '<tpl if="count &gt; 0 && (extendable && !editable && table_id != \'SaleOrder\' || !extendable)"><div class="x-button">{count}</div></tpl>'
+					+ '<tpl if="extendable && editable || table_id == \'SaleOrder\'"><div class="x-button extend add">{count} +</div></tpl>'
 				 + '</div>';
 		}
 		case 'Warehouse': {

@@ -140,7 +140,10 @@ var createFieldSet = function(columnsStore) {
 
 var createFilterField = function(objectRecord) {
 
-	var modelName = objectRecord.modelName;
+	var modelName = objectRecord.modelName;	
+	var selectStore = createStore(modelName);
+	selectStore.load();
+	selectStore.add(objectRecord);
 
 	return {
 		xtype: 'fieldset',
@@ -148,7 +151,7 @@ var createFilterField = function(objectRecord) {
 			xtype: 'filterfield',
 			useClearIcon: true,
 			id: 'Filter',
-			store: modelName,
+			store: selectStore,
 			name: 'id',
 			label: Ext.getStore('tables').getById(modelName).get('name'),
 			valueField: 'id',

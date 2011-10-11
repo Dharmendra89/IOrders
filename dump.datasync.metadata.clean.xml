@@ -13,14 +13,14 @@
     </table>
     <table id="Stock" name="Остаток" nameSet="Остатки">
       <columns set-of="column">
-        <column id="Stockwarehouse" name="warehouse" type="int" parent="Warehouse" label="Склад"/>
-        <column id="Stockproduct" name="product" parent="Product" label="Товар"/>
+        <column id="Stockwarehouse" name="warehouse" type="int" parent="Warehouse" label="Склад" key="true"/>
+        <column id="Stockproduct" name="product" parent="Product" label="Товар" key="true"/>
         <column id="StockstockLevel" name="stockLevel" type="int" label="Уровень запаса"/>
       </columns>
     </table>
     <table id="PricelistSet" name="Ценовая категория" nameSet="Ценовые категории">
       <columns set-of="column">
-        <column id="PricelistSetid" name="id" type="int"/>
+        <column id="PricelistSetid" name="id" type="int" key="true"/>
         <column id="PricelistSetname" name="name" type="string" label="Название"/>
       </columns>
       <deps set-of="dep">
@@ -30,7 +30,7 @@
     </table>
     <table id="Pricelist" name="Прайс-лист" nameSet="Прайс-листы">
       <columns set-of="column">
-        <column id="Pricelistid" name="id" type="int"/>
+        <column id="Pricelistid" name="id" type="int" key="true"/>
         <column id="Pricelistname" name="name" type="string" label="Название"/>
       </columns>
       <deps set-of="dep">
@@ -40,7 +40,7 @@
     </table>
     <table id="Category" name="Категория товаров" nameSet="Категории товаров">
       <columns set-of="column">
-        <column id="Categoryid" name="id" type="int"/>
+        <column id="Categoryid" name="id" type="int" key="true"/>
         <column id="Categoryname" name="name" type="string" label="Название"/>
         <column id="Categoryord" name="ord" type="int"/>
       </columns>
@@ -52,7 +52,7 @@
     <table id="Product" name="Товар" nameSet="Товары">
       <columns set-of="column">
         <column id="Productcategory" name="category" type="int" parent="Category" label="Категория товаров"/>
-        <column id="Productid" name="id" type="int"/>
+        <column id="Productid" name="id" type="int" key="true"/>
         <column id="Productname" name="name" type="string" label="Наименование"/>
         <column id="ProductfirstName" name="firstName" type="string" label="Преднаименование"/>
         <column id="Productfactor" name="factor" type="int" label="Кратность"/>
@@ -65,16 +65,16 @@
     </table>
     <table id="Price" name="Цена прайс-листа" nameSet="Цены прайс-листа">
       <columns set-of="column">
-        <column id="Pricecategory" name="category" type="int" parent="Category" label="Категория товаров"/>
-        <column id="PricepricelistSet" name="pricelistSet" parent="PricelistSet" label="Ценовая категория"/>
-        <column id="Pricepricelist" name="pricelist" parent="Pricelist" label="Прайс-лист"/>
-        <column id="Priceproduct" name="product" parent="Product" label="Товар"/>
+        <column id="Pricecategory" name="category" type="int" parent="Category" label="Категория товаров" key="true"/>
+        <column id="PricepricelistSet" name="pricelistSet" parent="PricelistSet" label="Ценовая категория" key="true"/>
+        <column id="Pricepricelist" name="pricelist" parent="Pricelist" label="Прайс-лист" key="true"/>
+        <column id="Priceproduct" name="product" parent="Product" label="Товар" key="true"/>
         <column id="Priceprice" name="price" type="float" label="Цена"/>
       </columns>
     </table>
     <table id="Partner" name="Партнер" nameSet="Партнеры">
       <columns set-of="column">
-        <column id="Partnerid" name="id" type="int"/>
+        <column id="Partnerid" name="id" type="int" key="true"/>
         <column id="Partnername" name="name" type="string" label="Название"/>
       </columns>
       <deps set-of="dep">
@@ -85,7 +85,7 @@
     </table>
     <table id="PartnerPriceList" name="Прайслист партнера" nameSet="Прайслисты партнера">
       <columns set-of="column">
-        <column id="PartnerPriceListpartner" name="partner" type="int" parent="Partner" label="Партнер"/>
+        <column id="PartnerPriceListpartner" name="partner" type="int" parent="Partner" label="Партнер" key="true"/>
         <column id="PartnerPriceListpricelistSet" name="pricelistSet" parent="PricelistSet" label="Ценовая категория"/>
         <column id="PartnerPriceListpricelist" name="pricelist" parent="Pricelist" label="Прайс-лист"/>
         <column id="PartnerPriceListdiscount" name="discount" type="float" label="% скидки"/>
@@ -93,7 +93,7 @@
     </table>
     <table id="Debt" name="Задолженность" nameSet="Задолженность">
       <columns set-of="column">
-        <column id="Debtid" name="id" type="int"/>
+        <column id="Debtid" name="id" type="int" key="true"/>
         <column id="Debtddate" name="ddate" type="date" label="Дата"/>
         <column id="Debtndoc" name="ndoc" type="string" label="Документ№"/>
         <column id="DebtfullSumm" name="fullSumm" type="float" label="Сумма"/>
@@ -105,7 +105,7 @@
     <table id="Customer" name="Клиент" nameSet="Клиенты">
       <columns set-of="column">
         <column id="Customerpartner" name="partner" type="int" parent="Partner" label="Партнер"/>
-        <column id="Customerid" name="id" type="int"/>
+        <column id="Customerid" name="id" type="int" key="true"/>
         <column id="Customername" name="name" type="string" label="Название"/>
         <column id="Customeraddress" name="address" type="string" label="Адрес"/>
         <column id="Customerwarehouse" name="warehouse" parent="Warehouse" label="Склад"/>
@@ -117,7 +117,7 @@
     <table id="SaleOrder" name="Заказ" nameSet="Заказы" extendable="true" editable="true">
       <columns set-of="column">
         <column id="SaleOrdercustomer" name="customer" type="int" parent="Customer" label="Клиент"/>
-        <column id="SaleOrderid" name="id" type="string"/>
+        <column id="SaleOrderid" name="id" type="string" key="true"/>
         <column id="SaleOrderxid" name="xid"/>
         <column id="SaleOrderincassNeeded" name="incassNeeded" type="boolean" label="Требуется инкассация" editable="true"/>
         <column id="SaleOrderisWhite" name="isWhite" type="boolean" label="Нужен счет-фактура" editable="true"/>
@@ -130,11 +130,11 @@
     </table>
     <table id="SaleOrderPosition" name="Позиция заказа" nameSet="Позиции заказа" extendable="true" editable="new-only" belongs="SaleOrder">
       <columns set-of="column">
-        <column id="SaleOrderPositionsaleorder" name="saleorder" type="string" parent="SaleOrder" label="Заказ"/>
+        <column id="SaleOrderPositionsaleorder" name="saleorder" type="string" parent="SaleOrder" label="Заказ" key="true"/>
         <column id="SaleOrderPositionvolume" name="volume" type="int" label="Кол-во" editable="true"/>
         <column id="SaleOrderPositioncost" name="cost" type="float" label="Стоимость" editable="true"/>
         <column id="SaleOrderPositionxid" name="xid"/>
-        <column id="SaleOrderPositionproduct" name="product" parent="Product" label="Товар" editable="new-only"/>
+        <column id="SaleOrderPositionproduct" name="product" parent="Product" label="Товар" editable="new-only" key="true"/>
       </columns>
     </table>
   </tables>

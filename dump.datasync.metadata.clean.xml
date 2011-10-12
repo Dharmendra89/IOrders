@@ -87,7 +87,7 @@
     <table id="PartnerPriceList" name="Прайслист партнера" nameSet="Прайслисты партнера">
       <columns set-of="column">
         <column id="PartnerPriceListpartner" name="partner" type="int" parent="Partner" label="Партнер" key="true"/>
-        <column id="PartnerPriceListpricelistSet" name="pricelistSet" parent="PricelistSet" label="Ценовая категория"/>
+        <column id="PartnerPriceListpricelistSet" name="pricelistSet" parent="PricelistSet" label="Ценовая категория" key="true"/>
         <column id="PartnerPriceListpricelist" name="pricelist" parent="Pricelist" label="Прайс-лист"/>
         <column id="PartnerPriceListdiscount" name="discount" type="float" label="% скидки"/>
       </columns>

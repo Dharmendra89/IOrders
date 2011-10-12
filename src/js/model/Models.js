@@ -82,6 +82,16 @@ var regStore = function(name, config) {
 
 var createStore = function(name, config) {
 	return new Ext.data.Store(
-		Ext.apply({remoteFilter: true, remoteSort: true, clearOnPageLoad: false, model: name, proxy: {type: 'sql', engine: IOrders.dbeng}}, config)
+		Ext.apply({
+			remoteFilter: true,
+			remoteSort: true,
+			clearOnPageLoad: false,
+			pageSize: 50,
+			model: name,
+			proxy: {
+				type: 'sql',
+				engine: IOrders.dbeng
+			}
+		},config)
 	);
 };

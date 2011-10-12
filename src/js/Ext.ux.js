@@ -13,7 +13,27 @@ Ext.override(Ext.List, {
 		disclose: function(rec, item, idx, e) {
 			Ext.dispatch({action: 'onListItemDisclosure', list: this, idx: idx, item: item, event: e});
 		}
-	}
+	},
+
+	onUpdate : function(store, record) {
+		this.itemRefresh = true;
+        Ext.List.superclass.onUpdate.apply(this, arguments);
+		this.itemRefresh = false;
+    },
+
+    bufferRender : function(records, index){
+        var div = document.createElement('div');
+		
+		if (this.grouped && this.itemRefresh) {
+			this.listItemTpl.overwrite (div, Ext.List.superclass.collectData.call(this, records, index))
+		}
+		else {
+	        this.tpl.overwrite(div, this.collectData(records, index));
+		}
+		
+        return Ext.query(this.itemSelector, div);
+    }
+
 });
 
 /**
@@ -177,7 +197,7 @@ Ext.override(Ext.plugins.ListPagingPlugin, {
 	},
 	
 	onScrollEnd: function(scroller, pos) {
-		if(pos.y >= Math.abs(scroller.offsetBoundary.top)) {
+		if(pos.y >= 0.5*Math.abs(scroller.offsetBoundary.top)) {
 			this.loading = true;
 			this.list.store.nextPage();
 			this.el.show();

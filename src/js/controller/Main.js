@@ -226,6 +226,14 @@ Ext.regController('Main', {
 
 	onReloadButtonTap: function(options) {
 		location.replace(location.href)
+	},
+
+	onXiNoServerButtonTap: function(options) {
+		IOrders.xi.noServer = true;
+	},
+
+	onXiYesServerButtonTap: function(options) {
+		IOrders.xi.noServer = false;
 	}
 
 

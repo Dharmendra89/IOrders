@@ -57,6 +57,7 @@ Ext.regController('SaleOrder', {
 			view.productStore.filtersSnapshot = view.productStore.filters.items;
 			view.productStore.clearFilter(true);
 			view.productStore.filter(view.productStore.volumeFilter);
+			view.productList.showAllGroups();
 			
 			view.productCategoryList.deselect(
 				view.productCategoryList.selectionSnaphot = view.productCategoryList.getSelectedRecords()
@@ -137,8 +138,7 @@ Ext.regController('SaleOrder', {
 				filters: [{property: 'saleorder', value: options.saleOrder.getId()}]
 			});
 			
-			
-			newCard.productList = newCard.productPanel.add({
+			var list = 	newCard.productList = newCard.productPanel.add({
 				xtype: 'offerproductlist', store: newCard.productStore
 			});
 			
@@ -224,13 +224,17 @@ Ext.regController('SaleOrder', {
 			addCost: cost - oldCost
 		}));
 		
-		Ext.defer (function (idx)
-			{
-				this.refreshNode(idx);
-				this.scroller.enable();
-			},
-			150, options.list, [options.idx]
-		);
+		//Ext.defer (function (idx)
+		//	{
+//		options.list.refreshNode(options.idx);
+
+		Ext.get(options.item).down('.cost').dom.innerHTML = rec.get('cost');
+		Ext.get(options.item).down('.volume').dom.innerHTML = rec.get('volume');
+		
+		options.list.scroller.enable();
+		//	},
+		//	150, options.list, [options.idx]
+		//);
 	},
 	
 	calculateTotalCost: function(options) {
@@ -286,8 +290,5 @@ Ext.regController('SaleOrder', {
 		
 		view.setLoading(false);
 		
-		//view.productList.mon(view.productList.el, 'tap', view.onListHeaderTap, view, {
-		//	delegate: '.x-list-header'
-		//});
 	}
 });

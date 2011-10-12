@@ -12,6 +12,10 @@
 	-webkit-box-align: stretch;
 }
 
+.x-product-list .x-list-header {
+	height: 3em;
+}
+
 .count {
 	width: 2.75em;
 	color: gray;

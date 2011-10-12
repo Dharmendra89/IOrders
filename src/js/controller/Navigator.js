@@ -229,20 +229,24 @@ Ext.regController('Navigator', {
 	onPrefsButtonTap: function(options) {
 		
 		new Ext.ActionSheet ({
-				items: [
-					{ text: 'Закрыть панель настроек', name: 'PrefsClose'},
-					{ text: 'Запросить данные', name: 'XiDownload'},
-					{ text: 'Запросить метаданные', name: 'XiMeta'},
-					{ text: 'Пересоздать БД', name: 'DbRebuild'},
-					{ text: 'Сервер-логин', name: 'XiLogin'},
-					{ text: 'Сервер-логоф', name: 'XiLogoff'},
-					{ text: 'Перезапустить', name: 'Reload'}
-				],
-				listeners: {
-					hide: function() {
-						this.destroy();
-					}
+			items: [
+				{ text: 'Закрыть панель настроек', name: 'PrefsClose'},
+				{ text: 'Запросить данные', name: 'XiDownload'},
+				{ text: 'Запросить метаданные', name: 'XiMeta'},
+				{ text: 'Пересоздать БД', name: 'DbRebuild'},
+				{ xtype: 'segmentedbutton', items: [
+					{text: 'Статический сервер', name: 'XiNoServer', pressed: IOrders.xi.noServer},
+					{text: 'Настоящий сервер', name: 'XiYesServer', pressed: !IOrders.xi.noServer},
+				]},
+				{ text: 'Сервер-логин', name: 'XiLogin'},
+				{ text: 'Сервер-логоф', name: 'XiLogoff'},
+				{ text: 'Перезапустить', name: 'Reload'}
+			],
+			listeners: {
+				hide: function() {
+					this.destroy();
 				}
+			}
 		}).show();
 		
 	}

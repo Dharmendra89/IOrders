@@ -64,7 +64,7 @@ var SaleOrderView = Ext.extend(AbstractView, {
 		if (groupListItemsEl.hasCls('x-hidden-display')) {
 
 			var grpName = headerEl.getHTML();
-			var closest = this.productList.getTargetEl().down('.x-group-' + grpName.toLowerCase());
+			var closest = headerEl; //this.productList.getTargetEl().down('.x-group-' + grpName.toLowerCase());
 
 			Ext.Anim.run(groupListItemsEl, new Ext.Anim({
 				pList: this.productList,
@@ -84,9 +84,10 @@ var SaleOrderView = Ext.extend(AbstractView, {
 					};
 				},
 				after: function(el, c) {
-
-					c.closest && c.pList.scroller.scrollTo({x: 0, y: c.closest.getOffsetsTo(c.pList.scrollEl)[1]}, 1000);
 					c.pList.updateOffsets();
+					c.pList.scroller.updateBoundary();
+					c.closest && c.pList.scroller.scrollTo({x: 0, y: c.closest.getOffsetsTo(c.pList.scrollEl)[1]});
+					Ext.defer(function(){ c.pList.disableSwipe = false }, 500);
 				}
 			}));
 

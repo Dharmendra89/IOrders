@@ -20,6 +20,8 @@ Ext.regApplication({
 			metadata = Ext.decode(localStorage.getItem('metadata'))
 		;
 		
+		document.body.addEventListener('touchstart', function(e) {e.preventDefault()}, false);
+		
 		this.viewport = Ext.create({xtype: 'viewport'});
 		
 		this.dbeng = new Ext.data.Engine({

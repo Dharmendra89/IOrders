@@ -126,7 +126,7 @@ Ext.regController('Main', {
 
 		var field = options.field;
 		var navView = field.up('navigatorview');
-		if(navView) {
+		if(navView && field.id === 'Filter') {
 			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('SelectField', field.id), view: navView}));
 		}
 	},

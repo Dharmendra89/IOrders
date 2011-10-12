@@ -175,10 +175,10 @@ Ext.regController('Main', {
 	
 	prefsCb : {
 		success: function(r,o) {
-			Ext.Msg.alert(o.command, 'Success')
+			Ext.Msg.alert(o.command, 'Success');
 		},
 		failure: function(r,o) {
-			Ext.Msg.alert(o.command, 'Failed: '+r.responseText)
+			Ext.Msg.alert(o.command, 'Failed: ' + r.responseText);
 		}
 	},
 	
@@ -195,7 +195,7 @@ Ext.regController('Main', {
 				command: 'logoff'
 			},
 			this.prefsCb
-		))
+		));
 	},
 
 	onPrefsCloseButtonTap: function(options) {
@@ -221,14 +221,14 @@ Ext.regController('Main', {
 						'Необходим перезапуск',
 						'Текущая версия: '+IOrders.dbeng.db.version+ ' '+
 						'Полуена версия: '+metadata.version,
-						function () { location.replace(location.href) }
+						function () { location.replace(location.href); }
 					);
 				else
 					Ext.Msg.alert('Метаданные в норме', 'Версия: ' + metadata.version);
 				
 			}},
 			this.prefsCb
-		))
+		));
 	},
 
 	onDbRebuildButtonTap: function(options) {
@@ -238,11 +238,11 @@ Ext.regController('Main', {
 		IOrders.dbeng.startDatabase (
 			Ext.decode(localStorage.getItem('metadata')),
 			true
-		)
+		);
 	},
 
 	onReloadButtonTap: function(options) {
-		location.replace(location.href)
+		location.replace(location.href);
 	},
 
 	onXiNoServerButtonTap: function(options) {
@@ -251,7 +251,14 @@ Ext.regController('Main', {
 
 	onXiYesServerButtonTap: function(options) {
 		IOrders.xi.noServer = false;
-	}
+	},
 
+	onListSelectionChange: function(options) {
+
+		var navView = options.list.up('navigatorview');
+		if(navView) {
+			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', view: navView}));
+		}
+	}
 
 });

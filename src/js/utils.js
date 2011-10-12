@@ -12,9 +12,13 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 
 	var tableStore = Ext.getStore('tables');
 	var tableRecord = tableStore.getById(modelName);
-	var template = new Ext.XTemplate('<div class="hbox">{columns}{buttons}</div>');
+	var template = new Ext.XTemplate('<div class="hbox">{columns}</div>');
 	var columnStore = tableRecord.columns();
 	
+	/**
+	 * BEGIN.
+	 * Сборка темплейта для полей сущности
+	 */
 	var columns = '<div>';
 
 	var idColExist = columnStore.findExact('name', 'id') === -1 ? false : true;
@@ -55,8 +59,9 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 		return !rec.get(queryValue) && groupField !== colName && colName !== 'id' && colName !== 'name' && rec.get('label') ? true : false;
 	});
 	
+	columns += '<div class="other">';
 	if(otherColumns.getCount() > 0) {
-		columns += '<small class="other">';
+		columns += '<small class="other-fields">';
 
 		var othersTpl = new Ext.XTemplate('<tpl if="label || name"><div>{label}<tpl if="name">: {name}</tpl></div></tpl>');
 		var othersParentTpl = new Ext.XTemplate('<tpl if="label || name"><div>{label}<tpl if="name">: \\{[getValueFromParent("{name}", values.{name})]\\}</tpl></div></tpl>');
@@ -87,9 +92,35 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 
 		columns += '</small>';
 	}
-
+	/**
+	 * END.
+	 * Сборка темплейта для полей сущности
+	 */
+	
+	/**
+	 * BEGIN.
+	 * Сборка темплейта для deps
+	 */
+	columns += 
+			'<div class="buttons">' 
+				+ '<tpl for="deps">'
+					+'<div class="hbox dep">'
+					+ '<input type="hidden" value="{table_id}" />'
+					+ '<div class="count"><tpl if="count &gt; 0">{count}</tpl></div>'
+					+ '<div class="data">{name}</div>'
+					+ '<tpl if="extendable && editable || table_id == \'SaleOrder\'"><div class="x-button extend add">+</div></tpl>'
+		 			+ '</div>'
+	 			+ '</tpl>'
+	 		+ '</div>';
+	/**
+	 * END.
+	 * Сборка темплейта для deps
+	 */
+	columns += '</div>';
+	
 	columns += '</div>';
 
+	console.log(template.apply({columns: columns}));
 	return template.apply({columns: columns});
 };
 

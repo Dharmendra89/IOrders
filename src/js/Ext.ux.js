@@ -4,6 +4,9 @@ Ext.override(Ext.Interaction, {controller: 'Main'});
 
 Ext.override(Ext.List, {
 	listeners: {
+		selectionchange: function(selModel, selections) {
+			Ext.dispatch({action: 'onListSelectionChange', list: this, selModel: selModel, selections: selections});
+		},
 		itemtap: function(list, idx, item, e) {
 			Ext.dispatch({action: 'onListItemTap', list: list, idx: idx, item: item, event: e});
 		},

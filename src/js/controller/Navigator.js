@@ -103,6 +103,8 @@ Ext.regController('Navigator', {
 		var list = options.list;
 		var item = options.item;
 
+		var isTableList = list.getEl().hasCls('x-table-list') ? true : false;
+
 		if (target.hasCls('x-button')) {
 			if (target.hasCls('extend')) {
 
@@ -110,8 +112,13 @@ Ext.regController('Navigator', {
 				options.isSetView = false;
 				editable = true;
 
-				rec = Ext.ModelMgr.create({}, list.getRecord(item).get('table_id'));				
-				rec.set(view.objectRecord.modelName.toLowerCase(), view.objectRecord.getId());
+				var createdRecordModelName = isTableList ? target.up('.dep').down('input').dom.value : list.getRecord(item).get('table_id'); 
+				
+				rec = Ext.ModelMgr.create({}, createdRecordModelName);
+				
+				var objectRecord = isTableList ? list.getRecord(item) : view.objectRecord;
+				
+				rec.set(objectRecord.modelName.toLowerCase(), objectRecord.getId());
 				if(rec.modelName === 'SaleOrder') {
 					rec.set('totalCost', '0');
 					rec.set('date', getNextWorkDay());
@@ -123,6 +130,19 @@ Ext.regController('Navigator', {
 					editable: true
 				}));
 			}
+		} else if(isTableList && target.up('.dep')) {
+
+			var dep = target.up('.dep');
+		
+			Ext.dispatch(Ext.apply(options, {
+				controller: 'Navigator',
+				action: 'createAndActivateView',
+				record: list.getRecord(item),
+				tableRecord: dep.down('input').dom.value,
+				isSetView: true,
+				editable: false
+			}));
+			return;
 		}
 		
 		if(options.isSetView) {
@@ -135,8 +155,11 @@ Ext.regController('Navigator', {
 	createAndActivateView: function(options) {
 		
 		var objectRecord = options.record || options.list.getRecord(options.item);
+		
+		var config = {};
+		options.tableRecord && Ext.apply(config, {tableRecord: options.tableRecord, objectRecord: objectRecord});
 
-		var newCard = Ext.create(createNavigatorView(objectRecord, IOrders.viewport.getActiveItem(), options.isSetView, options.editable));
+		var newCard = Ext.create(createNavigatorView(objectRecord, IOrders.viewport.getActiveItem(), options.isSetView, options.editable, config));
 		if (newCard.isSetView) {
 			Ext.dispatch(Ext.apply(options, {action: 'loadSetViewStore', newCard: newCard}));
 		} else {
@@ -261,6 +284,57 @@ Ext.regController('Navigator', {
 			}
 		}).show();
 		
+	},
+
+	onListSelectionChange: function(options) {
+
+		var list = options.list;
+		
+		var tableRecord, depStore;
+		var tableStore = Ext.getStore('tables');
+		
+		Ext.each(options.selections, function(record) {
+			if(!record.data.deps) {
+				tableRecord || (tableRecord = Ext.getStore('tables').getById(record.modelName));
+				depStore || (depStore = tableRecord.deps());
+				
+				var data = [];
+		
+				depStore.each(function(dep) {
+		
+					var depTable = tableStore.getById(dep.get('table_id'));
+		
+					if(depTable.get('id') != 'SaleOrderPosition' || record.modelName == 'SaleOrder') {
+						var depRec = {
+							name: depTable.get('nameSet'),
+							table_id: depTable.get('id'),
+							extendable: depTable.get('extendable'),
+							editable: false || record.modelName == 'MainMenu'
+						};
+		
+						var modelProxy = Ext.ModelMgr.getModel(depTable.get('id')).prototype.getProxy();
+		
+						var filters = [];
+						record.modelName != 'MainMenu' && filters.push({property: record.modelName.toLowerCase(), value: record.getId()});
+		
+						var operCount = new Ext.data.Operation({
+							list: list,
+							listRecord: record,
+							depRec: depRec,
+							filters: filters
+						});
+		
+						modelProxy.count(operCount, function(operation) {
+							operation.depRec.count = operation.result;
+							operation.listRecord.data.deps = data;
+							operation.list.select(record, true, false);
+							operation.list.refreshNode(list.indexOf(record));
+						});
+		
+						data.push(depRec);
+					}
+				});
+			}
+		});
 	}
-	
 });

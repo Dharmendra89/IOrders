@@ -67,7 +67,6 @@ var SaleOrderView = Ext.extend(AbstractView, {
 			this.productList.disableHeaderTap = true;
 		if (groupListItemsEl.hasCls('x-hidden-display')) {
 
-			var grpName = headerEl.getHTML();
 			var closest = headerEl; //this.productList.getTargetEl().down('.x-group-' + grpName.toLowerCase());
 
 			Ext.Anim.run(groupListItemsEl, new Ext.Anim({

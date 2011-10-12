@@ -91,8 +91,9 @@ var NavigatorView = Ext.extend(AbstractView, {
 				scroll: false,
 				cls: 'x-table-list',
 				grouped: listGroupedConfig.field ? true : false,
-				allowDeselect: false,
-				itemTpl: getItemTpl(this.tableRecord, table),
+				simpleSelect: true,
+				onItemDisclosure: true,
+				itemTpl: getItemTplMeta(this.tableRecord, table, this.objectRecord, listGroupedConfig.field),
 				store: this.setViewStore
 			});
 			

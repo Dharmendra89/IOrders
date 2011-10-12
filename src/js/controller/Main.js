@@ -79,6 +79,23 @@ Ext.regController('Main', {
 		}
 	},
 	
+	onListItemDisclosure: function(options) {
+
+		var list = options.list,
+	    	navView = list.up('navigatorview'),
+	    	listEl = list.getEl()
+		;
+	
+		if(navView) {
+			Ext.dispatch(Ext.apply(options, {
+				controller: 'Navigator',
+				action: 'createAndActivateView',
+				isSetView: listEl.hasCls('x-deps-list'),
+				editable: false
+			}));
+		}
+	},
+	
 	onListItemSwipe: function(options) {
 		
 		var list = options.list;

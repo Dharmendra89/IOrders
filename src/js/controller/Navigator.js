@@ -100,38 +100,50 @@ Ext.regController('Navigator', {
 
 		var target = Ext.get(options.event.target);
 		var rec = undefined;
-		var editable = false;
+		var list = options.list;
+		var item = options.item;
 
 		if (target.hasCls('x-button')) {
 			if (target.hasCls('extend')) {
 
-				var view = options.list.up('navigatorview');
+				var view = list.up('navigatorview');
 				options.isSetView = false;
 				editable = true;
 
-				rec = Ext.ModelMgr.create({}, options.list.getRecord(options.item).get('table_id'));				
+				rec = Ext.ModelMgr.create({}, list.getRecord(item).get('table_id'));				
 				rec.set(view.objectRecord.modelName.toLowerCase(), view.objectRecord.getId());
 				if(rec.modelName === 'SaleOrder') {
 					rec.set('totalCost', '0');
 					rec.set('date', getNextWorkDay());
 				}
-			} else {
-				return;
+				
+				Ext.dispatch(Ext.apply(options, {
+					action: 'createAndActivateView',
+					record: rec,
+					editable: true
+				}));
 			}
-		} else {
-			rec = options.list.getRecord(options.item);
-			if(rec.get('count') == 0) {
-				return;
-			}
-		}		
+		}
+		
+		if(options.isSetView) {
+			Ext.dispatch(Ext.apply(options, {
+				action: 'createAndActivateView'
+			}));
+		}
+	},
 
-		var newCard = Ext.create(createNavigatorView(rec, IOrders.viewport.getActiveItem(), options.isSetView, editable));
+	createAndActivateView: function(options) {
+		
+		var objectRecord = options.record || options.list.getRecord(options.item);
+
+		var newCard = Ext.create(createNavigatorView(objectRecord, IOrders.viewport.getActiveItem(), options.isSetView, options.editable));
 		if (newCard.isSetView) {
 			Ext.dispatch(Ext.apply(options, {action: 'loadSetViewStore', newCard: newCard}));
 		} else {
 			IOrders.viewport.setActiveItem(newCard);
 		}
 	},
+	
 	loadSetViewStore: function(options) {
 		var oldCard = IOrders.viewport.getActiveItem();
 		var newCard = options.newCard;

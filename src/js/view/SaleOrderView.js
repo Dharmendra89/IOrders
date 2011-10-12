@@ -34,7 +34,9 @@ var SaleOrderView = Ext.extend(AbstractView, {
 
 		this.dockedItems.push({
 			id: 'bottomToolbar', xtype: 'toolbar', dock: 'bottom',
-			titleTpl: new Ext.XTemplate(getItemTpl('SaleOrderBottomToolbar'))
+			titleTpl: new Ext.XTemplate('<p style="text-align: right">'
+						+'<tpl if="packageName"><small>Упаковка: {packageName}</small></tpl>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
+						+ 'Сумма заказа: {totalCost} руб.</p>')
 		});
 
 		this.dockedItems[0].items.push(

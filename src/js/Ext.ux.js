@@ -6,6 +6,9 @@ Ext.override(Ext.List, {
 	listeners: {
 		itemtap: function(list, idx, item, e) {
 			Ext.dispatch({action: 'onListItemTap', list: list, idx: idx, item: item, event: e});
+		},
+		disclose: function(rec, item, idx, e) {
+			Ext.dispatch({action: 'onListItemDisclosure', list: this, idx: idx, item: item, event: e});
 		}
 	}
 });
@@ -35,7 +38,6 @@ Ext.override(Ext.form.Select, {
         });
         
         Ext.dispatch({
-        	controller: 'Main',
         	action: 'onSelectFieldValueChange',
         	field: this,
         	filter: true
@@ -65,7 +67,6 @@ Ext.override(Ext.form.Select, {
         
         this.labelEl.on('tap', function(evt, el, o) {
         	Ext.dispatch({
-        		controller: 'Main',
         		action: 'onFieldLabelTap',
         		field: this
         	});
@@ -75,7 +76,6 @@ Ext.override(Ext.form.Select, {
     onMaskTap: function() {
         if (this.disabled) {
         	Ext.dispatch({
-        		controller: 'Main',
         		action: 'onFieldInputTap',
         		field: this
         	});
@@ -93,7 +93,6 @@ var FilterField = Ext.extend(Ext.form.Select, {
 		this.removeFilterBtn = this.labelEl.insertHtml('beforeBegin', '<div class="x-button remove-filter">X</div>', true);
 		this.removeFilterBtn.on('tap', function(evt, el, o) {
         	Ext.dispatch({
-        		controller: 'Main',
         		action: 'onSelectFieldValueChange',
         		field: this,
         		removeFilter: true
@@ -195,7 +194,6 @@ Ext.override(Ext.form.FormPanel, {
 			
 			if(form.ownSubmit) {
 				Ext.dispatch({
-					controller: 'Main',
 					action: 'onBeforeSubmitForm',
 					form: form,
 					values: values,

@@ -8,6 +8,89 @@ var getValueFromParent = function(field, value) {
 	return rec ? rec.get('name') : value;
 };
 
+var getItemTplMeta = function(modelName, table, filterObject, groupField) {
+
+	var tableStore = Ext.getStore('tables');
+	var tableRecord = tableStore.getById(modelName);
+	var template = new Ext.XTemplate('<div class="hbox">{columns}{buttons}</div>');
+	var columnStore = tableRecord.columns();
+	
+	var columns = '<div>';
+
+	if(columnStore.findExact('name', 'name') != -1) {
+		columns += '<p class="name">{name}</p>';
+	} else {
+
+		var idColExist = columnStore.findExact('name', 'id') === -1 ? false : true;
+		var queryValue = idColExist ? 'parent' : 'key';
+		
+		var mainColumns = columnStore.queryBy(function(rec) {
+			return rec.get(queryValue) ? true : false;
+		});
+		
+		if(mainColumns.getCount() > 0) {
+			columns += '<p class="key">';
+
+			var parentTpl = new Ext.XTemplate('<span>\\{[getValueFromParent("{name}", values.{name})]\\}<tpl if="end"> : </tpl></span>&nbsp;');
+			var commonTpl = new Ext.XTemplate('<span>\\{{name}\\} : </span>&nbsp;');
+			
+			mainColumns.each(function(col) {
+
+				if(filterObject.modelName.toLowerCase() != col.get('name').toLowerCase() && groupField !== col.get('name')){
+
+					if(col.get('parent')) {
+						columns += parentTpl.apply({name: col.data.name});
+					} else {
+						columns += commonTpl.apply({name: col.data.name});
+					}
+				};
+			});
+
+			columns += '</p>';
+		}
+	}
+
+	var otherColumns = columnStore.queryBy(function(rec) {
+		return rec.get('parent') ? false : true;
+	});
+	
+	if(otherColumns.getCount() > 0) {
+		columns += '<small class="other">';
+
+		var othersTpl = new Ext.XTemplate('<div>{label}: {name}</div>');
+
+		otherColumns.each(function(col) {
+			var colName = col.get('name');
+			if(groupField !== colName && colName !== 'id' && colName !== 'name' && col.get('label')) {
+				
+				var tplValue;
+				switch(col.get('type')) {
+					case 'boolean' : {
+						tplValue = othersTpl.apply({label: col.get('label'), name: '{[values.' + colName + ' == true ? "Да" : "Нет"]}'});
+						break;
+					}
+					case 'date' : {
+						tplValue = othersTpl.apply({label: col.get('label'), name: '{[Ext.util.Format.date(values.' + colName + ')]}'});
+						break;
+					}
+					default : {
+						tplValue = othersTpl.apply({label: col.get('label'), name: '{' + colName + '}'});
+					}
+				}
+				
+				columns += tplValue;
+			}
+		});
+
+		columns += '</small>';
+	}
+
+	columns += '</div>';
+	
+	console.log(template.apply({columns: columns}));
+	return template.apply({columns: columns});
+};
+
 function getItemTpl (modelName, table) {
 
 	switch(modelName) {
@@ -259,6 +342,15 @@ var getGroupConfig = function(model) {
 				},
 				sorters: [{property: 'firstName', direction: 'ASC'}],
 				field: 'firtName'
+			};
+		}
+		case 'Price' : {
+			return {
+				getGroupString: function(rec) {
+					return '' + rec.get('category');
+				},
+				sorters: [{property: 'category', direction: 'ASC'}],
+				field: 'category'
 			};
 		}
 		default : {

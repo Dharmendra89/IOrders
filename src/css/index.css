@@ -45,6 +45,14 @@
 	-webkit-box-flex: 1;
 }
 
+.x-list-item .other {
+	display: none;
+}
+
+.x-item-selected .other {
+	display: inherit;
+}
+
 .x-list-item .x-button {
 	padding-top: 0px ;
 	padding-bottom: 0px ;

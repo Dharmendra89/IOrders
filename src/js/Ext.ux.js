@@ -15,6 +15,7 @@ Ext.override(Ext.List, {
 		}
 	},
 
+
 	onUpdate : function(store, record) {
 		this.itemRefresh = true;
         Ext.List.superclass.onUpdate.apply(this, arguments);
@@ -24,7 +25,7 @@ Ext.override(Ext.List, {
     bufferRender : function(records, index){
         var div = document.createElement('div');
 		
-		if (this.grouped && this.itemRefresh) {
+		if (this.grouped && this.itemRefresh && records.length == 1) {
 			this.listItemTpl.overwrite (div, Ext.List.superclass.collectData.call(this, records, index))
 		}
 		else {
@@ -177,27 +178,35 @@ Ext.override(Ext.plugins.ListPagingPlugin, {
 	
 	onListUpdate: function() {
 		
-		var store = this.list.store;
+		var store = this.list.store,
+			scroller = this.list.ownerCt.scroller;
+		
+		if (scroller)
+			scroller.noMorePages = (!store.proxy.lastRowCount || store.proxy.lastRowCount < store.pageSize);
+		
 		
 		if( !this.rendered) {
 			this.render();
 		}
 		
-		if (!(store.pageSize && store.data.items.length % store.pageSize))
-			this.el.appendTo(this.list.getTargetEl());
-		else
-			this.el.remove();
+		this.loading = false;
 		
-		if(!this.autoPaging) {
-			this.el.removeCls('x-loading');
+		if (scroller.noMorePages)
+			this.el.remove();
+		else {
+			this.el.appendTo(this.list.getTargetEl());
+			this.el.hide();
+			if(!this.autoPaging) {
+				this.el.removeCls('x-loading');
+			}
 		}
 		
-		this.el.hide();
-		this.loading = false;
+		
 	},
 	
 	onScrollEnd: function(scroller, pos) {
-		if(pos.y >= 0.5*Math.abs(scroller.offsetBoundary.top)) {
+		//
+		if( !(scroller.noMorePages || this.loading) && scroller.containerBox.height >= Math.abs(pos.y + scroller.offsetBoundary.top)/2) {
 			this.loading = true;
 			this.list.store.nextPage();
 			this.el.show();

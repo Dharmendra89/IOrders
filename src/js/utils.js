@@ -17,33 +17,33 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 	
 	var columns = '<div>';
 
+	var idColExist = columnStore.findExact('name', 'id') === -1 ? false : true;
+	var queryValue = idColExist ? 'parent' : 'key';
+	
 	if(columnStore.findExact('name', 'name') != -1) {
 		columns += '<p class="name">{name}</p>';
+		queryName = 'key';
 	} else {
-
-		var idColExist = columnStore.findExact('name', 'id') === -1 ? false : true;
-		var queryValue = idColExist ? 'parent' : 'key';
 		
 		var mainColumns = columnStore.queryBy(function(rec) {
-			return rec.get(queryValue) ? true : false;
+			return rec.get(queryValue)  && filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase() && groupField !== rec.get('name') ? true : false;
 		});
 		
 		if(mainColumns.getCount() > 0) {
 			columns += '<p class="key">';
 
-			var parentTpl = new Ext.XTemplate('<span>\\{[getValueFromParent("{name}", values.{name})]\\}<tpl if="end"> : </tpl></span>&nbsp;');
+			var parentTpl = new Ext.XTemplate('<span>\\{[getValueFromParent("{name}", values.{name})]\\}<tpl if="!end"> : </tpl></span>&nbsp;');
 			var commonTpl = new Ext.XTemplate('<span>\\{{name}\\} : </span>&nbsp;');
+			
+			var length = mainColumns.getCount();
 			
 			mainColumns.each(function(col) {
 
-				if(filterObject.modelName.toLowerCase() != col.get('name').toLowerCase() && groupField !== col.get('name')){
-
-					if(col.get('parent')) {
-						columns += parentTpl.apply({name: col.data.name});
-					} else {
-						columns += commonTpl.apply({name: col.data.name});
-					}
-				};
+				if(col.get('parent')) {
+					columns += parentTpl.apply({name: col.data.name, end: mainColumns.indexOf(col) + 1 >= length});
+				} else {
+					columns += commonTpl.apply({name: col.data.name, end: mainColumns.indexOf(col) + 1 >= length});
+				}
 			});
 
 			columns += '</p>';
@@ -51,43 +51,45 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 	}
 
 	var otherColumns = columnStore.queryBy(function(rec) {
-		return rec.get('parent') ? false : true;
+		var colName = rec.get('name');
+		return !rec.get(queryValue) && groupField !== colName && colName !== 'id' && colName !== 'name' && rec.get('label') ? true : false;
 	});
 	
 	if(otherColumns.getCount() > 0) {
 		columns += '<small class="other">';
 
-		var othersTpl = new Ext.XTemplate('<div>{label}: {name}</div>');
+		var othersTpl = new Ext.XTemplate('<tpl if="label || name"><div>{label}<tpl if="name">: {name}</tpl></div></tpl>');
+		var othersParentTpl = new Ext.XTemplate('<tpl if="label || name"><div>{label}<tpl if="name">: \\{[getValueFromParent("{name}", values.{name})]\\}</tpl></div></tpl>');
 
 		otherColumns.each(function(col) {
 			var colName = col.get('name');
-			if(groupField !== colName && colName !== 'id' && colName !== 'name' && col.get('label')) {
 				
-				var tplValue;
-				switch(col.get('type')) {
-					case 'boolean' : {
-						tplValue = othersTpl.apply({label: col.get('label'), name: '{[values.' + colName + ' == true ? "Да" : "Нет"]}'});
-						break;
-					}
-					case 'date' : {
-						tplValue = othersTpl.apply({label: col.get('label'), name: '{[Ext.util.Format.date(values.' + colName + ')]}'});
-						break;
-					}
-					default : {
-						tplValue = othersTpl.apply({label: col.get('label'), name: '{' + colName + '}'});
-					}
+			var tplValue;
+			switch(col.get('type')) {
+				case 'boolean' : {
+					tplValue = othersTpl.apply({label: '{[values.' + colName + ' == true ? "' + col.get('label') + '" : ""]}'});
+					break;
 				}
-				
-				columns += tplValue;
+				case 'date' : {
+					tplValue = othersTpl.apply({label: col.get('label'), name: '{[Ext.util.Format.date(values.' + colName + ')]}'});
+					break;
+				}
+				default : {
+					
+					tplValue = col.get('parent')
+								? othersParentTpl.apply({label: col.get('label'), name: col.data.name})
+								: othersTpl.apply({label: col.get('label'), name: '{' + colName + '}'});
+				}
 			}
+			
+			columns += tplValue;
 		});
 
 		columns += '</small>';
 	}
 
 	columns += '</div>';
-	
-	console.log(template.apply({columns: columns}));
+
 	return template.apply({columns: columns});
 };
 
@@ -100,34 +102,6 @@ function getItemTpl (modelName, table) {
 					+ '<div class="data">{name}</div>' 
 					+ '<tpl if="extendable && editable || table_id == \'SaleOrder\'"><div class="x-button extend add">+</div></tpl>'
 				 + '</div>';
-		}
-		case 'Warehouse': {
-			return '<div>{name}</div>';
-		}
-		case 'PartnerPriceList': {
-			return '<div><span>{[getValueFromParent("pricelistSet",values.pricelistSet)]}: {[getValueFromParent("pricelist",values.pricelist)]}</span><tpl if="discount"><span>-{discount} %</span></tpl></div>'
-				+'<small><span>Партнер: {[getValueFromParent("partner", values.partner)]}</span></small>';
-		}
-		case 'Debt': {
-			return '<div><span>{remSumm} руб.</span><tpl if="isWhite"><span>Чек</span></tpl></div>'
-				+'<small><span>Полная сумма: {fullSumm}</span><span>Дата: {[Ext.util.Format.date(values.ddate)]}</span><span>№: {ndoc}</span></small>';
-		}
-		case 'Price': {
-			var tpl = '<div>{price} руб.</div>'
-				+'<small>'
-					+'<span>Ценовая категория: {[getValueFromParent("pricelistSet",values.pricelistSet)]}</span>'
-				    +'<span>Прайс-лист: {[getValueFromParent("pricelist",values.pricelist)]}</span>'
-			  	    + (!(table && table.getId()=='Product') ? '<span>Товар: {[getValueFromParent("product", values.product)]}</span>' : '')
-				+'</small>';
-			return tpl;
-		}
-		case 'Customer': {
-			//TODO
-			return '<div>{name}</div><small><span>Адрес: {address}</span><span>Партнер: {[getValueFromParent("partner", values.partner)]}</span></small>';
-		}
-		case 'SaleOrder': {
-			return '<div><span>Клиент: {[getValueFromParent("customer", values.customer)]}</span></div>'
-				+'<small><span>На дату: {[Ext.util.Format.date(values.date)]}</span><span>Сумма: {totalCost}</span></small>';
 		}
 		case 'OfferCategory': {
 			return '<div>{name}</div><div class="price">'
@@ -145,33 +119,6 @@ function getItemTpl (modelName, table) {
 				   + '</div>'
 				   + '<div class="volume">{volume}</div>'
 				 + '</div>';
-		}
-		case 'Product': {
-			return '<div>'
-				     + '<p>{name}</p>'
-				     + '<small>'
-					   + '<span>Вложение: {rel};</span> <span>Кратность: {factor} </span>'
-				     + '</small>'
-				   + '</div>';
-
-		}
-		case 'SaleOrderBottomToolbar': {
-			return '<p style="text-align: right">'
-			       +'<tpl if="packageName"><small>Упаковка: {packageName}</small></tpl>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'
-				 + 'Сумма заказа: {totalCost} руб.</p>';
-		}
-		case 'SaleOrderPosition': {
-			return '<div class="hbox">'
-		       +'<div class="info {cls} data">'
-			     + '<p>{[getValueFromParent("product", values.product)]}</p>'
-			     + '<small><span>Стоимость: {cost} руб.</span>'
-			     + '</small>'
-			   + '</div>'
-			   + '<div class="volume">{volume}</div>'
-			 + '</div>';
-		}
-		default: {
-			return '{name}';
 		}
 	}
 };
@@ -342,15 +289,6 @@ var getGroupConfig = function(model) {
 				},
 				sorters: [{property: 'firstName', direction: 'ASC'}],
 				field: 'firtName'
-			};
-		}
-		case 'Price' : {
-			return {
-				getGroupString: function(rec) {
-					return '' + rec.get('category');
-				},
-				sorters: [{property: 'category', direction: 'ASC'}],
-				field: 'category'
 			};
 		}
 		default : {

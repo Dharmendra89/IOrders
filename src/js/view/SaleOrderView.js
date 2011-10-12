@@ -60,7 +60,9 @@ var SaleOrderView = Ext.extend(AbstractView, {
 		} else if (durationValue > 500) {
 			durationValue = 500;
 		}
-
+		
+		if (!this.productList.disableHeaderTap){
+			this.productList.disableHeaderTap = true;
 		if (groupListItemsEl.hasCls('x-hidden-display')) {
 
 			var grpName = headerEl.getHTML();
@@ -73,7 +75,7 @@ var SaleOrderView = Ext.extend(AbstractView, {
 				autoClear: true,
 				from: {height: '0px'},
 				before: function(el, c) {
-
+					
 					el.show();
 					var targetHeight = el.getHeight(), parentHeight = c.pList.getHeight();
 					if (targetHeight > parentHeight) {
@@ -87,7 +89,10 @@ var SaleOrderView = Ext.extend(AbstractView, {
 					c.pList.updateOffsets();
 					c.pList.scroller.updateBoundary();
 					c.closest && c.pList.scroller.scrollTo({x: 0, y: c.closest.getOffsetsTo(c.pList.scrollEl)[1]});
-					Ext.defer(function(){ c.pList.disableSwipe = false }, 500);
+					c.pList.disableHeaderTap = false;
+					Ext.defer(function(){
+						c.pList.disableSwipe = false
+					}, 500);
 				}
 			}));
 
@@ -111,16 +116,16 @@ var SaleOrderView = Ext.extend(AbstractView, {
 					};
 				},
 				after: function(el, c) {
-
 					el.hide();
 					if (c.headerEl.hasCls('x-list-header-swap')) {
 						c.headerEl.hide();
 					};
 					c.pList.updateOffsets();
 					c.pList.scroller.updateBoundary();
+					c.pList.disableHeaderTap = false;
 				}
 			}));
-		}
+		}}
 
 	},
 	/**

@@ -124,7 +124,7 @@ Ext.regController('SaleOrder', {
 				getGroupString: function(rec) {
 					return rec.get('firstName');
 				},
-				sorters: [{property: 'firstName', direction: 'ASC'}],
+				sorters: [{property: 'firstName', direction: 'ASC'}, {property: 'name', direction: 'ASC'}],
 				filters: [{property: 'customer', value: options.saleOrder.get('customer')}],
 				volumeFilter: new Ext.util.Filter({
 					filterFn: function(item) {

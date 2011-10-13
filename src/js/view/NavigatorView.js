@@ -22,7 +22,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 			if (this.objectRecord.modelName != 'MainMenu')
 				formItems.push(createFieldSet(table.columns(), this.editable));
 			
-			this.dockedItems[0].items.push(
+			table.get('editable') && this.dockedItems[0].items.push(
 				{xtype: 'spacer'},
 				{id: 'Cancel', name: 'Cancel', text: 'Отменить', hidden: true, scope: this},
 				{

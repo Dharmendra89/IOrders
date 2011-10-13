@@ -102,13 +102,15 @@ Ext.regController('Navigator', {
 		var rec = undefined;
 		var list = options.list;
 		var item = options.item;
-
+		var view = list.up('navigatorview');
+		
+		view.setLoading(true);
+		
 		var isTableList = list.getEl().hasCls('x-table-list') ? true : false;
 
 		if (target.hasCls('x-button')) {
 			if (target.hasCls('extend')) {
 
-				var view = list.up('navigatorview');
 				options.isSetView = false;
 				editable = true;
 
@@ -129,7 +131,10 @@ Ext.regController('Navigator', {
 					record: rec,
 					editable: true
 				}));
+			} else {
+				view.setLoading(false);
 			}
+
 		} else if(isTableList && target.up('.dep')) {
 
 			var dep = target.up('.dep');
@@ -143,6 +148,8 @@ Ext.regController('Navigator', {
 				editable: false
 			}));
 			return;
+		} else {
+			view.setLoading(false);
 		}
 		
 		if(options.isSetView) {

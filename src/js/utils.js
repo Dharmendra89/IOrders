@@ -1,4 +1,3 @@
-//TODO
 Ext.util.Format.defaultDateFormat = 'd/m/Y';
 Date.monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
@@ -18,7 +17,6 @@ var getValueFromParent = function(field, value) {
 	});
 	
 	var xtpl = new Ext.XTemplate(tpl);
-	
 	
 	return rec ? xtpl.apply(rec.data) : value;
 };
@@ -76,7 +74,6 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 	});
 	
 	columns += '<div class="other">';
-	console.log(otherColumns);
 	if(otherColumns.getCount() > 0) {
 		columns += '<small class="other-fields">';
 
@@ -133,11 +130,9 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 	 * END.
 	 * Сборка темплейта для deps
 	 */
-	columns += '</div>';
-	
+	columns += '</div>';	
 	columns += '</div>';
 
-	console.log(template.apply({columns: columns}));
 	return template.apply({columns: columns});
 };
 

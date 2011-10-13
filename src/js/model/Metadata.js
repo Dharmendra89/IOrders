@@ -1,20 +1,24 @@
-var composeMainMenu = function(tables) {
+var addMainMenu = function(store, tables) {
 
-	var mainMenu = {
+	var mainMenu = Ext.ModelMgr.create({
 		id: 'MainMenu',
 		name: 'Главное меню',
 		columns: [{id: 'id', type: 'int'}],
-		deps: []
-	};
+	}, 'Table');
 
-	Ext.each(tables, function(item, idx, arr) {
-		item.deps && mainMenu.deps.push({
-			id: item.id + 'id',
-			table_id: item.id
-		});
+	var mmDeps = mainMenu.deps();
+	
+	Ext.each(tables, function(table) {
+		if(table.deps().getCount() > 0) {
+			
+			mmDeps.add({
+				id: table.getId() + 'id',
+				table_id: table.getId()
+			});
+		}
 	});
 	
-	tables.push(mainMenu);
+	store.add(mainMenu);
 };
 
 
@@ -71,5 +75,10 @@ Ext.regModel('Dep', {
 });
 
 Ext.regStore('tables', {
-	model: 'Table'
+	model: 'Table',
+	listeners: {
+		load: function(store, records, s) {
+			addMainMenu(store, records);
+		}
+	}
 });

@@ -20,7 +20,7 @@ Ext.regApplication({
 			metadata = Ext.decode(localStorage.getItem('metadata'))
 		;
 		
-		document.body.addEventListener('touchstart', function(e) {e.preventDefault()}, false);
+		document.body.addEventListener('touchstart', function(e) {e.preventDefault();}, false);
 		
 		this.viewport = Ext.create({xtype: 'viewport'});
 		
@@ -30,8 +30,7 @@ Ext.regApplication({
 					console.log('Database started: version=' + db.version);
 					
 					tStore.getProxy().data = this.metadata;
-					tStore.load();
-					IOrders.init();
+					tStore.load(function() {IOrders.init();});
 					
 					if (db.clean)
 						IOrders.xi.download(IOrders.dbeng);
@@ -56,7 +55,6 @@ Ext.regApplication({
 						console.log(m);
 						
 						var metadata = me.xml2obj(m).metadata;
-						composeMainMenu(metadata.tables);
 						
 						localStorage.setItem('metadata', Ext.encode(metadata));
 						

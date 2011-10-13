@@ -212,8 +212,6 @@ Ext.regController('Main', {
 				
 				var metadata = this.xml2obj(m).metadata;
 				
-				composeMainMenu(metadata.tables);
-				
 				localStorage.setItem('metadata', Ext.encode(metadata));
 				
 				if ( metadata.version != IOrders.dbeng.db.version )

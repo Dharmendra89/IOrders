@@ -92,7 +92,7 @@ var SaleOrderView = Ext.extend(AbstractView, {
 					c.closest && c.pList.scroller.scrollTo({x: 0, y: c.closest.getOffsetsTo(c.pList.scrollEl)[1]});
 					c.pList.disableHeaderTap = false;
 					Ext.defer(function(){
-						c.pList.disableSwipe = false
+						c.pList.disableSwipe = false;
 					}, 500);
 				}
 			}));

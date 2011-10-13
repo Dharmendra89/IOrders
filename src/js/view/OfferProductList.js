@@ -65,7 +65,7 @@ var offerProductList = Ext.extend(Ext.List, {
 			scrollend: function(s, o){
 				me.disableSwipe = false;
 			}
-		}
+		};
 		
 	}	
 	

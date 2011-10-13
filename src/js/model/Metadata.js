@@ -49,6 +49,7 @@ Ext.regModel('Column', {
 			{name: 'type', type: 'string'},
 			{name: 'table_id', type: 'string'},
 			{name: 'key', type: 'boolean'},
+			{name: 'aggregable', type: 'string'},
 			{name: 'parent', type: 'string'}
 	],
 	associations: [

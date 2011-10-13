@@ -99,7 +99,7 @@
         <column id="Debtndoc" name="ndoc" type="string" label="Документ№"/>
         <column id="DebtfullSumm" name="fullSumm" type="float" label="Сумма"/>
         <column id="DebtisWhite" name="isWhite" type="boolean" label="Нужен чек"/>
-        <column id="DebtremSumm" name="remSumm" type="float" label="Задолженность"/>
+        <column id="DebtremSumm" name="remSumm" type="float" label="Задолженность" aggregable="sum"/>
         <column id="Debtpartner" name="partner" parent="Partner" label="Партнер"/>
       </columns>
     </table>

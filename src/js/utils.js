@@ -3,9 +3,24 @@ Ext.util.Format.defaultDateFormat = 'd/m/Y';
 Date.monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
 var getValueFromParent = function(field, value) {
-	var parentStore = Ext.getStore(field[0].toUpperCase() + field.substring(1));
+	
+	var modelName = field[0].toUpperCase() + field.substring(1);
+	var parentStore = Ext.getStore(modelName);
 	var rec = parentStore.getById(value);
-	return rec ? rec.get('name') : value;
+	
+	var tableStore = Ext.getStore('tables');
+	var tableRecord = tableStore.getById(modelName);
+	var columnStore = tableRecord.columns();
+	
+	var tpl = '';
+	columnStore.each(function(rec) {
+		rec.get('label') && (tpl += (rec.data.name === 'name' ? '' : rec.get('label') + ': ') + '{' + rec.get('name') +'} ');
+	});
+	
+	var xtpl = new Ext.XTemplate(tpl);
+	
+	
+	return rec ? xtpl.apply(rec.data) : value;
 };
 
 var getItemTplMeta = function(modelName, table, filterObject, groupField) {
@@ -26,7 +41,7 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 	
 	if(columnStore.findExact('name', 'name') != -1) {
 		columns += '<p class="name">{name}</p>';
-		queryName = 'key';
+		queryValue = 'key';
 	} else {
 		
 		var mainColumns = columnStore.queryBy(function(rec) {
@@ -56,10 +71,12 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 
 	var otherColumns = columnStore.queryBy(function(rec) {
 		var colName = rec.get('name');
-		return !rec.get(queryValue) && groupField !== colName && colName !== 'id' && colName !== 'name' && rec.get('label') ? true : false;
+		return !rec.get(queryValue) && groupField !== colName && filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase()
+			&& colName !== 'id' && colName !== 'name' && rec.get('label') ? true : false;
 	});
 	
 	columns += '<div class="other">';
+	console.log(otherColumns);
 	if(otherColumns.getCount() > 0) {
 		columns += '<small class="other-fields">';
 

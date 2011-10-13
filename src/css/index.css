@@ -45,11 +45,11 @@
 	-webkit-box-flex: 1;
 }
 
-.x-list-item .other- {
+.x-list-item .buttons {
 	display: none;
 }
 
-.x-item-selected .other {
+.x-item-selected .buttons {
 	display: inherit;
 }
 

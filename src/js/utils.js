@@ -340,6 +340,25 @@ var getGroupConfig = function(model) {
 	}
 };
 
+var getSortersConfig = function(model, storeConfig) {
+
+	var table = Ext.getStore('tables').getById(model);
+
+	var parentCols = table.columns().queryBy(function(rec) {
+		return rec.get('parent') ? true : false;
+	});
+	
+	var sortConfig = {};
+	sortConfig.sorters = storeConfig.sorters ? storeConfig.sorters : [];
+	
+	parentCols.each(function(col) {
+
+		sortConfig.sorters.push({property: col.get('name')});
+	});
+	
+	return sortConfig;
+};
+
 var getNextWorkDay = function() {
 	var today = new Date();
 	var todayWeekDay = today.getDay();

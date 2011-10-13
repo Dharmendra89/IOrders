@@ -82,8 +82,9 @@ var NavigatorView = Ext.extend(AbstractView, {
 			}
 			
 			var listGroupedConfig = getGroupConfig(this.tableRecord);
+			var sortersConfig = getSortersConfig(this.tableRecord, listGroupedConfig);
 			
-			this.setViewStore = createStore(this.tableRecord, listGroupedConfig);
+			this.setViewStore = createStore(this.tableRecord, Ext.apply(listGroupedConfig, sortersConfig));
 			
 			formItems.push({
 				xtype: 'list',

@@ -107,6 +107,12 @@ Ext.regController('Navigator', {
 		view.setLoading(true);
 		
 		var isTableList = list.getEl().hasCls('x-table-list') ? true : false;
+		
+		if(options.isSetView) {
+			Ext.dispatch(Ext.apply(options, {
+				action: 'createAndActivateView'
+			}));
+		}
 
 		if (target.hasCls('x-button')) {
 			if (target.hasCls('extend')) {
@@ -131,8 +137,6 @@ Ext.regController('Navigator', {
 					record: rec,
 					editable: true
 				}));
-			} else {
-				view.setLoading(false);
 			}
 
 		} else if(isTableList && target.up('.dep')) {
@@ -143,20 +147,29 @@ Ext.regController('Navigator', {
 				controller: 'Navigator',
 				action: 'createAndActivateView',
 				record: list.getRecord(item),
-				tableRecord: dep.down('input').dom.value,
+				tableRecord: dep.down('input').getAttribute('value'),
 				isSetView: true,
 				editable: false
 			}));
 			return;
-		} else {
-			view.setLoading(false);
+
+		} else if(isTableList && target.hasCls('label-parent')) {
+
+			var parentModel = target.down('input').getAttribute('property');
+			parentModel = parentModel[0].toUpperCase() + parentModel.substring(1);
+			
+			Ext.dispatch(Ext.apply(options, {
+				controller: 'Navigator',
+				action: 'createAndActivateView',
+				record: Ext.getStore(parentModel).getById(parseInt(target.down('input').getAttribute('value'))),
+				isSetView: false,
+				editable: false
+			}));
+			return;
+
 		}
 		
-		if(options.isSetView) {
-			Ext.dispatch(Ext.apply(options, {
-				action: 'createAndActivateView'
-			}));
-		}
+		view.setLoading(false);
 	},
 
 	createAndActivateView: function(options) {

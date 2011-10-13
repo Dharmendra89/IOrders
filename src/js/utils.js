@@ -78,7 +78,7 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 		columns += '<small class="other-fields">';
 
 		var othersTpl = new Ext.XTemplate('<tpl if="label || name"><div>{label}<tpl if="name">: {name}</tpl></div></tpl>');
-		var othersParentTpl = new Ext.XTemplate('<tpl if="label || name"><div>{label}<tpl if="name">: \\{[getValueFromParent("{name}", values.{name})]\\}</tpl></div></tpl>');
+		var othersParentTpl = new Ext.XTemplate('<tpl if="label || name"><div><span class="label-parent"><input type="hidden" property="{name}" value="\\{{name}\\}" />{label}</span><tpl if="name">: \\{[getValueFromParent("{name}", values.{name})]\\}</tpl></div></tpl>');
 
 		otherColumns.each(function(col) {
 			var colName = col.get('name');

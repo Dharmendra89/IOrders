@@ -327,7 +327,7 @@ Ext.regController('Navigator', {
 						modelProxy.count(operCount, function(operation) {
 							operation.depRec.count = operation.result;
 							operation.listRecord.data.deps = data;
-							operation.list.select(record, true, false);
+							operation.list.getSelectionModel().select(record, true, false);
 							operation.list.refreshNode(list.indexOf(record));
 						});
 		

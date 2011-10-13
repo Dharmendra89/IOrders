@@ -245,13 +245,19 @@ Ext.regController('Navigator', {
 	},
 	
 	onSyncButtonTap: function(options) {
+		options.btn.disable();
+		
 		IOrders.xi.upload ({
 			engine: IOrders.dbeng,
 			success: function(s) {
-				Ext.Msg.alert('Загрузка завершена', 'Передано записей: '+s.getCount());
+				Ext.Msg.alert('Загрузка завершена', 'Передано записей: '+s.getCount(),
+							  function() {options.btn.enable()}
+				);
 			},
 			failure: function(s,e) {
-				Ext.Msg.alert('Загрузка не удалась', e);
+				Ext.Msg.alert('Загрузка не удалась', e,
+							  function() {options.btn.enable()}
+				);
 			},
 			recordSuccess: function(s) {
 				var cnt = parseInt(options.btn.getBadgeText());

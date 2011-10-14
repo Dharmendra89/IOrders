@@ -55,17 +55,21 @@ var offerProductList = Ext.extend(Ext.List, {
 		
 		offerProductList.superclass.initComponent.apply(this, arguments);
 		
-		this.scroll.threshold = 25;
-		
-		this.scroll.listeners  = {
-			scroll:function(s, o) {
-				if (o.y)
-					me.disableSwipe = true;
-			},
-			scrollend: function(s, o){
-				me.disableSwipe = false;
+		Ext.apply(this.scroll,{
+			
+			threshold: 25,
+			
+			listeners: {
+				scroll:function(s, o) {
+					if (o.y)
+						me.disableSwipe = true;
+				},
+				scrollend: function(s, o){
+					me.disableSwipe = false;
+				}
 			}
-		};
+			
+		});
 		
 	}	
 	

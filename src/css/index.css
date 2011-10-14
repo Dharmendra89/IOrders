@@ -6,10 +6,12 @@
 	text-align: center;
 }
 
+.x-list-header {
+	background-color: rgb(113, 145, 185);
+}
 
 .x-list-header, .x-toolbar-dark {
 	background-image: none;
-	background-color: rgb(113, 145, 185);
 	color: white;
 	text-shadow: none;
 	-webkit-box-shadow: none;

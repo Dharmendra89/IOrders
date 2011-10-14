@@ -17,36 +17,45 @@ Ext.regController('Navigator', {
 		}), IOrders.viewport.anims.home);
 	},
 	onSaveButtonTap: function(options) {
-
-		var view = options.view;
-		var form = view.form;
-		var formRec = form.getRecord();
+		
+		var view = options.view,
+		    form = view.form,
+		    formRec = form.getRecord()
+		;
 		
 		form.updateRecord(formRec);
-
+		
 		var errors = formRec.validate();
+		
 		if(errors.isValid()) {
+			
 			var btn = options.btn;
 			btn.setText('Редактировать');
 			Ext.apply(btn, {name: 'Edit'});
-	
+			
 			options.view.depStore.each(function(rec) {
 				rec.set('editable', false);
 			});
 			
 			var toolbar = btn.up('toolbar');
 			toolbar.getComponent('Cancel').hide();
-	
+			
 			formRec.save();
 			Ext.dispatch(Ext.apply(options, {action: 'setEditable', editable: false}));
+			
 		} else {
+			
 			var msg = '';
+			
 			errors.each(function(err) {
 				msg += 'Поле ' + err.field + ' ' + err.message;
 			});
+			
 			Ext.Msg.alert('Ошибка валидации', msg, Ext.emptyFn);
+			
 		}
 	},
+	
 	onEditButtonTap: function(options) {
 		
 		var btn = options.btn;
@@ -56,16 +65,17 @@ Ext.regController('Navigator', {
 		options.view.depStore.each(function(rec) {
 			rec.set('editable', true);
 		});
-
+		
 		var toolbar = btn.up('toolbar');
 		toolbar.getComponent('Cancel').show();
-
+		
 		Ext.dispatch(Ext.apply(options, {action: 'setEditable', editable: true}));
 	},
+	
 	onCancelButtonTap: function(options) {
-
+		
 		options.view.form.load(options.view.form.getRecord());
-
+		
 		var toolbar = options.btn.up('toolbar');
 		toolbar.getComponent('Cancel').hide();
 		
@@ -77,72 +87,90 @@ Ext.regController('Navigator', {
 		
 		saveEditBtn.setText('Редактировать');
 		Ext.apply(saveEditBtn, {name: 'Edit'});
-
+		
 		Ext.dispatch(Ext.apply(options, {action: 'setEditable', editable: false}));
 	},
+	
 	setEditable: function(options) {
 		options.view.form.setDisabled(!options.editable);
 	},
+	
 	onAddButtonTap: function(options) {
-
-		var rec = Ext.ModelMgr.create({}, options.view.tableRecord);
-		rec.set(options.view.objectRecord.modelName.toLowerCase(), options.view.objectRecord.getId());
+		
+		var rec = Ext.ModelMgr.create( {}, options.view.tableRecord );
+		
+		rec.set (
+			options.view.objectRecord.modelName.toLowerCase(),
+			options.view.objectRecord.getId()
+		);
+		
 		if(rec.modelName === 'SaleOrder') {
 			rec.set('totalCost', '0');
 			rec.set('date', getNextWorkDay());
 		}
+		
 		var oldCard = IOrders.viewport.getActiveItem();
 		var newCard = Ext.create(createNavigatorView(rec, oldCard, false, true));
-
+		
 		IOrders.viewport.setActiveItem(newCard);
 	},
+	
 	onListItemTap: function(options) {
-
-		var target = Ext.get(options.event.target);
-		var rec = undefined;
-		var list = options.list;
-		var item = options.item;
-		var view = list.up('navigatorview');
 		
-		view.setLoading(true);
+		var target = Ext.get(options.event.target),
+		    rec = undefined,
+		    list = options.list,
+		    item = options.item,
+	        view = list.up('navigatorview'),
+		    isTableList = list.getEl().hasCls('x-table-list') ? true : false
+		;
 		
-		var isTableList = list.getEl().hasCls('x-table-list') ? true : false;
-		
-		if(options.isSetView) {
+		if (options.isSetView) {
+			
 			Ext.dispatch(Ext.apply(options, {
 				action: 'createAndActivateView'
 			}));
-		}
-
-		if (target.hasCls('x-button')) {
+			
+		} else if (target.hasCls('x-button')) {
+			
 			if (target.hasCls('extend')) {
-
+				
 				options.isSetView = false;
 				editable = true;
-
-				var createdRecordModelName = isTableList ? target.up('.dep').down('input').dom.value : list.getRecord(item).get('table_id'); 
 				
-				rec = Ext.ModelMgr.create({}, createdRecordModelName);
+				view.setLoading (true);
 				
-				var objectRecord = isTableList ? list.getRecord(item) : view.objectRecord;
-				
-				rec.set(objectRecord.modelName.toLowerCase(), objectRecord.getId());
-				if(rec.modelName === 'SaleOrder') {
-					rec.set('totalCost', '0');
-					rec.set('date', getNextWorkDay());
-				}
-				
-				Ext.dispatch(Ext.apply(options, {
-					action: 'createAndActivateView',
-					record: rec,
-					editable: true
-				}));
+				var createdRecordModelName = isTableList
+						? target.up('.dep').down('input').dom.value
+						: list.getRecord(item).get('table_id'),
+					objectRecord = isTableList
+						? list.getRecord(item)
+						: view.objectRecord
+				;
+					
+				Ext.defer ( function () {
+					
+					rec = Ext.ModelMgr.create({}, createdRecordModelName);
+					rec.set( objectRecord.modelName.toLowerCase(), objectRecord.getId() );
+					
+					if (rec.modelName === 'SaleOrder') {
+						rec.set('totalCost', '0');
+						rec.set('date', getNextWorkDay());
+					}
+					
+					Ext.dispatch(Ext.apply(options, {
+						action: 'createAndActivateView',
+						record: rec,
+						editable: true
+					}));
+					
+				}, 100);
 			}
-
-		} else if(isTableList && target.up('.dep')) {
-
+			
+		} else if (isTableList && target.up('.dep')) {
+			
 			var dep = target.up('.dep');
-		
+			
 			Ext.dispatch(Ext.apply(options, {
 				controller: 'Navigator',
 				action: 'createAndActivateView',
@@ -151,10 +179,11 @@ Ext.regController('Navigator', {
 				isSetView: true,
 				editable: false
 			}));
+			
 			return;
-
-		} else if(isTableList && target.hasCls('label-parent')) {
-
+			
+		} else if (isTableList && target.hasCls('label-parent')) {
+			
 			var parentModel = target.down('input').getAttribute('property');
 			parentModel = parentModel[0].toUpperCase() + parentModel.substring(1);
 			
@@ -165,21 +194,33 @@ Ext.regController('Navigator', {
 				isSetView: false,
 				editable: false
 			}));
+			
 			return;
-
+			
 		}
 		
-		view.setLoading(false);
 	},
 
 	createAndActivateView: function(options) {
 		
-		var objectRecord = options.record || options.list.getRecord(options.item);
+		var objectRecord = options.record
+			|| options.list.getRecord(options.item),
+		    config = {}
+		;
 		
-		var config = {};
-		options.tableRecord && Ext.apply(config, {tableRecord: options.tableRecord, objectRecord: objectRecord});
-
-		var newCard = Ext.create(createNavigatorView(objectRecord, IOrders.viewport.getActiveItem(), options.isSetView, options.editable, config));
+		options.tableRecord && Ext.apply(config, {
+			tableRecord: options.tableRecord,
+			objectRecord: objectRecord
+		});
+		
+		var newCard = Ext.create( createNavigatorView(
+			objectRecord,
+			IOrders.viewport.getActiveItem(),
+			options.isSetView,
+			options.editable,
+			config
+		));
+		
 		if (newCard.isSetView) {
 			Ext.dispatch(Ext.apply(options, {action: 'loadSetViewStore', newCard: newCard}));
 		} else {
@@ -188,16 +229,21 @@ Ext.regController('Navigator', {
 	},
 	
 	loadSetViewStore: function(options) {
-		var oldCard = IOrders.viewport.getActiveItem();
-		var newCard = options.newCard;
+		
+		var oldCard = IOrders.viewport.getActiveItem(),
+		    newCard = options.newCard,
+		    store = newCard.setViewStore
+		;
+		
 		oldCard.setLoading(true);
-		var store = newCard.setViewStore;
+		
 		store.currentPage = 1;
 		store.clearFilter(true);
-
+		
 		if (newCard.objectRecord.modelName != 'MainMenu') {
+			
 			if (newCard.objectRecord.modelName) {
-
+				
 				store.filter([{
 					property: newCard.objectRecord.modelName.toLowerCase(),
 					value: newCard.objectRecord.getId()
@@ -205,23 +251,26 @@ Ext.regController('Navigator', {
 				
 				oldCard.setLoading(false);
 				IOrders.viewport.setActiveItem(newCard, options.anim);
+				
 			} else {
-
+				
 				store.load({
 					callback: function() {
 						oldCard.setLoading(false);
 						IOrders.viewport.setActiveItem(newCard, options.anim);
 					}
-				});
+				})
+				
 			}
 		} else {
-
+			
 			store.load({
 				callback: function() {
 					oldCard.setLoading(false);
 					IOrders.viewport.setActiveItem(newCard, options.anim);
 				}
-			});
+			})
+			
 		}
 	},
 	

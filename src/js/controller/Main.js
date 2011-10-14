@@ -35,7 +35,9 @@ Ext.regController('Main', {
 		if(navView) {
 			switch(rec.get('table_id')) {
 				case 'SaleOrderPosition' : {
+					
 					var target = Ext.get(options.event.target);
+					
 					if(target.hasCls('x-button')) {
 						
 						if(target.hasCls('extend')) {
@@ -59,11 +61,14 @@ Ext.regController('Main', {
 								Ext.Msg.alert('Ошибка валидации', msg, Ext.emptyFn);
 							}
 						}
+						
 					} else {
+						
 						Ext.dispatch(Ext.apply(options, {
 							controller: 'Navigator',
 							isSetView: listEl.hasCls('x-deps-list')
 						}));
+						
 					}
 					break;
 				}
@@ -237,6 +242,7 @@ Ext.regController('Main', {
 			Ext.decode(localStorage.getItem('metadata')),
 			true
 		);
+		
 	},
 
 	onReloadButtonTap: function(options) {
@@ -252,11 +258,13 @@ Ext.regController('Main', {
 	},
 
 	onListSelectionChange: function(options) {
-
+		
 		var navView = options.list.up('navigatorview');
+		
 		if(navView) {
 			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', view: navView}));
 		}
+		
 	}
 
 });

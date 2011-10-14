@@ -2,23 +2,9 @@ Ext.util.Format.defaultDateFormat = 'd/m/Y';
 Date.monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
 var getValueFromParent = function(field, value) {
-	
-	var modelName = field[0].toUpperCase() + field.substring(1);
-	var parentStore = Ext.getStore(modelName);
+	var parentStore = Ext.getStore(field[0].toUpperCase() + field.substring(1));
 	var rec = parentStore.getById(value);
-	
-	var tableStore = Ext.getStore('tables');
-	var tableRecord = tableStore.getById(modelName);
-	var columnStore = tableRecord.columns();
-	
-	var tpl = '';
-	columnStore.each(function(rec) {
-		rec.get('label') && (tpl += (rec.data.name === 'name' ? '' : rec.get('label') + ': ') + '{' + rec.get('name') +'} ');
-	});
-	
-	var xtpl = new Ext.XTemplate(tpl);
-	
-	return rec ? xtpl.apply(rec.data) : value;
+	return rec ? rec.get('name') : value;
 };
 
 var getItemTplMeta = function(modelName, table, filterObject, groupField) {

@@ -125,13 +125,7 @@ Ext.regController('Navigator', {
 		    isTableList = list.getEl().hasCls('x-table-list') ? true : false
 		;
 		
-		if (options.isSetView) {
-			
-			Ext.dispatch(Ext.apply(options, {
-				action: 'createAndActivateView'
-			}));
-			
-		} else if (target.hasCls('x-button')) {
+		if (target.hasCls('x-button')) {
 			
 			if (target.hasCls('extend')) {
 				
@@ -167,6 +161,12 @@ Ext.regController('Navigator', {
 				}, 100);
 			}
 			
+		} else if (options.isSetView) {
+			
+			Ext.dispatch(Ext.apply(options, {
+				action: 'createAndActivateView'
+			}));
+			
 		} else if (isTableList && target.up('.dep')) {
 			
 			var dep = target.up('.dep');
@@ -179,8 +179,6 @@ Ext.regController('Navigator', {
 				isSetView: true,
 				editable: false
 			}));
-			
-			return;
 			
 		} else if (isTableList && target.hasCls('label-parent')) {
 			
@@ -195,8 +193,15 @@ Ext.regController('Navigator', {
 				editable: false
 			}));
 			
-			return;
+		} else {
 			
+			Ext.defer ( function() {
+				Ext.dispatch(Ext.apply(options, {
+					controller: 'Navigator',
+					action: 'onListSelectionChange',
+					selections: [list.getRecord(item)]
+				}))
+			}, 150)
 		}
 		
 	},
@@ -297,7 +302,7 @@ Ext.regController('Navigator', {
 	},
 
 	onFilterValueChange: function(options) {
-
+		
 		var field = options.field;
 		var view = options.view;
 		var filterRecord = view.objectRecord;
@@ -305,10 +310,10 @@ Ext.regController('Navigator', {
 		
 		store.clearFilter(true);
 		store.currentPage = 1;
-
+		
 		var filters = [];
 		options.filter && filters.push({property: filterRecord.modelName.toLowerCase(), value: field.getValue()});
-
+		
 		options.removeFilter && view.form.remove(0);
 		store.filter(filters);
 	},
@@ -362,11 +367,13 @@ Ext.regController('Navigator', {
 	},
 
 	onListSelectionChange: function(options) {
-
+		
 		var list = options.list;
 		
-		var tableRecord, depStore;
-		var tableStore = Ext.getStore('tables');
+		var tableRecord,
+		    depStore,
+		    tableStore = Ext.getStore('tables')
+		;
 		
 		Ext.each(options.selections, function(record) {
 			if(!record.data.deps) {
@@ -374,41 +381,45 @@ Ext.regController('Navigator', {
 				depStore || (depStore = tableRecord.deps());
 				
 				var data = [];
-		
+				
 				depStore.each(function(dep) {
-		
+					
 					var depTable = tableStore.getById(dep.get('table_id'));
-		
+					
 					if(depTable.get('id') != 'SaleOrderPosition' || record.modelName == 'SaleOrder') {
+						
 						var depRec = {
-							name: depTable.get('nameSet'),
-							table_id: depTable.get('id'),
-							extendable: depTable.get('extendable'),
-							editable: false || record.modelName == 'MainMenu'
-						};
-		
-						var modelProxy = Ext.ModelMgr.getModel(depTable.get('id')).prototype.getProxy();
-		
-						var filters = [];
-						record.modelName != 'MainMenu' && filters.push({property: record.modelName.toLowerCase(), value: record.getId()});
-		
-						var operCount = new Ext.data.Operation({
-							list: list,
-							listRecord: record,
-							depRec: depRec,
+								name: depTable.get('nameSet'),
+								table_id: depTable.get('id'),
+								extendable: depTable.get('extendable'),
+								editable: false || record.modelName == 'MainMenu'
+							},
+						    modelProxy = Ext.ModelMgr.getModel(depTable.get('id')).prototype.getProxy(),
+							filters = []
+						;
+						
+						record.modelName != 'MainMenu'
+							&& filters.push({
+								property: record.modelName.toLowerCase(),
+								value: record.getId()
+							})
+						;
+						
+						var operCount = new Ext.data.Operation ({
 							filters: filters
 						});
-		
+						
 						modelProxy.count(operCount, function(operation) {
-							operation.depRec.count = operation.result;
-							operation.listRecord.data.deps = data;
-							operation.list.getSelectionModel().select(record, true, false);
-							operation.list.refreshNode(list.indexOf(record));
+							depRec.count = operation.result;
+							record.data.deps = data;
+							list.refreshNode(list.indexOf(record));
 						});
-		
+						
 						data.push(depRec);
 					}
 				});
+				
+//				list.getSelectionModel().select(record, true, false);
 			}
 		});
 	}

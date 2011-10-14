@@ -4,9 +4,9 @@ Ext.override(Ext.Interaction, {controller: 'Main'});
 
 Ext.override(Ext.List, {
 	listeners: {
-		selectionchange: function(selModel, selections) {
+/*		selectionchange: function(selModel, selections) {
 			Ext.dispatch({action: 'onListSelectionChange', list: this, selModel: selModel, selections: selections});
-		},
+		},*/
 		itemtap: function(list, idx, item, e) {
 			Ext.dispatch({action: 'onListItemTap', list: list, idx: idx, item: item, event: e});
 		},
@@ -194,7 +194,7 @@ Ext.override(Ext.plugins.ListPagingPlugin, {
 		if (scroller.noMorePages)
 			this.el.remove();
 		else {
-			this.el.appendTo(this.list.getTargetEl());
+			this.el.dom && this.el.appendTo(this.list.getTargetEl());
 			this.el.hide();
 			if(!this.autoPaging) {
 				this.el.removeCls('x-loading');
@@ -205,7 +205,6 @@ Ext.override(Ext.plugins.ListPagingPlugin, {
 	},
 	
 	onScrollEnd: function(scroller, pos) {
-		//
 		if( !(scroller.noMorePages || this.loading) && scroller.containerBox.height >= Math.abs(pos.y + scroller.offsetBoundary.top)/2) {
 			this.loading = true;
 			this.list.store.nextPage();

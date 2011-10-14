@@ -56,11 +56,11 @@
 	-webkit-box-flex: 1;
 }
 
-.x-list-item .buttons {
+.--x-list-item .buttons {
 	display: none;
 }
 
-.x-item-selected .buttons {
+.--x-item-selected .buttons {
 	display: inherit;
 }
 

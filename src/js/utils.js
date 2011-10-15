@@ -29,7 +29,9 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 	} else {
 		
 		var mainColumns = columnStore.queryBy(function(rec) {
-			return rec.get(queryValue)  && filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase() && groupField !== rec.get('name') ? true : false;
+			return rec.get(queryValue)
+				&& filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase()
+				&& groupField !== rec.get('name') ? true : false;
 		});
 		
 		if(mainColumns.getCount() > 0) {
@@ -134,7 +136,7 @@ function getItemTpl (modelName, table) {
 		}
 		case 'OfferCategory': {
 			return '<div>{name}</div><div class="price">'
-				   + '<small> {totalCost} руб.</small>'
+				 //  + '<small> {totalCost} руб.</small>'
 				 + '</div>';
 		}
 		case 'OfferProduct': {

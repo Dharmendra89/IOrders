@@ -52,6 +52,14 @@
 	color: blue;
 }
 
+.expandable .x-list-group-items {
+	display: none;
+}
+
+.expandable .x-list-group-items.expanded {
+	display: inherit;
+}
+
 .hbox .data {
 	-webkit-box-flex: 1;
 }

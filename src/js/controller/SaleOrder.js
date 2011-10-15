@@ -57,7 +57,6 @@ Ext.regController('SaleOrder', {
 			view.productStore.filtersSnapshot = view.productStore.filters.items;
 			view.productStore.clearFilter(true);
 			view.productStore.filter(view.productStore.volumeFilter);
-			view.productList.showAllGroups();
 			
 			view.productCategoryList.deselect(
 				view.productCategoryList.selectionSnaphot = view.productCategoryList.getSelectedRecords()
@@ -85,6 +84,7 @@ Ext.regController('SaleOrder', {
 		
 		view.productCategoryList.scroller.scrollTo({y: 0});
 		view.productList.scroller.scrollTo ({y:0});
+		view.productList.el.toggleCls('expandable');
 		
 		view.setLoading(false);
 		
@@ -139,7 +139,8 @@ Ext.regController('SaleOrder', {
 			});
 			
 			var list = 	newCard.productList = newCard.productPanel.add({
-				xtype: 'offerproductlist', store: newCard.productStore
+				xtype: 'offerproductlist',
+				store: newCard.productStore
 			});
 			
 			newCard.productPanel.doLayout();
@@ -224,25 +225,20 @@ Ext.regController('SaleOrder', {
 			addCost: cost - oldCost
 		}));
 		
-		//Ext.defer (function (idx)
-		//	{
-//		options.list.refreshNode(options.idx);
-
 		Ext.get(options.item).down('.cost').dom.innerHTML = rec.get('cost');
 		Ext.get(options.item).down('.volume').dom.innerHTML = rec.get('volume');
 		
 		options.list.scroller.enable();
-		//	},
-		//	150, options.list, [options.idx]
-		//);
+		
 	},
 	
 	calculateTotalCost: function(options) {
 		
 		var view = options.list ? options.list.up('saleorderview') : options.view,
 		    btb = view.getDockedComponent('bottomToolbar'),
-		    rec = view.offerCategoryStore.findRecord('category', options.record.get('category'));
-
+		    rec = view.offerCategoryStore.findRecord('category', options.record.get('category'))
+		;
+		
 		rec.set(
 			'totalCost',
 			(rec.get('totalCost') + options.addCost).toFixed (2)

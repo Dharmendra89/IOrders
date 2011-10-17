@@ -9,7 +9,11 @@ var createModels = function(tablesStore) {
 				type: column.get('type')
 			});
 			
-			column.get('name') == 'date' && validations.push({type: 'length', field: column.get('name'), min: 1, message: 'обязательное для заполнения'});
+			column.get('name') == 'date'
+				&& validations.push({
+					type: 'length', field: column.get('name'), min: 1, message: 'обязательное для заполнения'
+				})
+			;
 		});
 		
 		Ext.regModel(tableName, {

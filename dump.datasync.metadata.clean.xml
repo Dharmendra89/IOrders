@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.32" expect-megabytes="15">
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.4" expect-megabytes="15">
   <tables set-of="table">
     <table id="Warehouse" name="Склад" nameSet="Склады">
       <columns set-of="column">
@@ -38,11 +38,22 @@
         <dep table_id="Price" id="Pricepricelist"/>
       </deps>
     </table>
+    <table id="ShopDepartment" name="Отдел магазина" nameSet="Отделы магазина">
+      <columns set-of="column">
+        <column id="ShopDepartmentid" name="id" type="int" key="true"/>
+        <column id="ShopDepartmentname" name="name" type="string" label="Название"/>
+        <column id="ShopDepartmentord" name="ord" type="int"/>
+      </columns>
+      <deps set-of="dep">
+        <dep table_id="Category" id="CategoryshopDepartment"/>
+      </deps>
+    </table>
     <table id="Category" name="Категория товаров" nameSet="Категории товаров">
       <columns set-of="column">
         <column id="Categoryid" name="id" type="int" key="true"/>
         <column id="Categoryname" name="name" type="string" label="Название"/>
         <column id="Categoryord" name="ord" type="int"/>
+        <column id="CategoryshopDepartment" name="shopDepartment" parent="ShopDepartment" label="Отдел магазина"/>
       </columns>
       <deps set-of="dep">
         <dep table_id="Price" id="Pricecategory"/>

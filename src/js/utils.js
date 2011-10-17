@@ -322,6 +322,15 @@ var getGroupConfig = function(model) {
 				field: 'firtName'
 			};
 		}
+		case 'Category' : {
+			return {
+				getGroupString: function(rec) {
+					return rec.get('ShopDepartment_name');
+				},
+				sorters: [{property: 'ShopDepartment_name', direction: 'ASC'}],
+				field: 'ShopDepartment_name'
+			};
+		}
 		default : {
 			return {};
 		}

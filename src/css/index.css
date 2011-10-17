@@ -77,6 +77,9 @@
 	padding-bottom: 0px ;
 }
 
+.x-list-item-body > .dep > .x-button.extend {
+	margin: -10px -10px -10px;
+}
 .x-product-category-list {
 	border-right: 2px black groove;
 }

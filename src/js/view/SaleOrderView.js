@@ -71,9 +71,11 @@ var SaleOrderView = Ext.extend(AbstractView, {
 		}
 		
 		el.toggleCls('expanded');
-			
-		list.updateOffsets();
-		list.scroller.updateBoundary();
+		
+		Ext.defer ( function() {
+			list.updateOffsets();
+			list.scroller.updateBoundary();
+		},50);
 		
 		if (el.hasCls ('expanded')) {
 			

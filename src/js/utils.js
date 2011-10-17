@@ -330,19 +330,13 @@ var getGroupConfig = function(model) {
 
 var getSortersConfig = function(model, storeConfig) {
 
-	var table = Ext.getStore('tables').getById(model);
-
-	var parentCols = table.columns().queryBy(function(rec) {
-		return rec.get('parent') ? true : false;
-	});
+	var table = Ext.getStore('tables').getById(model),
+		sortConfig = {sorters: storeConfig.sorters ? storeConfig.sorters : []}
+	;
 	
-	var sortConfig = {};
-	sortConfig.sorters = storeConfig.sorters ? storeConfig.sorters : [];
-	
-	parentCols.each(function(col) {
-
-		sortConfig.sorters.push({property: col.get('name')});
-	});
+	if (table.columns().getById(table.getId()+'name')) {
+		sortConfig.sorters.push({property: 'name'});
+	}
 	
 	return sortConfig;
 };

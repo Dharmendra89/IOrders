@@ -348,6 +348,7 @@ Ext.regController('Navigator', {
 				{ text: 'Закрыть панель настроек', name: 'PrefsClose'},
 				{ text: 'Запросить данные', name: 'XiDownload'},
 				{ text: 'Запросить метаданные', name: 'XiMeta'},
+				{ text: 'Стереть локальные данные', name: 'ClearLocalStorage'},
 				{ text: 'Пересоздать БД', name: 'DbRebuild'},
 				{ xtype: 'segmentedbutton', items: [
 					{text: 'Статический сервер', name: 'XiNoServer', pressed: IOrders.xi.noServer},

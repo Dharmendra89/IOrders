@@ -234,6 +234,19 @@ Ext.regController('Main', {
 		));
 	},
 
+	onClearLocalStorageButtonTap: function(options) {
+		Ext.Msg.confirm('Внимание', 'Действительно нужно все стереть?', function(yn){
+			if (yn == 'yes'){
+				localStorage.clear();
+				Ext.defer (function() {
+					Ext.Msg.alert('Все стерто', 'Необходим перезапуск', function() {
+						location.replace(location.href);
+					})
+				}, 500);
+			}
+		})
+	},
+
 	onDbRebuildButtonTap: function(options) {
 		
 		IOrders.dbeng.clearListeners();

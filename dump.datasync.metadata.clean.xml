@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.41" expect-megabytes="15">
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.44" expect-megabytes="15">
   <tables set-of="table">
+    <table id="Route" name="Маршрут" nameSet="Маршруты">
+      <columns set-of="column">
+        <column id="Routeid" name="id" type="int" key="true"/>
+        <column id="Routename" name="name" type="string" label="Название"/>
+        <column id="Routeord" name="ord" type="int"/>
+      </columns>
+      <deps set-of="dep">
+        <dep table_id="RoutePoint" id="RoutePointroute"/>
+      </deps>
+    </table>
+    <table id="RoutePoint" name="Точка маршрута" nameSet="Точки маршрута">
+      <columns set-of="column">
+        <column id="RoutePointroute" name="route" type="int" parent="Route" label="Маршрут" key="true"/>
+        <column id="RoutePointcustomer" name="customer" parent="Customer" label="Клиент" key="true"/>
+        <column id="RoutePointord" name="ord" type="int" label="Очередность"/>
+      </columns>
+    </table>
     <table id="Warehouse" name="Склад" nameSet="Склады">
       <columns set-of="column">
         <column id="Warehouseid" name="id" type="int"/>
@@ -88,6 +105,11 @@
         <column id="Partnerid" name="id" type="int" key="true"/>
         <column id="Partnername" name="name" type="string" label="Название"/>
         <column id="Partnerplong" name="plong" type="int" label="Отсрочка оплаты"/>
+        <column id="Partnermaxdebt" name="maxdebt" type="float" label="Лимит задолженности"/>
+        <column id="Partnermaxord" name="maxord" type="float" label="Лимит заказа"/>
+        <column id="Partnerorderinfo" name="orderinfo" type="string" label="Комментарий к отгрузкам"/>
+        <column id="Partnercode" name="code" type="string" label="Код"/>
+        <column id="Partnerinfo" name="info" type="string" label="Прочая информация"/>
       </columns>
       <deps set-of="dep">
         <dep table_id="PartnerPriceList" id="PartnerPriceListpartner"/>
@@ -123,6 +145,7 @@
         <column id="Customerwarehouse" name="warehouse" parent="Warehouse" label="Склад"/>
       </columns>
       <deps set-of="dep">
+        <dep table_id="RoutePoint" id="RoutePointcustomer"/>
         <dep table_id="SaleOrder" id="SaleOrdercustomer"/>
       </deps>
     </table>
@@ -173,7 +196,7 @@
         <column id="OfferCategoryname" name="name" type="string" label="Название"/>
         <column id="OfferCategorytotalCost" name="totalCost" type="float" label="Стоимость"/>
         <column id="OfferCategoryshopDepartment" name="shopDepartment"/>
-        <column id="OfferCategoryshopDepartment_name" name="shopDepartment_name" type="string" label="Название"/>
+        <column id="OfferCategoryShopDepartment_name" name="ShopDepartment_name" type="string" label="Название"/>
       </columns>
       <sql>select c.*, sd.name as shopDepartment_name from ( select cu.id as customer, c.id category, c.name, null as totalCost, c.shopDepartment from Customer cu, Category c where exists (select * from Offer where c.id=category and customer = cu.id) ) c join ShopDepartment sd on sd.id = c.shopDepartment</sql>
     </view>

@@ -85,26 +85,7 @@ var regStore = function(name, config) {
 };
 
 var createStore = function(name, config) {
-	
-<<<<<<< HEAD
-=======
-	var metaTable = Ext.getStore('tables').getById(name);
-	var metaColumns = metaTable.columns();
-	
-	if(metaColumns.findExact('name', 'name') == -1) {
-		config = config || {};
-		config.sorters = config.sorters || [];
-		
-		var parentColumns = metaColumns.queryBy(function(rec) {
-			return rec.get('parent') ? true : false;
-		});
-		
-		parentColumns.each(function(col) {
-			config.sorters.push({property: col.get('name') + '_name'});
-		});
-	}
-	
->>>>>>> Closes #39
+
 	return new Ext.data.Store(
 		Ext.apply({
 			remoteFilter: true,

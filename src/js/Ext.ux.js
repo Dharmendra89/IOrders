@@ -2,6 +2,57 @@ Ext.ns('Ext.ux.form');
 
 Ext.override(Ext.Interaction, {controller: 'Main'});
 
+var ExpandableGroupedList = Ext.extend(Ext.List, {
+	grouped: true,
+	cls: 'expandable',
+	onRender: function() {
+		ExpandableGroupedList.superclass.onRender.apply(this, arguments);
+		this.mon(this.el, 'tap', this.onListHeaderTap, this, {
+			delegate: '.x-list-header'
+		});
+		this.el.addCls ('expandable');
+	},
+	onListHeaderTap: function(e, t) {
+		
+		var headerEl = Ext.get(t),
+		    el = headerEl.next(),
+			list = this
+		;
+		
+		if (headerEl.hasCls('x-list-header-swap')) {
+			el = el.down('.x-group-' + headerEl.dom.innerText.toLowerCase() + ' .x-list-group-items');
+		}
+		
+		var dv = 30 * el.dom.children.length;
+		
+		if (dv < 150) {
+			dv = 150;
+		} else if (dv > 500) {
+			dv = 500;
+		}
+		
+		el.toggleCls('expanded');
+		
+		Ext.defer ( function() {
+			list.updateOffsets();
+			list.scroller.updateBoundary();
+		},50);
+		
+		if (el.hasCls ('expanded')) {
+			
+			Ext.defer ( function() {
+				list.scroller.scrollTo({
+					y: headerEl.getOffsetsTo( list.scrollEl )[1]
+				}, 300 );
+				
+				Ext.defer ( function() { list.disableSwipe = false; }, 400);
+			}, 100);
+		}
+
+	}
+});
+Ext.reg('expandableGroupedList', ExpandableGroupedList);
+
 Ext.override(Ext.List, {
 	listeners: {
 /*		selectionchange: function(selModel, selections) {

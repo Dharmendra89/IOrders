@@ -20,20 +20,10 @@ var SaleOrderView = Ext.extend(AbstractView, {
 		});
 		
 		this.productCategoryList = Ext.create({
-			xtype: 'list', cls: 'x-product-category-list expandable', allowDeselect: false, flex: 1,
-			grouped: true,
+			xtype: 'expandableGroupedList',
+			cls: 'x-product-category-list', allowDeselect: false, flex: 1,
 			store: this.offerCategoryStore,
-			itemTpl: getItemTpl('OfferCategory'),
-			initComponent: function() {
-
-				this.listeners.afterrender = function() {
-					this.mon(this.el, 'tap', this.ownerCt.onListHeaderTap, this.ownerCt, {
-						delegate: '.x-list-header',
-						list: this
-					});
-				};
-				Ext.List.prototype.initComponent.apply(this, arguments);
-			}
+			itemTpl: getItemTpl('OfferCategory')
 		});
 		
 		this.offerCategoryStore.load({limit: 0});
@@ -65,44 +55,6 @@ var SaleOrderView = Ext.extend(AbstractView, {
 		);
 	},
 	
-	onListHeaderTap: function(e, t, opt) {
-		
-		var headerEl = Ext.get(t),
-		    el = headerEl.next(),
-			list = opt.list
-		;
-		
-		if (headerEl.hasCls('x-list-header-swap')) {
-			el = el.down('.x-group-' + headerEl.dom.innerText.toLowerCase() + ' .x-list-group-items');
-		}
-		
-		var dv = 30 * el.dom.children.length;
-		
-		if (dv < 150) {
-			dv = 150;
-		} else if (dv > 500) {
-			dv = 500;
-		}
-		
-		el.toggleCls('expanded');
-		
-		Ext.defer ( function() {
-			list.updateOffsets();
-			list.scroller.updateBoundary();
-		},50);
-		
-		if (el.hasCls ('expanded')) {
-			
-			Ext.defer ( function() {
-				list.scroller.scrollTo({
-					y: headerEl.getOffsetsTo( list.scrollEl )[1]
-				}, 300 );
-				
-				Ext.defer ( function() { list.disableSwipe = false; }, 400);
-			}, 100);
-		}
-
-	},
 	/**
 	 * Handlers
 	 */

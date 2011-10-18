@@ -1,6 +1,6 @@
-var offerProductList = Ext.extend(Ext.List, {
+var offerProductList = Ext.extend(ExpandableGroupedList, {
 
-	cls: 'x-product-list expandable',
+	cls: 'x-product-list',
 	itemTpl: getItemTpl('OfferProduct'),
 	grouped: true,
 	disableSelection: true,
@@ -14,7 +14,7 @@ var offerProductList = Ext.extend(Ext.List, {
 		
 		var me = this;
 		
-		this.listeners = {
+		Ext.apply(this.listeners, {
 			itemswipe: function(list, idx, item, event) {
 				if (!list.disableSwipe) {
 					Ext.dispatch({
@@ -22,14 +22,8 @@ var offerProductList = Ext.extend(Ext.List, {
 						list: list, idx: idx, item: item, event: event
 					});
 				}
-			},
-			afterrender: function(){
-				this.mon(this.el, 'tap', this.ownerCt.ownerCt.onListHeaderTap, this.ownerCt.ownerCt, {
-					delegate: '.x-list-header',
-					list: this
-				});
 			}
-		};
+		});
 		
 		offerProductList.superclass.initComponent.apply(this, arguments);
 		

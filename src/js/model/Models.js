@@ -85,6 +85,7 @@ var regStore = function(name, config) {
 };
 
 var createStore = function(name, config) {
+	
 	return new Ext.data.Store(
 		Ext.apply({
 			remoteFilter: true,

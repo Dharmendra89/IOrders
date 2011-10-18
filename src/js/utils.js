@@ -234,7 +234,7 @@ function createDepsList(depsStore, tablesStore, view) {
 				name: depTable.get('nameSet'),
 				table_id: depTable.get('id'),
 				extendable: depTable.get('extendable'),
-				editable: view.editable || view.objectRecord.modelName == 'MainMenu'
+				editable: view.editing || view.objectRecord.modelName == 'MainMenu'
 			}, 'Dep');
 
 			var modelProxy = Ext.ModelMgr.getModel(depTable.get('id')).prototype.getProxy();
@@ -340,11 +340,21 @@ var getGroupConfig = function(model) {
 var getSortersConfig = function(model, storeConfig) {
 
 	var table = Ext.getStore('tables').getById(model),
-		sortConfig = {sorters: storeConfig.sorters ? storeConfig.sorters : []}
+		sortConfig = {sorters: storeConfig.sorters ? storeConfig.sorters : []},
+		columns = table.columns()
 	;
 	
-	if (table.columns().getById(table.getId()+'name')) {
+	if (columns.getById(table.getId() + 'name')) {
 		sortConfig.sorters.push({property: 'name'});
+	} else {
+		
+		var parentColumns = columns.queryBy(function(rec) {
+			return rec.get('parent') ? true : false;
+		});
+		
+		parentColumns.each(function(col) {
+			columns.findExact('name', col.get('parent') + '_name') != -1 && sortConfig.sorters.push({property: col.get('name') + '_name'});
+		});
 	}
 	
 	return sortConfig;

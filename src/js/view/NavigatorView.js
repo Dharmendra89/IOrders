@@ -127,7 +127,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 	onShow: function() {
 		NavigatorView.superclass.onShow.apply(this, arguments);
 		this.form.loadRecord(this.objectRecord);
-		this.isObjectView && this.form.setDisabled(!this.editable);
+		this.isObjectView && this.form.setDisabled(!this.editing);
 	}
 	
 });

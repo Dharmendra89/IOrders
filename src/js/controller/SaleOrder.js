@@ -12,7 +12,7 @@ Ext.regController('SaleOrder', {
 			'Действительно нужно вернуться назад? Если да, то несохраненные данные будут потеряны',
 			function(b) {
 				if (b=='yes')
-					back()
+					back();
 			}
 		); else back();
 	},
@@ -138,7 +138,7 @@ Ext.regController('SaleOrder', {
 				filters: [{property: 'saleorder', value: options.saleOrder.getId()}]
 			});
 			
-			var list = 	newCard.productList = newCard.productPanel.add({
+			newCard.productList = newCard.productPanel.add({
 				xtype: 'offerproductlist',
 				store: newCard.productStore
 			});
@@ -209,7 +209,7 @@ Ext.regController('SaleOrder', {
 		!volume && (volume = 0);
 		options.event.direction === 'left' && (sign = -1);
 		
-		var volume = volume + sign * factor;
+		volume = volume + sign * factor;
 		volume < 0 && (volume = 0);
 		
 		var cost = volume * parseInt(rec.get('rel')) * parseFloat(rec.get('price'));

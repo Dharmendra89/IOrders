@@ -1,6 +1,6 @@
 var offerProductList = Ext.extend(Ext.List, {
 
-	cls: 'x-product-list',
+	cls: 'x-product-list expandable',
 	itemTpl: getItemTpl('OfferProduct'),
 	grouped: true,
 	disableSelection: true,
@@ -25,9 +25,9 @@ var offerProductList = Ext.extend(Ext.List, {
 			},
 			afterrender: function(){
 				this.mon(this.el, 'tap', this.ownerCt.ownerCt.onListHeaderTap, this.ownerCt.ownerCt, {
-					delegate: '.x-list-header'
+					delegate: '.x-list-header',
+					list: this
 				});
-				this.el.addCls ('expandable');
 			}
 		};
 		

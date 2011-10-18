@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.4" expect-megabytes="15">
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.402" expect-megabytes="15">
   <tables set-of="table">
     <table id="Warehouse" name="Склад" nameSet="Склады">
       <columns set-of="column">
@@ -172,8 +172,10 @@
         <column id="OfferCategorycategory" name="category" label="Категория товаров"/>
         <column id="OfferCategoryname" name="name" type="string" label="Название"/>
         <column id="OfferCategorytotalCost" name="totalCost" type="float" label="Стоимость"/>
+        <column id="OfferCategoryshopDepartment" name="shopDepartment" parent="ShopDepartment" label="Отдел магазина"/>
+        <column id="OfferCategoryShopDepartment" name="ShopDepartment_name"/>
       </columns>
-      <sql>select * from ( select cu.id as customer, c.id category, c.name, null as totalCost from Customer cu, Category c where exists (select * from Offer where c.id=category and customer = cu.id) )</sql>
+      <sql>select * from ( select cu.id as customer, c.id category, c.name, c.shopDepartment, c.ShopDepartment_name, null as totalCost from Customer cu, Category_browse c where exists (select * from Offer where c.id=category and customer = cu.id) )</sql>
     </view>
   </views>
 </metadata>

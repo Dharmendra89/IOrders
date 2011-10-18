@@ -10,6 +10,9 @@ var SaleOrderView = Ext.extend(AbstractView, {
 		
 		this.offerCategoryStore = createStore('OfferCategory',{
 			remoteFilter: true,
+			getGroupString: function(rec) {
+				return rec.get('ShopDepartment_name');
+			},
 			filters:[{
 				property: 'customer',
 				value: this.saleOrder.get('customer')
@@ -17,9 +20,20 @@ var SaleOrderView = Ext.extend(AbstractView, {
 		});
 		
 		this.productCategoryList = Ext.create({
-			xtype: 'list', cls: 'x-product-category-list', allowDeselect: false, flex: 1,
+			xtype: 'list', cls: 'x-product-category-list expandable', allowDeselect: false, flex: 1,
+			grouped: true,
 			store: this.offerCategoryStore,
-			itemTpl: getItemTpl('OfferCategory')
+			itemTpl: getItemTpl('OfferCategory'),
+			initComponent: function() {
+
+				this.listeners.afterrender = function() {
+					this.mon(this.el, 'tap', this.ownerCt.onListHeaderTap, this.ownerCt, {
+						delegate: '.x-list-header',
+						list: this
+					});
+				};
+				Ext.List.prototype.initComponent.apply(this, arguments);
+			}
 		});
 		
 		this.offerCategoryStore.load({limit: 0});
@@ -51,11 +65,11 @@ var SaleOrderView = Ext.extend(AbstractView, {
 		);
 	},
 	
-	onListHeaderTap: function(e, t) {
+	onListHeaderTap: function(e, t, opt) {
 		
 		var headerEl = Ext.get(t),
 		    el = headerEl.next(),
-			list = this.productList
+			list = opt.list
 		;
 		
 		if (headerEl.hasCls('x-list-header-swap')) {
@@ -84,8 +98,8 @@ var SaleOrderView = Ext.extend(AbstractView, {
 					y: headerEl.getOffsetsTo( list.scrollEl )[1]
 				}, 300 );
 				
-				Ext.defer ( function() { list.disableSwipe = false }, 400);
-			},100);
+				Ext.defer ( function() { list.disableSwipe = false; }, 400);
+			}, 100);
 		}
 
 	},

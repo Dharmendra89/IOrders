@@ -115,18 +115,10 @@ Ext.override(Ext.form.Select, {
         Ext.dispatch({
         	action: 'onSelectFieldValueChange',
         	field: this,
+        	selected: selected,
         	filter: true
         });
     },
-
-    onMaskTap: function() {
-
-		if(this.disabled || this.disablePicker) {
-			return;
-		}
-
-		this.showComponent();
-	},
 
 	onRender: function(){
         Ext.form.Select.superclass.onRender.apply(this, arguments);
@@ -140,7 +132,7 @@ Ext.override(Ext.form.Select, {
             }, 'after');
         }
         
-        this.labelEl.on('tap', function(evt, el, o) {
+        this.onFieldLabelTap && this.labelEl.on('tap', function(evt, el, o) {
         	Ext.dispatch({
         		action: 'onFieldLabelTap',
         		field: this
@@ -149,7 +141,7 @@ Ext.override(Ext.form.Select, {
     },
 
     onMaskTap: function() {
-        if (this.disabled) {
+        if (this.onFieldInputTap && this.disabled) {
         	Ext.dispatch({
         		action: 'onFieldInputTap',
         		field: this
@@ -161,20 +153,8 @@ Ext.override(Ext.form.Select, {
     }
 });
 
-var FilterField = Ext.extend(Ext.form.Select, {
-	onRender: function() {
-
-		FilterField.superclass.onRender.apply(this, arguments);
-		this.removeFilterBtn = this.labelEl.insertHtml('beforeBegin', '<div class="x-button remove-filter">X</div>', true);
-		this.removeFilterBtn.on('tap', function(evt, el, o) {
-        	Ext.dispatch({
-        		action: 'onSelectFieldValueChange',
-        		field: this,
-        		removeFilter: true
-        	});
-        }, this);
-	},
-
+var PagingSelectField = Ext.extend(Ext.form.Select, {
+	
 	getListPanel: function() {
         if (!this.listPanel) {
             this.listPanel = new Ext.Panel({
@@ -203,6 +183,22 @@ var FilterField = Ext.extend(Ext.form.Select, {
 
         return this.listPanel;
     }
+});
+Ext.reg('pagingselectfield', PagingSelectField);
+
+var FilterField = Ext.extend(PagingSelectField, {
+	onRender: function() {
+
+		FilterField.superclass.onRender.apply(this, arguments);
+		this.removeFilterBtn = this.labelEl.insertHtml('beforeBegin', '<div class="x-button remove-filter">X</div>', true);
+		this.removeFilterBtn.on('tap', function(evt, el, o) {
+        	Ext.dispatch({
+        		action: 'onSelectFieldValueChange',
+        		field: this,
+        		removeFilter: true
+        	});
+        }, this);
+	}
 });
 Ext.reg('filterfield', FilterField);
 

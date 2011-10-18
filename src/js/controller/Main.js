@@ -150,6 +150,8 @@ Ext.regController('Main', {
 		var navView = field.up('navigatorview');
 		if(navView && field.id === 'Filter') {
 			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('SelectField', field.id), view: navView}));
+		} else if(field.name === 'id') {
+			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('SelectField', 'NameSelectField'), view: navView}));
 		}
 	},
 
@@ -241,10 +243,10 @@ Ext.regController('Main', {
 				Ext.defer (function() {
 					Ext.Msg.alert('Все стерто', 'Необходим перезапуск', function() {
 						location.replace(location.href);
-					})
+					});
 				}, 500);
 			}
-		})
+		});
 	},
 
 	onDbRebuildButtonTap: function(options) {

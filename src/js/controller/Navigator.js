@@ -333,6 +333,14 @@ Ext.regController('Navigator', {
 		store.filter(filters);
 	},
 	
+	onNameSelectFieldValueChange: function(options) {
+
+		var view = options.view;
+		var record = options.selected;
+		
+		view.form.loadRecord(record);
+	},
+	
 	onSyncButtonTap: function(options) {
 		options.btn.disable();
 		
@@ -340,12 +348,12 @@ Ext.regController('Navigator', {
 			engine: IOrders.dbeng,
 			success: function(s) {
 				Ext.Msg.alert('Загрузка завершена', 'Передано записей: '+s.getCount(),
-							  function() {options.btn.enable()}
+							  function() {options.btn.enable();}
 				);
 			},
 			failure: function(s,e) {
 				Ext.Msg.alert('Загрузка не удалась', e,
-							  function() {options.btn.enable()}
+							  function() {options.btn.enable();}
 				);
 			},
 			recordSuccess: function(s) {

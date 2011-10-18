@@ -154,7 +154,7 @@ function getItemTpl (modelName, table) {
 	}
 };
 
-var createFieldSet = function(columnsStore) {
+var createFieldSet = function(columnsStore, modelName, view) {
 
 	var fsItems = [];
 
@@ -183,13 +183,21 @@ var createFieldSet = function(columnsStore) {
 					break;
 				}
 				default : {
-					fieldConfig = {xtype: 'textfield'};
+					if(column.get('name') == 'name') {
+						var selectStore = createStore(modelName);
+						selectStore.load();
+						selectStore.add(view.objectRecord);
+
+						fieldConfig = {xtype: 'pagingselectfield', name: 'id', store: selectStore, valueField: 'id', displayField: 'name'};
+					} else {
+						fieldConfig = {xtype: 'textfield'};
+					}
 					break;
 				}
 			}
 			
 			Ext.apply(field, column.get('parent') 
-					? {xtype: 'selectfield', store: Ext.getStore(column.get('parent')), valueField: 'id', displayField: 'name'} 
+					? {xtype: 'selectfield', store: Ext.getStore(column.get('parent')), valueField: 'id', displayField: 'name', onFieldLabelTap: true, onFieldInputTap: true} 
 					: fieldConfig
 			);
 			fsItems.push(field);
@@ -213,6 +221,8 @@ var createFilterField = function(objectRecord) {
 			useClearIcon: true,
 			id: 'Filter',
 			store: selectStore,
+			onFieldLabelTap: true,
+			onFieldInputTap: true,
 			name: 'id',
 			label: Ext.getStore('tables').getById(modelName).get('name'),
 			valueField: 'id',

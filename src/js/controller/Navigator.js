@@ -41,7 +41,7 @@ Ext.regController('Navigator', {
 			toolbar.getComponent('Cancel').hide();
 			
 			formRec.save();
-			Ext.dispatch(Ext.apply(options, {action: 'setEditable', editable: false}));
+			Ext.dispatch(Ext.apply(options, {action: 'setEditing', editing: false}));
 			
 		} else {
 			
@@ -69,7 +69,7 @@ Ext.regController('Navigator', {
 		var toolbar = btn.up('toolbar');
 		toolbar.getComponent('Cancel').show();
 		
-		Ext.dispatch(Ext.apply(options, {action: 'setEditable', editable: true}));
+		Ext.dispatch(Ext.apply(options, {action: 'setEditing', editing: true}));
 	},
 	
 	onCancelButtonTap: function(options) {
@@ -88,21 +88,36 @@ Ext.regController('Navigator', {
 		saveEditBtn.setText('Редактировать');
 		Ext.apply(saveEditBtn, {name: 'Edit'});
 		
-		Ext.dispatch(Ext.apply(options, {action: 'setEditable', editable: false}));
+		Ext.dispatch(Ext.apply(options, {action: 'setEditing', editing: false}));
 	},
 	
-	setEditable: function(options) {
-		options.view.form.setDisabled(!options.editable);
+	setEditing: function(options) {
+		options.view.form.setDisabled(!options.editing);
+		options.view.editing = options.editing;
+
+		var toolbar = options.btn.up('toolbar');
+		toolbar.getComponent('Add')[options.editing ? 'hide' : 'show']();
 	},
 	
 	onAddButtonTap: function(options) {
 		
-		var rec = Ext.ModelMgr.create( {}, options.view.tableRecord );
-		
-		rec.set (
-			options.view.objectRecord.modelName.toLowerCase(),
-			options.view.objectRecord.getId()
-		);
+		var rec = undefined;
+
+		if(options.view.isObjectView) {
+			rec = Ext.ModelMgr.create({}, options.view.objectRecord.modelName);
+			/**
+			 * TODO Пока создается пустая сущность.
+			 * Возможно нужно проставлять все поля-паренты как у сущности из которой создалась новая
+			 */
+			
+		} else if(options.view.isSetView) {
+			rec = Ext.ModelMgr.create({}, options.view.tableRecord);
+			
+			rec.set (
+				options.view.objectRecord.modelName.toLowerCase(),
+				options.view.objectRecord.getId()
+			);
+		}
 		
 		if(rec.modelName === 'SaleOrder') {
 			rec.set('totalCost', '0');
@@ -155,7 +170,7 @@ Ext.regController('Navigator', {
 					Ext.dispatch(Ext.apply(options, {
 						action: 'createAndActivateView',
 						record: rec,
-						editable: true
+						editing: true
 					}));
 					
 				}, 100);
@@ -177,7 +192,7 @@ Ext.regController('Navigator', {
 				record: list.getRecord(item),
 				tableRecord: dep.down('input').getAttribute('value'),
 				isSetView: true,
-				editable: false
+				editing: false
 			}));
 			
 		} else if (isTableList && target.hasCls('label-parent')) {
@@ -190,7 +205,7 @@ Ext.regController('Navigator', {
 				action: 'createAndActivateView',
 				record: Ext.getStore(parentModel).getById(parseInt(target.down('input').getAttribute('value'))),
 				isSetView: false,
-				editable: false
+				editing: false
 			}));
 			
 		} else {
@@ -218,11 +233,11 @@ Ext.regController('Navigator', {
 			objectRecord: objectRecord
 		});
 		
-		var newCard = Ext.create( createNavigatorView(
+		var newCard = Ext.create(createNavigatorView(
 			objectRecord,
 			IOrders.viewport.getActiveItem(),
 			options.isSetView,
-			options.editable,
+			options.editing,
 			config
 		));
 		

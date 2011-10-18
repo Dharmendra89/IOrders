@@ -278,7 +278,7 @@ var createTitlePanel = function(t) {
 	};
 };
 
-var createNavigatorView = function(rec, oldCard, isSetView, editable, config) {
+var createNavigatorView = function(rec, oldCard, isSetView, editing, config) {
 
 	var view = Ext.apply({
 			xtype: 'navigatorview',
@@ -286,7 +286,7 @@ var createNavigatorView = function(rec, oldCard, isSetView, editable, config) {
 			isSetView: isSetView ? true : undefined,
 			objectRecord: isSetView ? oldCard.objectRecord : rec,
 			tableRecord: isSetView ? rec.get('table_id') : undefined,
-			editable: editable,
+			editing: editing,
 			extendable: rec.get('extendable'),
 			ownerViewConfig: {
 				xtype: 'navigatorview',

@@ -120,7 +120,6 @@ Ext.regController('Navigator', {
 		}
 		
 		if(rec.modelName === 'SaleOrder') {
-			rec.set('totalCost', '0');
 			rec.set('date', getNextWorkDay());
 		}
 		
@@ -215,8 +214,8 @@ Ext.regController('Navigator', {
 					controller: 'Navigator',
 					action: 'onListSelectionChange',
 					selections: [list.getRecord(item)]
-				}))
-			}, 150)
+				}));
+			}, 150);
 		}
 		
 	},
@@ -279,7 +278,7 @@ Ext.regController('Navigator', {
 						oldCard.setLoading(false);
 						IOrders.viewport.setActiveItem(newCard, options.anim);
 					}
-				})
+				});
 				
 			}
 		} else {
@@ -338,6 +337,7 @@ Ext.regController('Navigator', {
 		var view = options.view;
 		var record = options.selected;
 		
+		view.oobjectRecord = record;
 		view.form.loadRecord(record);
 	},
 	

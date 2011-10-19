@@ -337,7 +337,10 @@ var getGroupConfig = function(model) {
 				getGroupString: function(rec) {
 					return rec.get('ShopDepartment_name');
 				},
-				sorters: [{property: 'ShopDepartment_name', direction: 'ASC'}],
+				sorters: [
+					{property: 'ShopDepartment_ord', direction: 'ASC'},
+					{property: 'ShopDepartment_name', direction: 'ASC'}
+				],
 				field: 'ShopDepartment_name'
 			};
 		}
@@ -354,17 +357,23 @@ var getSortersConfig = function(model, storeConfig) {
 		columns = table.columns()
 	;
 	
-	if (columns.getById(table.getId() + 'name')) {
-		sortConfig.sorters.push({property: 'name'});
-	} else {
+	if (columns.getById(table.getId() + 'ord'))
+		sortConfig.sorters.push ({ property: 'ord' });
+	
+	if (columns.getById(table.getId() + 'name'))
+		sortConfig.sorters.push ({ property: 'name' });
+	
+	if (!sortConfig.sorters.length){
 		
 		var parentColumns = columns.queryBy(function(rec) {
 			return rec.get('parent') ? true : false;
 		});
 		
-		parentColumns.each(function(col) {
-			columns.findExact('name', col.get('parent') + '_name') != -1 && sortConfig.sorters.push({property: col.get('name') + '_name'});
+		parentColumns.each (function(col) {
+			columns.findExact('name', col.get('parent') + '_name') != -1
+				&& sortConfig.sorters.push({property: col.get('name') + '_name'});
 		});
+		
 	}
 	
 	return sortConfig;

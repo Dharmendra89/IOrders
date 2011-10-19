@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.44" expect-megabytes="15">
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.441" expect-megabytes="15">
   <tables set-of="table">
     <table id="Route" name="Маршрут" nameSet="Маршруты">
       <columns set-of="column">
@@ -69,7 +69,6 @@
       <columns set-of="column">
         <column id="Categoryid" name="id" type="int" key="true"/>
         <column id="Categoryname" name="name" type="string" label="Название"/>
-        <column id="Categoryord" name="ord" type="int"/>
         <column id="CategoryshopDepartment" name="shopDepartment" parent="ShopDepartment" label="Отдел магазина"/>
       </columns>
       <deps set-of="dep">

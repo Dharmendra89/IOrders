@@ -6,7 +6,8 @@ var createModels = function(tablesStore) {
 		table.columns().each(function(column) {
 			fields.push({
 				name: column.get('name'),
-				type: column.get('type')
+				type: column.get('type'),
+				useNull: true
 			});
 			
 			column.get('name') == 'date'

@@ -79,7 +79,7 @@ Ext.regApplication({
 								autoCorrect: false, autoCapitalize: false
 							},
 					    	{
-								xtype: 'passwordfield', id: 'password', name: 'password', label: 'Пароль',
+								xtype: 'passwordfield', id: 'password', name: 'password', label: 'Пароль'
 							}
 						]
 					},

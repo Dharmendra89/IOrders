@@ -85,6 +85,7 @@ Ext.regController('SaleOrder', {
 		view.productCategoryList.scroller.scrollTo({y: 0});
 		view.productList.scroller.scrollTo ({y:0});
 		view.productList.el.toggleCls('expandable');
+		view.productCategoryList.el.toggleCls('expandable');
 		
 		view.setLoading(false);
 		
@@ -221,7 +222,7 @@ Ext.regController('SaleOrder', {
 		rec.editing = false;
 		
 		
-		var saleOrderPosStore = Ext.getStore('SaleOrderPosition');
+		var saleOrderPosStore = new Ext.data.Store( { model: 'SaleOrderPosition' } );
 		
 		saleOrderPosStore.add(Ext.ModelMgr.create(Ext.apply({
 			saleorder: view.saleOrder.getId()
@@ -232,7 +233,7 @@ Ext.regController('SaleOrder', {
 		//view.saleOrder.save();
 		
 		saleOrderPosStore.sync();
-		saleOrderPosStore.removeAll();
+//		saleOrderPosStore.removeAll();
 		
 		Ext.dispatch(Ext.apply(options, {
 			action: 'calculateTotalCost',

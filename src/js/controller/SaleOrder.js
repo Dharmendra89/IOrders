@@ -199,7 +199,8 @@ Ext.regController('SaleOrder', {
 		    volume = parseInt(rec.get('volume') ? rec.get('volume') : '0'),
 			oldCost = rec.get('cost'),
 		    factor = parseInt(rec.get('factor')),
-		    sign = 1
+		    sign = 1,
+		    view = options.list.up('saleorderview')
 		;
 		
 		oldCost > 0 || (oldCost = 0);
@@ -217,7 +218,21 @@ Ext.regController('SaleOrder', {
 		rec.editing=true;
 		rec.set('volume', volume);		
 		rec.set('cost', cost.toFixed(2));
-		rec.editing=false;
+		rec.editing = false;
+		
+		
+		var saleOrderPosStore = Ext.getStore('SaleOrderPosition');
+		
+		saleOrderPosStore.add(Ext.ModelMgr.create(Ext.apply({
+			saleorder: view.saleOrder.getId()
+			}, rec.data), 'SaleOrderPosition'
+		));
+		
+		//view.saleOrder.set('totalCost', offerStore.sum('cost').toFixed(2));
+		//view.saleOrder.save();
+		
+		saleOrderPosStore.sync();
+		saleOrderPosStore.removeAll();
 		
 		Ext.dispatch(Ext.apply(options, {
 			action: 'calculateTotalCost',

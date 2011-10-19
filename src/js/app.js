@@ -20,7 +20,7 @@ Ext.regApplication({
 			metadata = Ext.decode(localStorage.getItem('metadata'))
 		;
 		
-		document.body.addEventListener('touchstart', function(e) {e.preventDefault();}, false);
+		//document.body.addEventListener('touchstart', function(e) {e.preventDefault();}, false);
 		
 		this.viewport = Ext.create({xtype: 'viewport'});
 		
@@ -74,8 +74,13 @@ Ext.regApplication({
 				items: [
 					{xtype: 'fieldset', 
 						items: [
-					    	{xtype: 'textfield', id: 'login', name: 'login', label: 'Логин', autoCorrect: false, autoCapitalize: false},
-					    	{xtype: 'passwordfield', id: 'password', name: 'password', label: 'Пароль'}
+					    	{
+								xtype: 'textfield', id: 'login', name: 'login', label: 'Логин',
+								autoCorrect: false, autoCapitalize: false
+							},
+					    	{
+								xtype: 'passwordfield', id: 'password', name: 'password', label: 'Пароль',
+							}
 						]
 					},
 					{xtype: 'button', text: 'Логин', name: 'Login'}

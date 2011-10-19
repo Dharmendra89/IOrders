@@ -338,7 +338,6 @@ var getGroupConfig = function(model) {
 					return rec.get('ShopDepartment_name');
 				},
 				sorters: [
-					{property: 'ShopDepartment_ord', direction: 'ASC'},
 					{property: 'ShopDepartment_name', direction: 'ASC'}
 				],
 				field: 'ShopDepartment_name'

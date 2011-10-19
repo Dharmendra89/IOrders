@@ -8,16 +8,13 @@ var SaleOrderView = Ext.extend(AbstractView, {
 	 */
 	createItems: function() {
 		
-		this.offerCategoryStore = createStore('OfferCategory',{
+		this.offerCategoryStore = createStore('OfferCategory', Ext.apply({
 			remoteFilter: true,
-			getGroupString: function(rec) {
-				return rec.get('ShopDepartment_name');
-			},
 			filters:[{
 				property: 'customer',
 				value: this.saleOrder.get('customer')
 			}]
-		});
+		}, getGroupConfig('Category')));
 		
 		this.productCategoryList = Ext.create({
 			xtype: 'expandableGroupedList',

@@ -82,7 +82,7 @@ Ext.regController('SaleOrder', {
 			
 		}
 		
-		view.productCategoryList.scroller.scrollTo({y: 0});
+		view.productCategoryList.scroller && view.productCategoryList.scroller.scrollTo({y: 0});
 		view.productList.scroller.scrollTo ({y:0});
 		view.productList.el.toggleCls('expandable');
 		view.productCategoryList.el.toggleCls('expandable');

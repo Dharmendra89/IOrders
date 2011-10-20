@@ -66,7 +66,7 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 				+ '<input type="hidden" value="{table_id}" />'
 				+ '<div class="count"><tpl if="count &gt; 0">{count}</tpl></div>'
 				+ '<div class="data">{name}</div>'
-				+ '<tpl if="extendable && editable || table_id == \'SaleOrder\'"><div class="x-button extend add">+</div></tpl>'
+				+ '<tpl if="extendable"><div class="x-button extend add">+</div></tpl>'
 	 			+ '</div>'
  			+ '</tpl>'
  		+ '</div>';
@@ -162,7 +162,7 @@ function getItemTpl (modelName, table) {
 			return '<div class="hbox dep">'
 					+ '<div class="count"><tpl if="count &gt; 0">{count}</tpl></div>'
 					+ '<div class="data">{name}</div>' 
-					+ '<tpl if="extendable && editable || table_id == \'SaleOrder\'"><div class="x-button extend add">+</div></tpl>'
+					+ '<tpl if="extendable && editable"><div class="x-button extend add">+</div></tpl>'
 				 + '</div>';
 		}
 		case 'OfferCategory': {

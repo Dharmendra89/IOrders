@@ -417,7 +417,7 @@ Ext.regController('Navigator', {
 								name: depTable.get('nameSet'),
 								table_id: depTable.get('id'),
 								extendable: depTable.get('extendable'),
-								editable: false || record.modelName == 'MainMenu'
+								editable: depTable.get('editable')
 							},
 						    modelProxy = Ext.ModelMgr.getModel(depTable.get('id')).prototype.getProxy(),
 							filters = []

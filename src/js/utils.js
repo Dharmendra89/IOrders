@@ -11,47 +11,104 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 
 	var tableStore = Ext.getStore('tables');
 	var tableRecord = tableStore.getById(modelName);
-	var template = new Ext.XTemplate('<div class="hbox">{columns}</div>');
 	var columnStore = tableRecord.columns();
 	
-	/**
-	 * BEGIN.
-	 * Сборка темплейта для полей сущности
-	 */
-	var columns = '<div>';
-
+	
+	var templateString = '<div class="hbox">'
+				+		'<div>'
+				+			'<tpl if="hasName">'
+				+				'<p class="name">\\{name\\}</p>'
+				+			'</tpl>'
+				+			'<tpl if="!hasName && keyColumnsLength &gt; 0">'
+				+				'<p class="key">'
+				+					'<tpl for="keyColumns">'
+				+						'<tpl if="parent">'
+				+							'<span>\\{[getValueFromParent("{name}", values.{name})]\\}<tpl if="!end"> : </tpl></span>&nbsp;'
+				+						'</tpl>'
+				+						'<tpl if="!parent">'
+				+							'<span>\\{{name}\\}<tpl if="!end"> : </tpl></span>&nbsp;'
+				+						'</tpl>'
+				+					'</tpl>'
+				+				'</p>'
+				+			'</tpl>'
+				+			'<div class="{[values.keyColumnsLength > 0 ? "other" : ""]}">'
+				+				'<tpl if="otherColumnsLength &gt; 0">'
+				+					'<small class="other-fields">'
+				+						'<tpl for="otherColumns">'
+				+							'<tpl if="parent">'
+				+								'<tpl if="label || name">'
+				+									'<div>'
+				+										'<span class="label-parent">'
+				+											'<input type="hidden" property="{name}" value="\\{{name}\\}" />'
+				+											'{label}'
+				+										'</span>'
+				+										'<tpl if="name">: \\{[getValueFromParent("{name}", values.{name})]\\}</tpl>'
+				+									'</div>'
+				+								'</tpl>'
+				+							'</tpl>'
+				+							'<tpl if="!parent">'
+				+								'<tpl if="label || name">'
+				+									'<div>{label}<tpl if="name">: {name}</tpl></div>'
+				+								'</tpl>'
+				+							'</tpl>'
+				+						'</tpl>'
+				+					'</small>'
+				+				'</tpl>'
+				+				'{buttons}'
+				+			'</div>'
+				+		'</div>'	
+				+	'</div>';
+	
+	var buttons = 
+		'<div class="buttons">' 
+			+ '<tpl for="deps">'
+				+'<div class="hbox dep">'
+				+ '<input type="hidden" value="{table_id}" />'
+				+ '<div class="count"><tpl if="count &gt; 0">{count}</tpl></div>'
+				+ '<div class="data">{name}</div>'
+				+ '<tpl if="extendable && editable || table_id == \'SaleOrder\'"><div class="x-button extend add">+</div></tpl>'
+	 			+ '</div>'
+ 			+ '</tpl>'
+ 		+ '</div>';
+	
+	var templateData = {
+		hasName: false,
+		keyColumnsLength: 0,
+		keyColumns: [],
+		otherColumnsLength: 0,
+		otherColumns: [],
+		buttons: buttons
+	};
+	
 	var idColExist = columnStore.findExact('name', 'id') === -1 ? false : true;
 	var queryValue = idColExist ? 'parent' : 'key';
 	
 	if(columnStore.findExact('name', 'name') != -1) {
-		columns += '<p class="name">{name}</p>';
+
+		templateData.hasName = true;
 		queryValue = 'key';
 	} else {
-		
-		var mainColumns = columnStore.queryBy(function(rec) {
+
+		var keyColumns = columnStore.queryBy(function(rec) {
 			return rec.get(queryValue)
 				&& filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase()
 				&& groupField !== rec.get('name') ? true : false;
 		});
 		
-		if(mainColumns.getCount() > 0) {
-			columns += '<p class="key">';
-
-			var parentTpl = new Ext.XTemplate('<span>\\{[getValueFromParent("{name}", values.{name})]\\}<tpl if="!end"> : </tpl></span>&nbsp;');
-			var commonTpl = new Ext.XTemplate('<span>\\{{name}\\} : </span>&nbsp;');
+		templateData.keyColumnsLength = keyColumns.getCount(); 
+		
+		if(keyColumns.getCount() > 0) {
 			
-			var length = mainColumns.getCount();
-			
-			mainColumns.each(function(col) {
+			var length = keyColumns.getCount(); 
 
-				if(col.get('parent')) {
-					columns += parentTpl.apply({name: col.data.name, end: mainColumns.indexOf(col) + 1 >= length});
-				} else {
-					columns += commonTpl.apply({name: col.data.name, end: mainColumns.indexOf(col) + 1 >= length});
-				}
+			keyColumns.each(function(col) {
+
+				templateData.keyColumns.push({
+					parent: col.get('parent') ? true: false,
+					name: col.get('name'),
+					end: keyColumns.indexOf(col) + 1 >= length
+				});
 			});
-
-			columns += '</p>';
 		}
 	}
 
@@ -61,67 +118,41 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 			&& colName !== 'id' && colName !== 'name' && rec.get('label') ? true : false;
 	});
 	
-	columns += '<div class="other">';
+	templateData.otherColumnsLength = otherColumns.getCount(); 
 	if(otherColumns.getCount() > 0) {
-		columns += '<small class="other-fields">';
-
-		var othersTpl = new Ext.XTemplate('<tpl if="label || name"><div>{label}<tpl if="name">: {name}</tpl></div></tpl>');
-		var othersParentTpl = new Ext.XTemplate('<tpl if="label || name"><div><span class="label-parent"><input type="hidden" property="{name}" value="\\{{name}\\}" />{label}</span><tpl if="name">: \\{[getValueFromParent("{name}", values.{name})]\\}</tpl></div></tpl>');
 
 		otherColumns.each(function(col) {
+			
+			var label = undefined, name = undefined;
+
 			var colName = col.get('name');
-				
-			var tplValue;
 			switch(col.get('type')) {
 				case 'boolean' : {
-					tplValue = othersTpl.apply({label: '{[values.' + colName + ' == true ? "' + col.get('label') + '" : ""]}'});
+					label = '{[values.' + colName + ' == true ? "' + col.get('label') + '" : ""]}';
 					break;
 				}
 				case 'date' : {
-					tplValue = othersTpl.apply({label: col.get('label'), name: '{[Ext.util.Format.date(values.' + colName + ')]}'});
+					label = col.get('label');
+					name = '{[Ext.util.Format.date(values.' + colName + ')]}';
 					break;
 				}
 				default : {
-					
-					tplValue = col.get('parent')
-								? othersParentTpl.apply({label: col.get('label'), name: col.data.name})
-								: othersTpl.apply({label: col.get('label'), name: '{' + colName + '}'});
+					label = col.get('label');
+					name = col.get('parent') ? colName : '{' + colName + '}';
+					break;
 				}
 			}
 			
-			columns += tplValue;
+			templateData.otherColumns.push({
+				parent: col.get('parent') ? true : false,
+				label: label,
+				name: name
+			});
+			
 		});
-
-		columns += '</small>';
 	}
-	/**
-	 * END.
-	 * Сборка темплейта для полей сущности
-	 */
 	
-	/**
-	 * BEGIN.
-	 * Сборка темплейта для deps
-	 */
-	columns += 
-			'<div class="buttons">' 
-				+ '<tpl for="deps">'
-					+'<div class="hbox dep">'
-					+ '<input type="hidden" value="{table_id}" />'
-					+ '<div class="count"><tpl if="count &gt; 0">{count}</tpl></div>'
-					+ '<div class="data">{name}</div>'
-					+ '<tpl if="extendable && editable || table_id == \'SaleOrder\'"><div class="x-button extend add">+</div></tpl>'
-		 			+ '</div>'
-	 			+ '</tpl>'
-	 		+ '</div>';
-	/**
-	 * END.
-	 * Сборка темплейта для deps
-	 */
-	columns += '</div>';	
-	columns += '</div>';
-
-	return template.apply({columns: columns});
+	return new Ext.XTemplate(templateString).apply(templateData);
 };
 
 function getItemTpl (modelName, table) {

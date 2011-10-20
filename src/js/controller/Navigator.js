@@ -288,7 +288,7 @@ Ext.regController('Navigator', {
 					oldCard.setLoading(false);
 					IOrders.viewport.setActiveItem(newCard, options.anim);
 				}
-			})
+			});
 			
 		}
 	},

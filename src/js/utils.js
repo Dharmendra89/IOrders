@@ -116,7 +116,8 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 
 	var otherColumns = columnStore.queryBy(function(rec) {
 		var colName = rec.get('name');
-		return !rec.get(queryValue) && groupField !== colName && filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase()
+		return !rec.get(queryValue) && groupField !== colName && groupField[0].toLowerCase() + groupField.replace('_name', '').substring(1) !== colName
+			&& filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase()
 			&& colName !== 'id' && colName !== 'name' && rec.get('label') ? true : false;
 	});
 	
@@ -364,7 +365,7 @@ var getGroupConfig = function(model) {
 					return rec.get('firstName');
 				},
 				sorters: [{property: 'firstName', direction: 'ASC'}],
-				field: 'firtName'
+				field: 'firstName'
 			};
 		}
 		case 'Category' : {

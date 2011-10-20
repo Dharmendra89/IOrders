@@ -1,5 +1,8 @@
 Ext.regApplication({
 	name: 'IOrders',
+    icon: 'src/css/apple-touch-icon.png',
+
+//    phoneStartupScreen: 'phone_startup.png',
 	
 	init: function() {
 		

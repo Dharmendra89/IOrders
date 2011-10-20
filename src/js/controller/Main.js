@@ -219,17 +219,23 @@ Ext.regController('Main', {
 				
 				var metadata = this.xml2obj(m).metadata;
 				
-				localStorage.setItem('metadata', Ext.encode(metadata));
-				
 				if ( metadata.version != IOrders.dbeng.db.version )
-					Ext.Msg.alert(
-						'Необходим перезапуск',
-						'Текущая версия: '+IOrders.dbeng.db.version+ ' '+
-						'Полуена версия: '+metadata.version,
-						function () { location.replace(location.href); }
+					Ext.Msg.confirm(
+						'Требуется пересоздать БД',
+						'Текущая версия: '+IOrders.dbeng.db.version + '<br/>' +
+						'Новая версия: '+metadata.version + '<br/><br/>' +
+						'Стереть все данные и загрузить то, что лежит на сервере?',
+						function (yn) {
+							if (yn == 'yes'){
+								localStorage.setItem('metadata', Ext.encode(metadata));				
+								location.replace(location.href);
+							}
+						}
 					);
-				else
+				else {
+					localStorage.setItem('metadata', Ext.encode(metadata));
 					Ext.Msg.alert('Метаданные в норме', 'Версия: ' + metadata.version);
+				}
 				
 			}},
 			this.prefsCb
@@ -251,13 +257,16 @@ Ext.regController('Main', {
 
 	onDbRebuildButtonTap: function(options) {
 		
-		IOrders.dbeng.clearListeners();
-		
-		IOrders.dbeng.startDatabase (
-			Ext.decode(localStorage.getItem('metadata')),
-			true
-		);
-		
+		Ext.Msg.confirm('Внимание', 'Действительно нужно безвозвратно стереть данные из всех таблиц ?', function(yn){
+			if (yn == 'yes'){
+				IOrders.dbeng.clearListeners();
+				
+				IOrders.dbeng.startDatabase (
+					Ext.decode(localStorage.getItem('metadata')),
+					true
+				);
+			}
+		})
 	},
 
 	onReloadButtonTap: function(options) {

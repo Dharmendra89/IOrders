@@ -59,6 +59,8 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 				+		'</div>'	
 				+	'</div>';
 	
+	console.log(templateString);
+	
 	var buttons = 
 		'<div class="buttons">' 
 			+ '<tpl for="deps">'
@@ -151,6 +153,8 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 			
 		});
 	}
+	console.log(new Ext.XTemplate(templateString).apply(templateData));
+	
 	
 	return new Ext.XTemplate(templateString).apply(templateData);
 };

@@ -337,8 +337,21 @@ Ext.regController('Navigator', {
 		var view = options.view;
 		var record = options.selected;
 		
-		view.oobjectRecord = record;
+		view.objectRecord = record;
 		view.form.loadRecord(record);
+		
+		view.depStore.each(function(depRec) {
+			var modelProxy = Ext.ModelMgr.getModel(depRec.get('table_id')).prototype.getProxy();
+
+			var operCount = new Ext.data.Operation({
+				depRec: depRec,
+				filters: [{property: view.objectRecord.modelName.toLowerCase(), value: view.objectRecord.getId()}]
+			});
+
+			modelProxy.count(operCount, function(operation) {
+				operation.depRec.set('count', operation.result);
+			});
+		});
 	},
 	
 	onSyncButtonTap: function(options) {
@@ -437,7 +450,7 @@ Ext.regController('Navigator', {
 						modelProxy.count(operCount, function(operation) {
 							depRec.count = operation.result;
 							record.data.deps = data;
-							list.refreshNode(list.indexOf(record));
+							list.store && list.refreshNode(list.indexOf(record));
 						});
 						
 						data.push(depRec);

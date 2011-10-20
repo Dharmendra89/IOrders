@@ -219,7 +219,7 @@ var createFieldSet = function(columnsStore, modelName, view) {
 				}
 				default : {
 					if(column.get('name') == 'name') {
-						var selectStore = createStore(modelName);
+						var selectStore = createStore(modelName, getSortersConfig(modelName, {}));
 						selectStore.load();
 						selectStore.add(view.objectRecord);
 
@@ -232,7 +232,7 @@ var createFieldSet = function(columnsStore, modelName, view) {
 			}
 			
 			Ext.apply(field, column.get('parent') 
-					? {xtype: 'selectfield', store: Ext.getStore(column.get('parent')), valueField: 'id', displayField: 'name', onFieldLabelTap: true, onFieldInputTap: true} 
+					? {xtype: 'selectfield', store: Ext.getStore(column.get('parent')), valueField: 'id', displayField: 'name', onFieldLabelTap: true, onFieldInputTap: true}
 					: fieldConfig
 			);
 			fsItems.push(field);
@@ -245,7 +245,7 @@ var createFieldSet = function(columnsStore, modelName, view) {
 var createFilterField = function(objectRecord) {
 
 	var modelName = objectRecord.modelName;	
-	var selectStore = createStore(modelName);
+	var selectStore = createStore(modelName, getSortersConfig(modelName, {}));
 	selectStore.load();
 	selectStore.add(objectRecord);
 
@@ -391,13 +391,19 @@ var getSortersConfig = function(model, storeConfig) {
 		columns = table.columns()
 	;
 	
-	if (columns.getById(table.getId() + 'ord'))
+	var parentSort = true;
+	
+	if (columns.getById(table.getId() + 'ord')) {
 		sortConfig.sorters.push ({ property: 'ord' });
+		parentSort = false;
+	}
 	
-	if (columns.getById(table.getId() + 'name'))
+	if (columns.getById(table.getId() + 'name')) {
 		sortConfig.sorters.push ({ property: 'name' });
+		parentSort = false;
+	}
 	
-	if (!sortConfig.sorters.length){
+	if (parentSort) {
 		
 		var parentColumns = columns.queryBy(function(rec) {
 			return rec.get('parent') ? true : false;

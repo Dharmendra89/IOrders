@@ -60,12 +60,12 @@ var createStores = function(tablesStore, config) {
 	tablesStore.each(function(table) {
 		if (!(table.get('type') == 'view') && table.columns().data.map[table.getId() + 'name'] && table.deps().data.length) {
 			regStore(table.getId(), Ext.apply({
-				autoLoad:true,
+				autoLoad: true,
 				pageSize: 0,
 				listeners: {
 					load: continueLoad
 				}
-			}, config));
+			}, Ext.apply(getSortersConfig(table.getId(), {}), config)));
 		}
 	});
 	
@@ -98,6 +98,6 @@ var createStore = function(name, config) {
 				type: 'sql',
 				engine: IOrders.dbeng
 			}
-		},config)
+		}, config)
 	);
 };

@@ -1,40 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.52" expect-megabytes="15">
   <tables set-of="table">
-    <table id="Route" name="Маршрут" nameSet="Маршруты" level="0">
-      <columns set-of="column">
-        <column id="Routeid" name="id" type="int" key="true"/>
-        <column id="Routename" name="name" type="string" label="Название"/>
-        <column id="Routeord" name="ord" type="int"/>
-      </columns>
-      <deps set-of="dep">
-        <dep table_id="RoutePoint" id="RoutePointroute"/>
-      </deps>
-    </table>
-    <table id="RoutePoint" name="Точка маршрута" nameSet="Точки маршрута" level="1">
-      <columns set-of="column">
-        <column id="RoutePointroute" name="route" type="int" parent="Route" label="Маршрут" key="true"/>
-        <column id="RoutePointcustomer" name="customer" parent="Customer" label="Клиент" key="true"/>
-        <column id="RoutePointord" name="ord" type="int" label="Очередность"/>
-      </columns>
-    </table>
-    <table id="Warehouse" name="Склад" nameSet="Склады" level="0">
-      <columns set-of="column">
-        <column id="Warehouseid" name="id" type="int"/>
-        <column id="Warehousename" name="name" type="string" label="Название"/>
-      </columns>
-      <deps set-of="dep">
-        <dep table_id="Customer" id="Customerwarehouse"/>
-        <dep table_id="Stock" id="Stockwarehouse"/>
-      </deps>
-    </table>
-    <table id="Stock" name="Остаток" nameSet="Остатки" level="1">
-      <columns set-of="column">
-        <column id="Stockwarehouse" name="warehouse" type="int" parent="Warehouse" label="Склад" key="true"/>
-        <column id="Stockproduct" name="product" parent="Product" label="Товар" key="true"/>
-        <column id="StockstockLevel" name="stockLevel" type="int" label="Уровень запаса"/>
-      </columns>
-    </table>
     <table id="PricelistSet" name="Ценовая категория" nameSet="Ценовые категории" level="0">
       <columns set-of="column">
         <column id="PricelistSetid" name="id" type="int" key="true"/>
@@ -97,6 +63,23 @@
         <column id="Pricepricelist" name="pricelist" parent="Pricelist" label="Прайс-лист" key="true"/>
         <column id="Priceproduct" name="product" parent="Product" label="Товар" key="true"/>
         <column id="Priceprice" name="price" type="float" label="Цена"/>
+      </columns>
+    </table>
+    <table id="Warehouse" name="Склад" nameSet="Склады" level="0">
+      <columns set-of="column">
+        <column id="Warehouseid" name="id" type="int"/>
+        <column id="Warehousename" name="name" type="string" label="Название"/>
+      </columns>
+      <deps set-of="dep">
+        <dep table_id="Customer" id="Customerwarehouse"/>
+        <dep table_id="Stock" id="Stockwarehouse"/>
+      </deps>
+    </table>
+    <table id="Stock" name="Остаток" nameSet="Остатки" level="1">
+      <columns set-of="column">
+        <column id="Stockwarehouse" name="warehouse" type="int" parent="Warehouse" label="Склад" key="true"/>
+        <column id="Stockproduct" name="product" parent="Product" label="Товар" key="true"/>
+        <column id="StockstockLevel" name="stockLevel" type="int" label="Уровень запаса"/>
       </columns>
     </table>
     <table id="Partner" name="Партнер" nameSet="Партнеры" level="0">
@@ -184,6 +167,23 @@
         <column id="Encashmentdatetime" name="datetime" type="datetime" label="Дата" editable="true"/>
         <column id="Encashmentsumm" name="summ" type="float" label="Получено" editable="true"/>
         <column id="Encashmentdebt" name="debt" parent="Debt" label="Задолженность" editable="true"/>
+      </columns>
+    </table>
+    <table id="Route" name="Маршрут" nameSet="Маршруты" level="0">
+      <columns set-of="column">
+        <column id="Routeid" name="id" type="int" key="true"/>
+        <column id="Routename" name="name" type="string" label="Название"/>
+        <column id="Routeord" name="ord" type="int"/>
+      </columns>
+      <deps set-of="dep">
+        <dep table_id="RoutePoint" id="RoutePointroute"/>
+      </deps>
+    </table>
+    <table id="RoutePoint" name="Точка маршрута" nameSet="Точки маршрута" level="1">
+      <columns set-of="column">
+        <column id="RoutePointroute" name="route" type="int" parent="Route" label="Маршрут" key="true"/>
+        <column id="RoutePointcustomer" name="customer" parent="Customer" label="Клиент" key="true"/>
+        <column id="RoutePointord" name="ord" type="int" label="Очередность"/>
       </columns>
     </table>
   </tables>

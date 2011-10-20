@@ -37,6 +37,10 @@ Ext.regApplication({
 					
 					if (db.clean)
 						IOrders.xi.download(IOrders.dbeng);
+				},
+				fail: function() {
+					localStorage.clear();
+					location.replace (location.href);
 				}
 			}
 		});

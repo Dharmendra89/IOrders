@@ -15,11 +15,9 @@ var Viewport = Ext.extend(Ext.Panel , {
 
 		Viewport.superclass.onCardSwitch.apply(this, arguments);
 
-		if(oldC) {
-			this.remove(oldC);
-			oldC.destroy();
-		}
-	}/*,
+		if(oldC) this.remove(oldC, true);
+	}
+	/*,
 	layoutOrientation: function(orientation, w, h) {		
 
 		Viewport.superclass.layoutOrientation.apply(this, arguments);

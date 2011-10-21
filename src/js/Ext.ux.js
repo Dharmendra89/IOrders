@@ -331,6 +331,23 @@ Ext.override(Ext.form.FormPanel, {
 	}
 });
 
+Ext.override ( Ext.util.Observable, {
+	
+	clearManagedListeners : function() {
+        var managedListeners = this.managedListeners || [],
+            ln = managedListeners.length,
+            i, managedListener;
+		
+        for (i = 0; i < ln; i++) {
+            managedListener = managedListeners[i];
+            managedListener.item.un(managedListener.ename, managedListener.fn, managedListener.scope);
+        }
+		
+        this.managedListeners = [];
+    }
+
+});
+
 
 Ext.MessageBox.YESNO[1].text = 'Да';
 Ext.MessageBox.YESNO[0].text = 'Нет';

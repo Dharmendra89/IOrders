@@ -162,10 +162,9 @@ Ext.regController('SaleOrder', {
 				}]
 			});
 			
-			newCard.productList = newCard.productPanel.add({
-				xtype: 'offerproductlist',
+			newCard.productList = newCard.productPanel.add( Ext.apply (offerProductList, {
 				store: newCard.productStore
-			});
+			}));
 			
 			newCard.productPanel.doLayout();
 			

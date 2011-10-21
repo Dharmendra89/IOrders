@@ -1,6 +1,6 @@
 Ext.regController('Navigator', {
+	
 	onBackButtonTap: function(options) {
-
 		var view = options.view;
 		var newCard = Ext.create(view.ownerViewConfig);
 		if (newCard.isSetView) {
@@ -9,6 +9,7 @@ Ext.regController('Navigator', {
 			IOrders.viewport.setActiveItem(newCard, IOrders.viewport.anims.back);
 		}
 	},
+	
 	onHomeButtonTap: function(options) {
 
 		IOrders.viewport.setActiveItem(new NavigatorView({
@@ -16,6 +17,7 @@ Ext.regController('Navigator', {
 			objectRecord: Ext.ModelMgr.create({id: 1}, 'MainMenu')
 		}), IOrders.viewport.anims.home);
 	},
+	
 	onSaveButtonTap: function(options) {
 		
 		var view = options.view,

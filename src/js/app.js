@@ -1,3 +1,8 @@
+applicationCache.addEventListener('updateready', function() {
+	location.replace (location.href);
+});
+
+
 Ext.regApplication({
 	name: 'IOrders',
     icon: 'src/css/apple-touch-icon.png',

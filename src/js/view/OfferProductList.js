@@ -22,7 +22,7 @@ var offerProductList = Ext.extend(ExpandableGroupedList, {
 		
 		var me = this;
 		
-		Ext.apply(this.listeners, {
+		Ext.apply(me.listeners, {
 			itemswipe: function(list, idx, item, event) {
 				if (!list.disableSwipe) {
 					Ext.dispatch({
@@ -32,12 +32,12 @@ var offerProductList = Ext.extend(ExpandableGroupedList, {
 				}
 			},
 			itemdoubletap: function (list, idx, item, el) {
-				var 
-					rec = list.getRecord (item),
-					volume = rec.get('volume');
-					
+				var rec = list.getRecord (item)
+				
 				if (rec) {
-					var msg = new Ext.MessageBox();
+					var msg = new Ext.MessageBox(),
+						volume = rec.get('volume')
+					;
 					
 					Ext.get(item).addCls ('editing');
 					
@@ -47,7 +47,6 @@ var offerProductList = Ext.extend(ExpandableGroupedList, {
 							Ext.get(item).removeCls ('editing');
 							
 							if (button == 'ok'){
-								Ext.destroy (this);
 								Ext.dispatch ({
 									controller: 'SaleOrder',
 									action: 'setVolume',
@@ -55,8 +54,10 @@ var offerProductList = Ext.extend(ExpandableGroupedList, {
 									rec: rec,
 									volume: value,
 									item: item
-								})
-							}
+								});
+							};
+							
+							Ext.defer (function() {Ext.destroy (msg);}, 1000);
 						},
 						msg, false, volume, { type: 'number', autofocus: true }
 					);
@@ -64,9 +65,9 @@ var offerProductList = Ext.extend(ExpandableGroupedList, {
 			}
 		});
 		
-		offerProductList.superclass.initComponent.apply(this, arguments);
+		offerProductList.superclass.initComponent.apply(me, arguments);
 		
-		Ext.apply(this.scroll,{
+		Ext.apply(me.scroll,{
 			
 			threshold: 25,
 			

@@ -13,7 +13,6 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 	var tableRecord = tableStore.getById(modelName);
 	var columnStore = tableRecord.columns();
 	
-	
 	var templateString = '<div class="hbox">'
 				+		'<div>'
 				+			'<tpl if="hasName">'
@@ -59,7 +58,7 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 				+		'</div>'	
 				+	'</div>';
 	
-	console.log(templateString);
+//	console.log(templateString);
 	
 	var buttons = 
 		'<div class="buttons">' 
@@ -116,7 +115,10 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 
 	var otherColumns = columnStore.queryBy(function(rec) {
 		var colName = rec.get('name');
-		return !rec.get(queryValue) && groupField !== colName && groupField[0].toLowerCase() + groupField.replace('_name', '').substring(1) !== colName
+		return !rec.get(queryValue)
+			&& ( groupField && groupField !== colName
+					&& groupField[0].toLowerCase() + groupField.replace('_name', '').substring(1) !== colName
+			)
 			&& filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase()
 			&& colName !== 'id' && colName !== 'name' && rec.get('label') ? true : false;
 	});

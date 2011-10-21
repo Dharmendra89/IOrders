@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<manifest>
+    <cache>
+        
+        <file>index.html</file>
+        
+        <file>src/css/index.css</file>
+        <file>src/css/apple-touch-icon.png</file>
+        
+        <file>src/js/controller/Main.js</file>
+        <file>src/js/controller/Navigator.js</file>
+        <file>src/js/controller/SaleOrder.js</file>
+        
+        <file>src/js/model/Metadata.js</file>
+        <file>src/js/model/Models.js</file>
+        
+        <file>src/js/view/AbstractView.js</file>
+        <file>src/js/view/NavigatorView.js</file>
+        <file>src/js/view/OfferProductList.js</file>
+        <file>src/js/view/SaleOrderView.js</file>
+        <file>src/js/view/Viewport.js</file>
+        
+        <file>src/js/app.js</file>
+        <file>src/js/utils.js</file>
+        <file>src/js/Ext.ux.js</file>
+        
+        <file>../senchatouch/sencha-touch-debug.js</file>
+        <file>../senchatouch/resources/css/apple.css</file>
+        
+        <file>../uuid.js</file>
+        <file>../XML/sencha/Ext.data.Engine.js</file>
+        <file>../XML/sencha/Ext.data.XmlInterface.js</file>
+        <file>../XML/sencha/Ext.data.SQLiteProxy.js</file>
+        
+    </cache>
+    <network>*</network>
+</manifest>

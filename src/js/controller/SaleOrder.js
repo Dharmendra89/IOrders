@@ -56,7 +56,7 @@ Ext.regController('SaleOrder', {
 				posRec.editing = false;
 			}
 			
-			rec.commit();
+			rec.commit(true);
 			
 		});
 		

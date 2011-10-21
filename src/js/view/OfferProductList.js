@@ -1,3 +1,11 @@
+/*
+ Ext.Msg.on ('show', function() {
+	console.log (this.inputEl);
+	var el =  this.inputEl.dom;
+	Ext.defer ( function () { el.focus(); }, 1000);
+});
+*/
+
 var offerProductList = Ext.extend(ExpandableGroupedList, {
 
 	cls: 'x-product-list',
@@ -22,6 +30,35 @@ var offerProductList = Ext.extend(ExpandableGroupedList, {
 						list: list, idx: idx, item: item, event: event
 					});
 				}
+			},
+			itemdoubletap: function (list, idx, item, el) {
+				var 
+					rec = list.getRecord (item),
+					volume = rec.get('volume'),
+					msg = new Ext.MessageBox();
+					
+				Ext.get(item).addCls ('editing');
+				
+				msg.prompt ('Изменить количество?', rec.get ('name'),
+					function(button, value){
+						
+						Ext.get(item).removeCls ('editing');
+						
+						if (button == 'ok'){
+							Ext.destroy (this);
+							Ext.dispatch ({
+								controller: 'SaleOrder',
+								action: 'setVolume',
+								list: list,
+								rec: rec,
+								volume: value,
+								item: item
+							})
+						}
+					},
+					msg, false, volume, { type: 'number', autofocus: true }
+				);
+				
 			}
 		});
 		

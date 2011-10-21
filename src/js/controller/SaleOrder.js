@@ -18,30 +18,50 @@ Ext.regController('SaleOrder', {
 	},
 	
 	onSaveButtonTap: function(options) {
-		
 		var view = options.view;
-		var offerStore = view.productStore;
-		var saleOrderPosStore = Ext.getStore('SaleOrderPosition');
 		
-		offerStore.clearFilter(true);
-		var offerProducts = offerStore.getUpdatedRecords();
+		Ext.dispatch(Ext.apply(options, {
+			action: 'saveOffer'
+		}));
 		
-		Ext.each(offerProducts, function(product) {
-			saleOrderPosStore.add(Ext.ModelMgr.create(Ext.apply({
-				saleorder: view.saleOrder.getId()
-				}, product.data), 'SaleOrderPosition'
-			));
-		});
-		
-		view.saleOrder.set ('totalCost', offerStore.sum('cost').toFixed(2));
+		view.saleOrder.set ('totalCost', view.saleOrderPositionStore.sum('cost').toFixed(2));
 		view.saleOrder.save();
 		
+		Ext.dispatch(Ext.apply(options, {
+			action: 'onBackButtonTap'
+		}));
+	},
+		
+	saveOffer: function(options) {
+		var view = options.view,
+		    offerStore = view.productStore,
+		    saleOrderPosStore = view.saleOrderPositionStore
+		;
+		
+		//offerStore.clearFilter(true);
+		
+		Ext.each(offerStore.getUpdatedRecords(), function(rec) {
+			var posRec = saleOrderPosStore.findRecord('product', rec.get('product'));
+			
+			if (!posRec) {
+				saleOrderPosStore.add (Ext.ModelMgr.create(Ext.apply({
+							saleorder: view.saleOrder.getId()
+						}, rec.data
+					), 'SaleOrderPosition'
+				))
+			} else {
+				posRec.editing = true;
+				posRec.set('volume', rec.get('volume'));
+				posRec.set('cost', rec.get('cost'));
+				posRec.editing = false;
+			}
+			
+			rec.commit();
+			
+		});
+		
 		saleOrderPosStore.sync();
-		saleOrderPosStore.removeAll();
 		
-		offerStore.removeAll();
-		
-		Ext.dispatch(Ext.apply(options, {action: 'onBackButtonTap'}));
 	},
 	
 	onShowSaleOrderButtonTap: function(options) {
@@ -134,9 +154,12 @@ Ext.regController('SaleOrder', {
 				})
 			});
 			
-			var saleOrderPositionStore = createStore('SaleOrderPosition', {
+			var saleOrderPositionStore = newCard.saleOrderPositionStore = createStore('SaleOrderPosition', {
 				remoteFilter: true,
-				filters: [{property: 'saleorder', value: options.saleOrder.getId()}]
+				filters: [{
+					property: 'saleorder',
+					value: options.saleOrder.getId()
+				}]
 			});
 			
 			newCard.productList = newCard.productPanel.add({
@@ -198,9 +221,25 @@ Ext.regController('SaleOrder', {
 		
 		var rec = options.list.getRecord(options.item),
 		    volume = parseInt(rec.get('volume') ? rec.get('volume') : '0'),
-			oldCost = rec.get('cost'),
 		    factor = parseInt(rec.get('factor')),
-		    sign = 1,
+		    sign = options.event.direction === 'left' ? -1 : 1
+		;
+		
+		!volume && (volume = 0);
+		
+		Ext.dispatch (Ext.apply(options, {
+			action: 'setVolume',
+			volume: volume + sign * factor,
+			rec: rec
+		}));
+		
+	},
+	
+	setVolume: function (options) {
+		var volume = options.volume;
+		
+		var rec = options.rec,
+			oldCost = rec.get('cost'),
 		    view = options.list.up('saleorderview')
 		;
 		
@@ -208,10 +247,6 @@ Ext.regController('SaleOrder', {
 		
 		options.list.scroller.disable();
 		
-		!volume && (volume = 0);
-		options.event.direction === 'left' && (sign = -1);
-		
-		volume = volume + sign * factor;
 		volume < 0 && (volume = 0);
 		
 		var cost = volume * parseInt(rec.get('rel')) * parseFloat(rec.get('price'));
@@ -221,24 +256,15 @@ Ext.regController('SaleOrder', {
 		rec.set('cost', cost.toFixed(2));
 		rec.editing = false;
 		
-		
-		var saleOrderPosStore = new Ext.data.Store( { model: 'SaleOrderPosition' } );
-		
-		saleOrderPosStore.add(Ext.ModelMgr.create(Ext.apply({
-			saleorder: view.saleOrder.getId()
-			}, rec.data), 'SaleOrderPosition'
-		));
-		
-		//view.saleOrder.set('totalCost', offerStore.sum('cost').toFixed(2));
-		//view.saleOrder.save();
-		
-		saleOrderPosStore.sync();
-//		saleOrderPosStore.removeAll();
-		
 		Ext.dispatch(Ext.apply(options, {
 			action: 'calculateTotalCost',
 			record: rec,
 			addCost: cost - oldCost
+		}));
+		
+		Ext.dispatch(Ext.apply(options, {
+			action: 'saveOffer',
+			view: view
 		}));
 		
 		Ext.get(options.item).down('.cost').dom.innerHTML = rec.get('cost');

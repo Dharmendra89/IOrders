@@ -163,3 +163,7 @@
 .x-list-item.x-item-selected, .x-list .x-list-disclosure {
 	background-image: none !important;
 }
+
+.x-list-item.editing {
+	background-color: #FFCCFF;
+}

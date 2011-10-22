@@ -7,12 +7,13 @@ Ext.regController('SaleOrder', {
 			}
 		;
 		
-		if (s && s.snapshot && s.snapshot.filterBy(s.filterDirty).items.length) Ext.Msg.confirm (
+		if (s && (s.snapshot && s.snapshot.filterBy(s.filterDirty).items.length || options.view.saleOrder.dirty)) Ext.Msg.confirm (
 			'Внимание, вопрос',
 			'Действительно нужно вернуться назад? Если да, то несохраненные данные будут потеряны',
 			function(b) {
-				if (b=='yes')
+				if (b=='yes'){
 					back();
+				}
 			}
 		); else back();
 	},
@@ -23,9 +24,6 @@ Ext.regController('SaleOrder', {
 		Ext.dispatch(Ext.apply(options, {
 			action: 'saveOffer'
 		}));
-		
-		view.saleOrder.set ('totalCost', view.saleOrderPositionStore.sum('cost').toFixed(2));
-		view.saleOrder.save();
 		
 		Ext.dispatch(Ext.apply(options, {
 			action: 'onBackButtonTap'
@@ -60,8 +58,12 @@ Ext.regController('SaleOrder', {
 			
 		});
 		
+		view.saleOrder.set ('totalCost', view.saleOrderPositionStore.sum('cost').toFixed(2));
 		saleOrderPosStore.sync();
 		
+		view.saleOrder.save();
+		view.saleOrder.commit(true);
+
 	},
 	
 	onShowSaleOrderButtonTap: function(options) {
@@ -162,9 +164,9 @@ Ext.regController('SaleOrder', {
 				}]
 			});
 			
-			newCard.productList = newCard.productPanel.add( Ext.apply (offerProductList, {
+			newCard.productList = newCard.productPanel.add( new ExpandableGroupedList (Ext.apply (offerProductList, {
 				store: newCard.productStore
-			}));
+			})));
 			
 			newCard.productPanel.doLayout();
 			

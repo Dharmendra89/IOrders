@@ -3,8 +3,16 @@ Ext.ns('Ext.ux.form');
 Ext.override(Ext.Interaction, {controller: 'Main'});
 
 var ExpandableGroupedList = Ext.extend(Ext.List, {
+	
 	grouped: true,
-	cls: 'expandable',
+	
+	initComponent: function() {
+		var scroll = this.scroll;
+		ExpandableGroupedList.superclass.initComponent.apply(this, arguments);
+		if (typeof scroll == 'object')
+			this.scroll = scroll;
+	},
+	
 	onRender: function() {
 		ExpandableGroupedList.superclass.onRender.apply(this, arguments);
 		this.mon(this.el, 'tap', this.onListHeaderTap, this, {
@@ -12,6 +20,7 @@ var ExpandableGroupedList = Ext.extend(Ext.List, {
 		});
 		this.el.addCls ('expandable');
 	},
+	
 	onListHeaderTap: function(e, t) {
 		
 		var tapedHeaderEl = Ext.get(t),
@@ -20,9 +29,9 @@ var ExpandableGroupedList = Ext.extend(Ext.List, {
 		;
 		
 		var expanded = tapedGroupEl.hasCls('expanded');
-
+		
 		this.setGroupExpanded(tapedGroupEl, !expanded, tapedHeaderEl);
-
+		
 		if(!expanded) {
 			var headerElArray = list.getExpandedElHeaders();
 			headerElArray.removeByKey(tapedHeaderEl.id);

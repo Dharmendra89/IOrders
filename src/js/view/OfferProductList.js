@@ -1,11 +1,3 @@
-/*
- Ext.Msg.on ('show', function() {
-	console.log (this.inputEl);
-	var el =  this.inputEl.dom;
-	Ext.defer ( function () { el.focus(); }, 1000);
-});
-*/
-
 var offerProductList = {
 
 	cls: 'x-product-list',
@@ -16,6 +8,7 @@ var offerProductList = {
 	xtype: 'expandableGroupedList',
 	
 	listeners: {
+		
 		itemswipe: function(list, idx, item, event) {
 			if (!list.disableSwipe) {
 				Ext.dispatch({
@@ -24,6 +17,7 @@ var offerProductList = {
 				});
 			}
 		},
+		
 		itemdoubletap: function (list, idx, item, el) {
 			var rec = list.getRecord (item)
 			
@@ -55,25 +49,24 @@ var offerProductList = {
 					msg, false, volume, { type: 'number', autofocus: true }
 				);
 			}
-		},
-		
-		scroll: {
-			
-			direction: 'vertical',
-			threshold: 25,
-			
-			listeners: {
-				scroll:function(s, o) {
-					if (o.y)
-						me.disableSwipe = true;
-				},
-				scrollend: function(s, o){
-					me.disableSwipe = false;
-				}
-			}
-			
 		}
 		
-	}	
+	},
 	
+	scroll: {
+		
+		direction: 'vertical',
+		threshold: 35 /*,
+		
+		listeners: {
+			scroll:function(s, o) {
+				if (o.y)
+					me.disableSwipe = true;
+			},
+			scrollend: function(s, o){
+				me.disableSwipe = false;
+			}
+		}*/
+		
+	}
 }

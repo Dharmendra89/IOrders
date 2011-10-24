@@ -116,8 +116,8 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 	var otherColumns = columnStore.queryBy(function(rec) {
 		var colName = rec.get('name');
 		return !rec.get(queryValue)
-			&& ( groupField && groupField !== colName
-					&& groupField[0].toLowerCase() + groupField.replace('_name', '').substring(1) !== colName
+			&& ( !groupField || (groupField !== colName
+					&& groupField[0].toLowerCase() + groupField.replace('_name', '').substring(1) !== colName)
 			)
 			&& filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase()
 			&& colName !== 'id' && colName !== 'name' && rec.get('label') ? true : false;

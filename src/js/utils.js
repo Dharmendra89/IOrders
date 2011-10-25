@@ -58,8 +58,6 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 				+		'</div>'	
 				+	'</div>';
 	
-//	console.log(templateString);
-	
 	var buttons = 
 		'<div class="buttons">' 
 			+ '<tpl for="deps">'
@@ -132,7 +130,7 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 
 			var colName = col.get('name');
 			switch(col.get('type')) {
-				case 'boolean' : {
+ 				case 'boolean' : {
 					label = '{[values.' + colName + ' == true ? "' + col.get('label') + '" : ""]}';
 					break;
 				}
@@ -156,13 +154,11 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 			
 		});
 	}
-	console.log(new Ext.XTemplate(templateString).apply(templateData));
-	
 	
 	return new Ext.XTemplate(templateString).apply(templateData);
 };
 
-function getItemTpl (modelName, table) {
+function getItemTpl (modelName) {
 
 	switch(modelName) {
 		case 'Dep': {
@@ -170,6 +166,15 @@ function getItemTpl (modelName, table) {
 					+ '<div class="count"><tpl if="count &gt; 0">{count}</tpl></div>'
 					+ '<div class="data">{name}</div>' 
 					+ '<tpl if="extendable && editable"><div class="x-button extend add">+</div></tpl>'
+				 + '</div>';
+		}
+		case 'Debt' : {
+			return '<div class="hbox dep">'
+					+ '<div class="data">'
+					+	'<div>Дата: {[Ext.util.Format.date(values.ddate)]} Документ№: {ndoc} <tpl if="isWhite>Нужен чек</tpl></div>'
+					+	'<div>Общая сумма задолжности: {[values.fullSumm]} руб. из нее должен {[parseFloat(values.remSumm).toFixed(2)]} руб.</div>'
+					+ '</div>'
+					+ '<div class="encashSumm"><tpl if="encashSumm &gt; 0">{[parseFloat(values.encashSumm).toFixed(2)]} руб.</tpl></div>'
 				 + '</div>';
 		}
 		case 'OfferCategory': {
@@ -429,3 +434,15 @@ var getNextWorkDay = function() {
 	var addDays = todayWeekDay >= 5 && todayWeekDay <= 6 ? 7 + 1 - todayWeekDay : 1;
 	return today.add(Date.DAY, addDays);
 };
+
+var getOwnerViewConfig = function(view) {
+	return {ownerViewConfig: {
+        xtype: view.xtype,
+        extendable: view.extendable,
+        isObjectView: view.isObjectView,
+        isSetView: view.isSetView,
+        objectRecord: view.objectRecord,
+        tableRecord: view.tableRecord,
+        ownerViewConfig: view.ownerViewConfig
+    }};
+};;

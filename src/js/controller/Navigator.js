@@ -168,12 +168,19 @@ Ext.regController('Navigator', {
 						rec.set('date', getNextWorkDay());
 					}
 					
-					Ext.dispatch(Ext.apply(options, {
-						action: 'createAndActivateView',
-						record: rec,
-						editing: true
-					}));
-					
+					if(objectRecord.modelName === 'Customer' && createdRecordModelName === 'Encashment') {
+						Ext.dispatch(Ext.apply(options, {
+							action: 'createEncashmentView',
+							customerRecord: objectRecord
+						}));
+					} else {
+						Ext.dispatch(Ext.apply(options, {
+							action: 'createAndActivateView',
+							record: rec,
+							editing: true
+						}));
+					}
+
 				}, 100);
 			}
 			
@@ -220,6 +227,74 @@ Ext.regController('Navigator', {
 			}, 150);
 		}
 		
+	},
+	
+	onSaveEncashButtonTap: function(options) {
+
+		var encashStore = createStore('Encashment'),
+			debtStore = options.view.debtList.store,
+			updDebtArray = debtStore.getUpdatedRecords(),
+			view = options.view
+		;
+		
+		Ext.each(updDebtArray, function(debt) {
+			debt.get('encashSumm') > 0 && encashStore.add(Ext.ModelMgr.create({
+				isWhite: debt.get('isWhite'), datetime: new Date().format('d/m/yyyy H:i:s'),
+				customer: view.customerRecord.getId(), debt: debt.getId(),
+				summ: parseFloat(debt.get('encashSumm')).toFixed(2)
+			}, 'Encashment'));
+		});
+		
+		
+		encashStore.sync();
+		debtStore.sync();
+		
+		var view = options.view;
+		var newCard = Ext.create(view.ownerViewConfig);
+		if (newCard.isSetView) {
+			Ext.dispatch(Ext.apply(options, {action: 'loadSetViewStore', newCard: newCard, anim: IOrders.viewport.anims.back}));
+		} else {
+			IOrders.viewport.setActiveItem(newCard, IOrders.viewport.anims.back);
+		}
+	},
+	
+	onDebtListItemSwipe: function(options) {
+
+		var rec = options.list.getRecord(options.item),
+			encashSumm = parseFloat(rec.get('encashSumm') ? rec.get('encashSumm') : '0'),
+		    sign = options.event.direction === 'left' ? -1 : 1
+		;
+		
+		Ext.dispatch (Ext.apply(options, {
+			action: 'setEncashSumm',
+			encashSumm: sign === 1 ? encashSumm + rec.get('remSumm') : (sign === -1 ? 0 : encashSumm),
+			rec: rec
+		}));
+	},
+	
+	setEncashSumm: function(options) {		
+
+		var rec = options.rec,
+			oldRemSumm = rec.get('remSumm'),
+			oldEncashSumm = parseFloat(rec.get('encashSumm') ? rec.get('encashSumm') : '0'),
+			newEncashSumm = oldRemSumm + oldEncashSumm - options.encashSumm >= 0 ? options.encashSumm : oldRemSumm + oldEncashSumm
+		;
+
+		rec.set('encashSumm', newEncashSumm);
+		rec.set('remSumm', oldRemSumm + oldEncashSumm - options.encashSumm >= 0 
+				? oldRemSumm - (newEncashSumm - oldEncashSumm) 
+				: 0);
+	},
+	
+	createEncashmentView: function(options) {
+
+		var oldView = IOrders.viewport.getActiveItem();
+		var customerRecord = options.customerRecord;
+		
+		var newCard = Ext.create(Ext.apply({
+				xtype: 'encashmentview', customerRecord: customerRecord, partnerRecord: Ext.getStore('Partner').getById(customerRecord.get('partner'))
+			}, getOwnerViewConfig(oldView)));
+		IOrders.viewport.setActiveItem(newCard);
 	},
 
 	createAndActivateView: function(options) {

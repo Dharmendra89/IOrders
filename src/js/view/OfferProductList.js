@@ -19,7 +19,7 @@ var offerProductList = {
 		},
 		
 		itemdoubletap: function (list, idx, item, el) {
-			var rec = list.getRecord (item)
+			var rec = list.getRecord (item);
 			
 			if (rec) {
 				var msg = new Ext.MessageBox(),
@@ -69,4 +69,4 @@ var offerProductList = {
 		}*/
 		
 	}
-}
+};

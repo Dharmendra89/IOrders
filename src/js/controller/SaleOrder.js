@@ -19,7 +19,6 @@ Ext.regController('SaleOrder', {
 	},
 	
 	onSaveButtonTap: function(options) {
-		var view = options.view;
 		
 		Ext.dispatch(Ext.apply(options, {
 			action: 'saveOffer'
@@ -46,7 +45,7 @@ Ext.regController('SaleOrder', {
 							saleorder: view.saleOrder.getId()
 						}, rec.data
 					), 'SaleOrderPosition'
-				))
+				));
 			} else {
 				posRec.editing = true;
 				posRec.set('volume', rec.get('volume'));

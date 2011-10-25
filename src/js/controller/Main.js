@@ -5,7 +5,7 @@ Ext.regController('Main', {
 		var view = options.view,
 			redirectTo = this;
 		
-		if ( view.isXType('navigatorview') ) {
+		if ( view.isXType('navigatorview') || view.isXType('encashmentview')) {
 			redirectTo = 'Navigator';
 		} else if ( view.isXType('saleorderview') ) {
 			redirectTo = 'SaleOrder';

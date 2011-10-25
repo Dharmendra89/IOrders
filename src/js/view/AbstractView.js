@@ -17,16 +17,15 @@ var AbstractView = Ext.extend(Ext.Panel, {
 				scope: this
 			}]
 		}].concat(this.dockedItems);
-		
-		if (!this.isXType('saleorderview'))
+
+		if (!this.isXType('saleorderview') && !this.isXType('encashmentview'))
 			this.dockedItems[0].items.push ({
 				ui: 'home', iconMask: true,
 				name: 'Home',
 				iconCls: 'home',
 				scope: this
-			})
-		;
-		
+			});
+
 	},
 	createItems: Ext.EmptyFn,
 	/**

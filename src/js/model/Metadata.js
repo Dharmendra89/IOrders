@@ -41,7 +41,10 @@ Ext.regModel('Table', {
 			type: 'json',
 			root: 'tables'
 		}
-	}
+	},
+	hasIdColumn: function() {
+		return this.columns().findExact('name', 'id') !== -1 ? true : false;
+	}  
 });
 
 Ext.regModel('Column', {
@@ -53,7 +56,8 @@ Ext.regModel('Column', {
 			{name: 'table_id', type: 'string'},
 			{name: 'key', type: 'boolean'},
 			{name: 'aggregable', type: 'string'},
-			{name: 'parent', type: 'string'}
+			{name: 'parent', type: 'string'},
+			{name: 'contains', type: 'boolean'}
 	],
 	associations: [
 		{type: 'belongsTo', model: 'Table'}
@@ -67,9 +71,9 @@ Ext.regModel('Dep', {
 		{name: 'parent', type: 'string'},
 		{name: 'table_id', type: 'string'},
 		{name: 'extendable', type: 'boolean'},
-		{name: 'editable', type: 'boolean'},
+		{name: 'editing', type: 'boolean'},
 		{name: 'count', type: 'int'},
-		{name: 'contains', type: 'boolean'},
+		{name: 'contains', type: 'boolean'}
 	]
 });
 

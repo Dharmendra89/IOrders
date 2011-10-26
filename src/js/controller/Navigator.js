@@ -138,7 +138,8 @@ Ext.regController('Navigator', {
 		    list = options.list,
 		    item = options.item,
 	        view = list.up('navigatorview'),
-		    isTableList = list.getEl().hasCls('x-table-list') ? true : false
+		    isTableList = list.getEl().hasCls('x-table-list') ? true : false,
+		    tappedRec = list.getRecord(item)
 		;
 		
 		if (target.hasCls('x-button')) {
@@ -146,7 +147,6 @@ Ext.regController('Navigator', {
 			if (target.hasCls('extend')) {
 				
 				options.isSetView = false;
-				editable = true;
 				
 				view.setLoading (true);
 				
@@ -154,7 +154,9 @@ Ext.regController('Navigator', {
 						? target.up('.dep').down('input').dom.value
 						: list.getRecord(item).get('table_id'),
 					objectRecord = isTableList
-						? list.getRecord(item)
+						? (list.modelForDeps && !Ext.getStore('tables').getById(tappedRec.modelName).hasIdColumn()
+								? Ext.getStore(list.modelForDeps).getById(tappedRec.get(list.modelForDeps.toLowerCase())) 
+								: tappedRec)
 						: view.objectRecord
 				;
 					
@@ -197,7 +199,9 @@ Ext.regController('Navigator', {
 			Ext.dispatch(Ext.apply(options, {
 				controller: 'Navigator',
 				action: 'createAndActivateView',
-				record: list.getRecord(item),
+				record: list.modelForDeps && !Ext.getStore('tables').getById(tappedRec.modelName).hasIdColumn()
+						? Ext.getStore(list.modelForDeps).getById(tappedRec.get(list.modelForDeps.toLowerCase())) 
+						: tappedRec,
 				tableRecord: dep.down('input').getAttribute('value'),
 				isSetView: true,
 				editing: false
@@ -299,8 +303,7 @@ Ext.regController('Navigator', {
 
 	createAndActivateView: function(options) {
 		
-		var objectRecord = options.record
-			|| options.list.getRecord(options.item),
+		var objectRecord = options.record || options.list.getRecord(options.item),
 		    config = {}
 		;
 		
@@ -323,7 +326,7 @@ Ext.regController('Navigator', {
 			IOrders.viewport.setActiveItem(newCard);
 		}
 	},
-	
+
 	loadSetViewStore: function(options) {
 		
 		var oldCard = IOrders.viewport.getActiveItem(),
@@ -485,15 +488,20 @@ Ext.regController('Navigator', {
 		
 		var list = options.list;
 		
-		var tableRecord,
-		    depStore,
+		var tableRecord = undefined,
+		    depStore = undefined,
+		    hasIdColumn = undefined,
 		    tableStore = Ext.getStore('tables')
 		;
 		
 		Ext.each(options.selections, function(record) {
 			if(!record.data.deps) {
-				tableRecord || (tableRecord = Ext.getStore('tables').getById(record.modelName));
-				depStore || (depStore = tableRecord.deps());
+				if(!depStore || !tableRecord) {
+					tableRecord = tableStore.getById(record.modelName);
+					hasIdColumn = tableRecord.hasIdColumn();
+					tableRecord = !hasIdColumn && list.modelForDeps ? tableStore.getById(list.modelForDeps) : tableRecord; 
+					depStore = tableRecord.deps();
+				}
 				
 				var data = [];
 				
@@ -501,7 +509,7 @@ Ext.regController('Navigator', {
 					
 					var depTable = tableStore.getById(dep.get('table_id'));
 					
-					if(depTable.get('id') != 'SaleOrderPosition' || record.modelName == 'SaleOrder') {
+					if((depTable.get('id') != 'SaleOrderPosition' || record.modelName == 'SaleOrder') && record.modelName !== depTable.get('id')) {
 						
 						var depRec = {
 								name: depTable.get('nameSet'),
@@ -513,10 +521,14 @@ Ext.regController('Navigator', {
 							filters = []
 						;
 						
-						record.modelName != 'MainMenu'
+						recordForDeps = list.modelForDeps && !hasIdColumn 
+								? Ext.getStore(list.modelForDeps).getById(record.get(list.modelForDeps.toLowerCase())) 
+								: record;
+						
+						recordForDeps.modelName != 'MainMenu'
 							&& filters.push({
-								property: record.modelName.toLowerCase(),
-								value: record.getId()
+								property: recordForDeps.modelName.toLowerCase(),
+								value: recordForDeps.getId()
 							})
 						;
 						

@@ -89,8 +89,8 @@ var NavigatorView = Ext.extend(AbstractView, {
 			var sortersConfig = getSortersConfig(this.tableRecord, listGroupedConfig);
 			
 			this.setViewStore = createStore(this.tableRecord, Ext.apply(listGroupedConfig, sortersConfig));
-			
-			formItems.push({
+
+			formItems.push(Ext.apply({
 				xtype: 'list',
 				plugins: new Ext.plugins.ListPagingPlugin({autoPaging: true}),
 				scroll: false,
@@ -98,9 +98,8 @@ var NavigatorView = Ext.extend(AbstractView, {
 				grouped: listGroupedConfig.field ? true : false,
 				disableSelection: true,
 				onItemDisclosure: true,
-				itemTpl: getItemTplMeta(this.tableRecord, table, this.objectRecord, listGroupedConfig.field),
 				store: this.setViewStore
-			});
+			}, getItemTplMeta(this.tableRecord, table, this.objectRecord, listGroupedConfig.field)));
 			
 			this.extendable && this.dockedItems[0].items.push({xtype: 'spacer'}, {
 				ui: 'plain', iconMask: true, name: 'Add', iconCls: 'add', scope: this

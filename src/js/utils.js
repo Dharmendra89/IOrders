@@ -13,6 +13,8 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 	var tableRecord = tableStore.getById(modelName);
 	var columnStore = tableRecord.columns();
 	
+	var modelForDeps = undefined;
+	
 	var templateString = '<div class="hbox">'
 				+		'<div>'
 				+			'<tpl if="hasName">'
@@ -109,6 +111,10 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 				});
 			});
 		}
+		
+		if(keyColumns.getCount() == 1) {
+			modelForDeps = keyColumns.getAt(0).get('parent');
+		}
 	}
 
 	var otherColumns = columnStore.queryBy(function(rec) {
@@ -155,7 +161,7 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 		});
 	}
 	
-	return new Ext.XTemplate(templateString).apply(templateData);
+	return {itemTpl: new Ext.XTemplate(templateString).apply(templateData), modelForDeps: modelForDeps};
 };
 
 function getItemTpl (modelName) {
@@ -165,7 +171,7 @@ function getItemTpl (modelName) {
 			return '<div class="hbox dep">'
 					+ '<div class="count"><tpl if="count &gt; 0">{count}</tpl></div>'
 					+ '<div class="data">{name}</div>' 
-					+ '<tpl if="extendable && !editing"><div class="x-button extend add">+</div></tpl>'
+					+ '<tpl if="extendable && (!editing && !contains || editing && contains)"><div class="x-button extend add">+</div></tpl>'
 				 + '</div>';
 		}
 		case 'Debt' : {
@@ -262,7 +268,6 @@ var createFilterField = function(objectRecord) {
 		items: {
 			xtype: 'filterfield',
 			useClearIcon: true,
-			id: 'Filter',
 			store: selectStore,
 			onFieldLabelTap: true,
 			onFieldInputTap: true,
@@ -287,6 +292,7 @@ function createDepsList(depsStore, tablesStore, view) {
 				name: depTable.get('nameSet'),
 				table_id: depTable.get('id'),
 				extendable: depTable.get('extendable'),
+				contains: dep.get('contains'),
 				editing: view.editing
 			}, 'Dep');
 

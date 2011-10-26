@@ -7,6 +7,8 @@ var offerProductList = {
 	pinHeaders: false,
 	xtype: 'expandableGroupedList',
 	
+	onItemTap: Ext.emptyFn,
+	
 	listeners: {
 		
 		itemswipe: function(list, idx, item, event) {
@@ -17,6 +19,8 @@ var offerProductList = {
 				});
 			}
 		},
+		
+//		itemTap: Ext.emptyFn,
 		
 		itemdoubletap: function (list, idx, item, el) {
 			var rec = list.getRecord (item);

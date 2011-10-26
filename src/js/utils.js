@@ -165,7 +165,7 @@ function getItemTpl (modelName) {
 			return '<div class="hbox dep">'
 					+ '<div class="count"><tpl if="count &gt; 0">{count}</tpl></div>'
 					+ '<div class="data">{name}</div>' 
-					+ '<tpl if="extendable && editable"><div class="x-button extend add">+</div></tpl>'
+					+ '<tpl if="extendable && !editing"><div class="x-button extend add">+</div></tpl>'
 				 + '</div>';
 		}
 		case 'Debt' : {
@@ -287,7 +287,7 @@ function createDepsList(depsStore, tablesStore, view) {
 				name: depTable.get('nameSet'),
 				table_id: depTable.get('id'),
 				extendable: depTable.get('extendable'),
-				editable: view.editing || view.objectRecord.modelName == 'MainMenu'
+				editing: view.editing
 			}, 'Dep');
 
 			var modelProxy = Ext.ModelMgr.getModel(depTable.get('id')).prototype.getProxy();

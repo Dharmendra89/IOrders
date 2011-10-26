@@ -465,8 +465,8 @@ Ext.regController('Navigator', {
 				{ text: 'Стереть локальные данные', name: 'ClearLocalStorage'},
 				{ text: 'Пересоздать БД', name: 'DbRebuild'},
 				{ xtype: 'segmentedbutton', layout: {align: 'none'}, items: [
-					{text: 'Статический сервер', name: 'XiNoServer', pressed: IOrders.xi.noServer},
-					{text: 'Настоящий сервер', name: 'XiYesServer', pressed: !IOrders.xi.noServer},
+					{text: 'Localdata', name: 'XiNoServer', pressed: IOrders.xi.noServer},
+					{text: 'System', name: 'XiYesServer', pressed: !IOrders.xi.noServer},
 				]},
 				{ text: 'Сервер-логин', name: 'XiLogin'},
 				{ text: 'Сервер-логоф', name: 'XiLogoff'},

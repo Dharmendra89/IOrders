@@ -245,7 +245,7 @@ Ext.regController('SaleOrder', {
 		
 		oldCost > 0 || (oldCost = 0);
 		
-		options.list.scroller.disable();
+//		options.list.scroller.disable();
 		
 		volume < 0 && (volume = 0);
 		
@@ -270,7 +270,7 @@ Ext.regController('SaleOrder', {
 		Ext.get(options.item).down('.cost').dom.innerHTML = rec.get('cost');
 		Ext.get(options.item).down('.volume').dom.innerHTML = rec.get('volume');
 		
-		options.list.scroller.enable();
+//		options.list.scroller.enable();
 		
 	},
 	

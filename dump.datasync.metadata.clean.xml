@@ -107,7 +107,7 @@
         <column id="PartnerPriceListdiscount" name="discount" type="float" label="% скидки"/>
       </columns>
     </table>
-    <table id="Debt" name="Задолженность" nameSet="Задолженность" level="1">
+    <table id="Debt" name="Задолженность" nameSet="Задолженности" level="1">
       <columns set-of="column">
         <column id="Debtid" name="id" type="int" key="true"/>
         <column id="Debtddate" name="ddate" type="date" label="Дата"/>

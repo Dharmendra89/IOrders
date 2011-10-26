@@ -17,10 +17,12 @@ var EncashmentView = Ext.extend(AbstractView, {
 
 		store.load({limit: 0});
 		
+		var debtTable = Ext.getStore('tables').getById('Debt');
+		
 		this.debtList = Ext.create({
 			xtype: 'list',
 			itemTpl: getItemTpl('Debt'),
-			emptyText: '<div class="emptyListText">Задолжности отсутствуют</div>',
+			emptyText: '<div class="emptyListText">' + debtTable.get('nameSet') + ' отсутствуют</div>',
 			store: store,
 			scroll: {
 				direction: 'vertical',

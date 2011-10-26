@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.52" expect-megabytes="15">
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.6" expect-megabytes="15">
   <tables set-of="table">
+    <table id="Uncashment" name="Сданная выручка" nameSet="Сданная выручка" level="0" extendable="true">
+      <columns set-of="column">
+        <column id="Uncashmentid" name="id" type="int" key="true"/>
+        <column id="Uncashmentdatetime" name="datetime" type="datetime" label="Дата"/>
+      </columns>
+      <deps set-of="dep">
+        <dep table_id="Encashment" id="Encashmentuncashment"/>
+      </deps>
+    </table>
     <table id="PricelistSet" name="Ценовая категория" nameSet="Ценовые категории" level="0">
       <columns set-of="column">
         <column id="PricelistSetid" name="id" type="int" key="true"/>
@@ -167,6 +176,7 @@
         <column id="Encashmentdatetime" name="datetime" type="datetime" label="Дата" editable="true"/>
         <column id="Encashmentsumm" name="summ" type="float" label="Получено" editable="true"/>
         <column id="Encashmentdebt" name="debt" parent="Debt" label="Задолженность" editable="true"/>
+        <column id="Encashmentuncashment" name="uncashment" parent="Uncashment" label="Сданная выручка"/>
       </columns>
     </table>
     <table id="Route" name="Маршрут" nameSet="Маршруты" level="0">
@@ -213,6 +223,15 @@
         <column id="OfferCategoryShopDepartment_name" name="ShopDepartment_name" type="string" label="Название"/>
       </columns>
       <sql>select c.*, sd.name as shopDepartment_name from ( select cu.id as customer, c.id category, c.name, null as totalCost, c.shopDepartment from Customer cu, Category c where exists (select * from Offer where c.id=category and customer = cu.id) ) c join ShopDepartment sd on sd.id = c.shopDepartment</sql>
+    </view>
+    <view id="Cash" nameSet="Выручка">
+      <columns set-of="column">
+        <column id="CashCustomer_name" name="Customer_name" type="string" label="Название"/>
+        <column id="Cashsumm" name="summ" type="float" label="Получено"/>
+        <column id="CashisWhite" name="isWhite" type="boolean" label="Выдан чек"/>
+        <column id="Cashdatetime" name="datetime" type="datetime" label="Дата"/>
+      </columns>
+      <sql>select e.*, c.name as Customer_name from Encashment e join Customer c on c.id = e.customer where e.uncashment is null</sql>
     </view>
   </views>
 </metadata>

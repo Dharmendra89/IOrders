@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.61" expect-megabytes="15">
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.62" expect-megabytes="15">
   <tables set-of="table">
     <table id="Uncashment" name="Сданная выручка" nameSet="Сданная выручка" level="0" extendable="true">
       <columns set-of="column">
@@ -7,6 +7,7 @@
         <column id="Uncashmentdatetime" name="datetime" type="datetime" label="Дата"/>
         <column id="UncashmenttotalSumm" name="totalSumm" type="float" label="Выручка всего"/>
         <column id="UncashmenttotalSummWhite" name="totalSummWhite" type="float" label="Выручка по ККМ"/>
+        <column id="Uncashmentxid" name="xid"/>
       </columns>
       <deps set-of="dep">
         <dep table_id="Encashment" id="Encashmentuncashment"/>

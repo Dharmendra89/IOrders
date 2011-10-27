@@ -16,6 +16,7 @@
         
         <file>src/js/view/AbstractView.js</file>
         <file>src/js/view/EncashmentView.js</file>
+        <file>src/js/view/UncashmentView.js</file>
         <file>src/js/view/NavigatorView.js</file>
         <file>src/js/view/OfferProductList.js</file>
         <file>src/js/view/SaleOrderView.js</file>

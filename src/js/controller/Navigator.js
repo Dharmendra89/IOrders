@@ -175,6 +175,9 @@ Ext.regController('Navigator', {
 							action: 'createEncashmentView',
 							customerRecord: objectRecord
 						}));
+					} else if(createdRecordModelName === 'Uncashment') {
+
+						Ext.dispatch(Ext.apply(options, {action: 'createUncashmentView'}));
 					} else {
 						Ext.dispatch(Ext.apply(options, {
 							action: 'createAndActivateView',
@@ -243,9 +246,10 @@ Ext.regController('Navigator', {
 		
 		Ext.each(updDebtArray, function(debt) {
 			debt.get('encashSumm') > 0 && encashStore.add(Ext.ModelMgr.create({
-				isWhite: debt.get('isWhite'), datetime: new Date().format('d/m/yyyy H:i:s'),
+				isWhite: debt.get('isWhite'), datetime: new Date().format('d/m/y H:i:s'),
 				customer: view.customerRecord.getId(), debt: debt.getId(),
-				summ: parseFloat(debt.get('encashSumm')).toFixed(2)
+				summ: parseFloat(debt.get('encashSumm')).toFixed(2),
+				uncashment: undefined
 			}, 'Encashment'));
 		});
 		
@@ -253,6 +257,11 @@ Ext.regController('Navigator', {
 		encashStore.sync();
 		debtStore.sync();
 		
+		Ext.dispatch(Ext.apply(options, {action: 'goBack'}));
+	},
+	
+	goBack: function(options) {
+
 		var view = options.view;
 		var newCard = Ext.create(view.ownerViewConfig);
 		if (newCard.isSetView) {
@@ -260,6 +269,25 @@ Ext.regController('Navigator', {
 		} else {
 			IOrders.viewport.setActiveItem(newCard, IOrders.viewport.anims.back);
 		}
+	},
+	
+	onUncashButtonTap: function(options) {
+
+		var view = options.view,
+			encashStore = view.encashStore,
+			formRecord = view.form.getRecord()
+		;
+		
+		formRecord.save({callback: function(createdUncash) {
+
+			encashStore.each(function(rec) {
+				rec.set('uncashment', createdUncash.getId());
+			});
+			
+			encashStore.sync();
+			
+			Ext.dispatch(Ext.apply(options, {action: 'goBack'}));
+		}});
 	},
 	
 	onDebtListItemSwipe: function(options) {
@@ -288,6 +316,30 @@ Ext.regController('Navigator', {
 		rec.set('remSumm', oldRemSumm + oldEncashSumm - options.encashSumm >= 0 
 				? oldRemSumm - (newEncashSumm - oldEncashSumm) 
 				: 0);
+	},
+	
+	createUncashmentView: function(options) {
+
+		var oldView = IOrders.viewport.getActiveItem();
+		
+		var newCard = Ext.create(Ext.apply({xtype: 'uncashmentview'}, getOwnerViewConfig(oldView)));
+
+		newCard.encashStore.load({limit: 0, callback: function(recs, oper) {
+			var totalSumm = 0;
+			var totalSummWhite = 0;
+		
+			Ext.each(recs, function(rec) {
+				var encashSumm = rec.get('summ');
+				totalSumm += encashSumm;
+				rec.get('isWhite') && (totalSummWhite += encashSumm);
+			});
+			
+			var uncashRec = Ext.ModelMgr.create({totalSumm: totalSumm.toFixed(2), totalSummWhite: totalSummWhite.toFixed(2), datetime: new Date().format('d/m/y H:i:s')}, 'Uncashment');
+			
+			newCard.form.loadRecord(uncashRec);
+			
+			IOrders.viewport.setActiveItem(newCard);
+		}});
 	},
 	
 	createEncashmentView: function(options) {
@@ -384,7 +436,7 @@ Ext.regController('Navigator', {
 				{objectRecord: Ext.ModelMgr.create({id: 1}, 'MainMenu'), tableRecord: tableRecord}
 		));
 		Ext.dispatch(Ext.apply(options, {action: 'loadSetViewStore', newCard: newCard}));
-	},
+	},	
 
 	onselectfieldInputTap: function(options) {
 

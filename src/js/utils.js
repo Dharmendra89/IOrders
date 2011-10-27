@@ -4,7 +4,7 @@ Date.monthNames = ['Январь', 'Февраль', 'Март', 'Апрель',
 var getValueFromParent = function(field, value) {
 	var parentStore = Ext.getStore(field[0].toUpperCase() + field.substring(1));
 	var rec = parentStore.getById(value);
-	return rec ? rec.get('name') : value;
+	return rec ? rec.get('name') : '';
 };
 
 var getItemTplMeta = function(modelName, table, filterObject, groupField) {
@@ -92,7 +92,7 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 
 		var keyColumns = columnStore.queryBy(function(rec) {
 			return rec.get(queryValue)
-				&& filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase()
+				&& ( !filterObject || filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase())
 				&& groupField !== rec.get('name') ? true : false;
 		});
 		
@@ -123,7 +123,7 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 			&& ( !groupField || (groupField !== colName
 					&& groupField[0].toLowerCase() + groupField.replace('_name', '').substring(1) !== colName)
 			)
-			&& filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase()
+			&& ( !filterObject || filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase())
 			&& colName !== 'id' && colName !== 'name' && rec.get('label') ? true : false;
 	});
 	
@@ -177,7 +177,7 @@ function getItemTpl (modelName) {
 		case 'Debt' : {
 			return '<div class="hbox dep">'
 					+ '<div class="data">'
-					+	'<div>Дата: {[Ext.util.Format.date(values.ddate)]} Документ№: {ndoc} <tpl if="isWhite>Нужен чек</tpl></div>'
+					+	'<div>Дата: {[Ext.util.Format.date(values.ddate)]} Документ№: {ndoc} <tpl if="isWhite">Нужен чек</tpl></div>'
 					+	'<div>Общая сумма задолжности: {[values.fullSumm]} руб. из нее должен {[parseFloat(values.remSumm).toFixed(2)]} руб.</div>'
 					+ '</div>'
 					+ '<div class="encashSumm"><tpl if="encashSumm &gt; 0">{[parseFloat(values.encashSumm).toFixed(2)]} руб.</tpl></div>'

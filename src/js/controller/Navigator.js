@@ -319,27 +319,43 @@ Ext.regController('Navigator', {
 	},
 	
 	createUncashmentView: function(options) {
-
-		var oldView = IOrders.viewport.getActiveItem();
 		
-		var newCard = Ext.create(Ext.apply({xtype: 'uncashmentview'}, getOwnerViewConfig(oldView)));
+		var uploadProxy = createStore('ToUpload').getProxy();
 
-		newCard.encashStore.load({limit: 0, callback: function(recs, oper) {
-			var totalSumm = 0;
-			var totalSummWhite = 0;
-		
-			Ext.each(recs, function(rec) {
-				var encashSumm = rec.get('summ');
-				totalSumm += encashSumm;
-				rec.get('isWhite') && (totalSummWhite += encashSumm);
-			});
-			
-			var uncashRec = Ext.ModelMgr.create({totalSumm: totalSumm.toFixed(2), totalSummWhite: totalSummWhite.toFixed(2), datetime: new Date().format('d/m/y H:i:s')}, 'Uncashment');
-			
-			newCard.form.loadRecord(uncashRec);
-			
-			IOrders.viewport.setActiveItem(newCard);
-		}});
+		var operCount = new Ext.data.Operation({
+			filters: [{property: 'table_name', value: 'Encashment'}]
+		});
+
+		uploadProxy.count(operCount, function(operation) {
+
+			if(operation.result === 0) {
+
+				var oldView = IOrders.viewport.getActiveItem();
+				
+				var newCard = Ext.create(Ext.apply({xtype: 'uncashmentview'}, getOwnerViewConfig(oldView)));
+
+				newCard.encashStore.load({limit: 0, callback: function(recs, oper) {
+					var totalSumm = 0;
+					var totalSummWhite = 0;
+				
+					Ext.each(recs, function(rec) {
+						var encashSumm = rec.get('summ');
+						totalSumm += encashSumm;
+						rec.get('isWhite') && (totalSummWhite += encashSumm);
+					});
+					
+					var uncashRec = Ext.ModelMgr.create({totalSumm: totalSumm.toFixed(2), totalSummWhite: totalSummWhite.toFixed(2), datetime: new Date().format('d/m/y H:i:s')}, 'Uncashment');
+					
+					newCard.form.loadRecord(uncashRec);
+					
+					IOrders.viewport.setActiveItem(newCard);
+				}});
+			} else {
+				
+				Ext.Msg.alert('Ошибка', 'Для того чтобы добавать сущность данного типа, требуется сделать синхронизацию с сервером');
+				IOrders.viewport.getActiveItem().setLoading(false);
+			}
+		});
 	},
 	
 	createEncashmentView: function(options) {

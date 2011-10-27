@@ -3,7 +3,7 @@
   <tables set-of="table">
     <table id="Uncashment" name="Сданная выручка" nameSet="Сданная выручка" level="0" extendable="true">
       <columns set-of="column">
-        <column id="Uncashmentid" name="id" type="int" key="true"/>
+        <column id="Uncashmentid" name="id" type="string" key="true"/>
         <column id="Uncashmentdatetime" name="datetime" type="datetime" label="Дата"/>
         <column id="UncashmenttotalSumm" name="totalSumm" type="float" label="Выручка всего"/>
         <column id="UncashmenttotalSummWhite" name="totalSummWhite" type="float" label="Выручка по ККМ"/>

@@ -172,9 +172,10 @@ function getItemTpl (modelName) {
 	switch(modelName) {
 		case 'Dep': {
 			return '<div class="hbox dep">'
-					+ '<div class="count"><tpl if="count &gt; 0">{count}</tpl></div>'
-					+ '<div class="data">{name}</div>' 
-					+ '<tpl if="extendable && (!editing && !contains || editing && contains)"><div class="x-button extend add">+</div></tpl>'
+					+	'<div class="count"><tpl if="count &gt; 0">{count}</tpl></div>'
+					+	'<div class="data">{name}</div>'
+					+	'<div class="aggregates">{aggregates}</div>'
+					+	'<tpl if="extendable && (!editing && !contains || editing && contains)"><div class="x-button extend add">+</div></tpl>'
 				 + '</div>';
 		}
 		case 'Debt' : {
@@ -310,8 +311,33 @@ function createDepsList(depsStore, tablesStore, view) {
 			});
 
 			modelProxy.count(operCount, function(operation) {
-				operation.depRec.set('count', operation.result);
+				var count = operation.result;
+				
+				if(count > 0) {
+					operation.depRec.set('count', count);
+				} else if(!operation.depRec.get('extendable')) {
+					view.depStore.remove(operation.depRec);
+				}
 			});
+			
+			if(depTable.hasAggregates()) {
+				
+				var aggCols = depTable.getAggregates();
+				var aggOperation = new Ext.data.Operation({depRec: depRec, filters: filters});
+
+				modelProxy.aggregate(aggOperation, function(operation) {
+					
+					var aggDepResult = '';
+					var aggDepTpl = new Ext.XTemplate('<tpl if="value &gt; 0"><tpl if="name">{name} : </tpl>{[values.value.toFixed(2)]} </tpl>');
+					var aggResults = operation.resultSet.records[0].data;
+					
+					aggCols.each(function(aggCol) {
+						aggDepResult += aggDepTpl.apply({name: aggCol.get('label') != depTable.get('nameSet') ? aggCol.get('label') : '', value: aggResults[aggCol.get('name')]});
+					});
+					
+					operation.depRec.set('aggregates', aggDepResult);
+				});
+			}
 
 			data.push(depRec);
 		}
@@ -319,14 +345,14 @@ function createDepsList(depsStore, tablesStore, view) {
 	
 	view.depStore = new Ext.data.Store({model: 'Dep', data: data}); 
 
-	return {
+	return view.depList = Ext.create({
 		xtype: 'list',
 		cls: 'x-deps-list',
 		scroll: false,
 		disableSelection: true,
 		itemTpl: getItemTpl('Dep'),
 		store: view.depStore
-	};
+	});
 };
 
 var createTitlePanel = function(t) {

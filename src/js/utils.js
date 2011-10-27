@@ -63,12 +63,15 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 	var buttons = 
 		'<div class="buttons">' 
 			+ '<tpl for="deps">'
-				+'<div class="hbox dep">'
-				+ '<input type="hidden" value="{table_id}" />'
-				+ '<div class="count"><tpl if="count &gt; 0">{count}</tpl></div>'
-				+ '<div class="data">{name}</div>'
-				+ '<tpl if="extendable"><div class="x-button extend add">+</div></tpl>'
-	 			+ '</div>'
+				+ '<tpl if="count &gt; 0 || extendable">'
+				+	'<div class="hbox dep">'
+				+ 		'<input type="hidden" value="{table_id}" />'
+				+ 		'<div class="count"><tpl if="count &gt; 0">{count}</tpl></div>'
+				+ 		'<div class="data">{name}</div>'
+				+ 		'<div class="aggregates">{aggregates}</div>'
+				+ 		'<tpl if="extendable"><div class="x-button extend add">+</div></tpl>'
+				+ 	'</div>'
+				+ '</tpl>'
  			+ '</tpl>'
  		+ '</div>';
 	

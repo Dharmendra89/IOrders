@@ -72,6 +72,11 @@
 	-webkit-box-flex: 1;
 }
 
+.x-list-item .hbox .aggregates {
+	padding-left: 10px;
+	-webkit-box-flex: 1;
+}
+
 .--x-list-item .buttons {
 	display: none;
 }

@@ -610,6 +610,28 @@ Ext.regController('Navigator', {
 							list.store && list.refreshNode(list.indexOf(record));
 						});
 						
+						if(depTable.hasAggregates()) {
+						
+							var aggCols = depTable.getAggregates();
+							var aggOperation = new Ext.data.Operation({filters: filters});
+
+							modelProxy.aggregate(aggOperation, function(operation) {
+								
+								var aggDepResult = '';
+								var aggDepTpl = new Ext.XTemplate('<tpl if="value &gt; 0"><tpl if="name">{name} : </tpl>{[values.value.toFixed(2)]} </tpl>');
+								var aggResults = operation.resultSet.records[0].data;
+								
+								aggCols.each(function(aggCol) {
+									aggDepResult += aggDepTpl.apply({name: aggCol.get('label') != depTable.get('nameSet') ? aggCol.get('label') : '', value: aggResults[aggCol.get('name')]});
+								});
+								
+								depRec.aggregates = aggDepResult;
+								
+								record.data.deps = data;
+								list.store && list.refreshNode(list.indexOf(record));
+							});
+						}
+						
 						data.push(depRec);
 					}
 				});

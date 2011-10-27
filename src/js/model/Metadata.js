@@ -44,7 +44,13 @@ Ext.regModel('Table', {
 	},
 	hasIdColumn: function() {
 		return this.columns().findExact('name', 'id') !== -1 ? true : false;
-	}  
+	},
+	hasAggregates: function() {
+		return this.getAggregates().getCount() > 0 ? true : false;
+	},
+	getAggregates: function() {
+		return this.columns().queryBy(function(rec) {return rec.get('aggregable') ? true : false;});
+	}
 });
 
 Ext.regModel('Column', {
@@ -73,7 +79,8 @@ Ext.regModel('Dep', {
 		{name: 'extendable', type: 'boolean'},
 		{name: 'editing', type: 'boolean'},
 		{name: 'count', type: 'int'},
-		{name: 'contains', type: 'boolean'}
+		{name: 'contains', type: 'boolean'},
+		{name: 'aggregates', type: 'string'}
 	]
 });
 

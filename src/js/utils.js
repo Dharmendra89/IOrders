@@ -181,10 +181,10 @@ function getItemTpl (modelName) {
 		case 'Debt' : {
 			return '<div class="hbox dep">'
 					+ '<div class="data">'
-					+	'<div>Дата: {[Ext.util.Format.date(values.ddate)]} Документ№: {ndoc} <tpl if="isWhite">Нужен чек</tpl></div>'
-					+	'<div>Общая сумма задолжности: {[values.fullSumm]} руб. из нее должен {[parseFloat(values.remSumm).toFixed(2)]} руб.</div>'
+					+	'<div>Дата: {[Ext.util.Format.date(values.ddate)]} Документ№: {ndoc} Сумма: {[values.fullSumm]} <tpl if="isWhite">Нужен чек</tpl></div>'
+					+	'<div>Остаток задолженности: {[parseFloat(values.remSumm).toFixed(2)]}</div>'
 					+ '</div>'
-					+ '<div class="encashSumm"><tpl if="encashSumm &gt; 0">{[parseFloat(values.encashSumm).toFixed(2)]} руб.</tpl></div>'
+					+ '<div class="encashSumm"><tpl if="encashSumm &gt; 0">{[parseFloat(values.encashSumm).toFixed(2)]}</tpl></div>'
 				 + '</div>';
 		}
 		case 'OfferCategory': {
@@ -436,6 +436,11 @@ var getSortersConfig = function(model, storeConfig) {
 	
 	var parentSort = true;
 	
+	if (columns.getById(table.getId() + 'datetime')) {
+		sortConfig.sorters.push ({ property: 'datetime', direction: 'DESC' });
+		parentSort = false;
+	}
+
 	if (columns.getById(table.getId() + 'ord')) {
 		sortConfig.sorters.push ({ property: 'ord' });
 		parentSort = false;

@@ -246,7 +246,7 @@ Ext.regController('Navigator', {
 		
 		Ext.each(updDebtArray, function(debt) {
 			debt.get('encashSumm') > 0 && encashStore.add(Ext.ModelMgr.create({
-				isWhite: debt.get('isWhite'), datetime: new Date().format('d/m/y H:i:s'),
+				isWhite: debt.get('isWhite'), datetime: new Date().format('Y-m-d H:i:s'),
 				customer: view.customerRecord.getId(), debt: debt.getId(),
 				summ: parseFloat(debt.get('encashSumm')).toFixed(2),
 				uncashment: undefined
@@ -272,14 +272,13 @@ Ext.regController('Navigator', {
 	},
 	
 	onUncashButtonTap: function(options) {
-
 		var view = options.view,
 			encashStore = view.encashStore,
 			formRecord = view.form.getRecord()
 		;
 		
 		formRecord.save({callback: function(createdUncash) {
-
+			
 			encashStore.each(function(rec) {
 				rec.set('uncashment', createdUncash.getId());
 			});
@@ -287,11 +286,11 @@ Ext.regController('Navigator', {
 			encashStore.sync();
 			
 			Ext.dispatch(Ext.apply(options, {action: 'goBack'}));
+			
 		}});
 	},
 	
 	onDebtListItemSwipe: function(options) {
-
 		var rec = options.list.getRecord(options.item),
 			encashSumm = parseFloat(rec.get('encashSumm') ? rec.get('encashSumm') : '0'),
 		    sign = options.event.direction === 'left' ? -1 : 1
@@ -304,14 +303,14 @@ Ext.regController('Navigator', {
 		}));
 	},
 	
-	setEncashSumm: function(options) {		
-
+	setEncashSumm: function(options) {
+		
 		var rec = options.rec,
 			oldRemSumm = rec.get('remSumm'),
 			oldEncashSumm = parseFloat(rec.get('encashSumm') ? rec.get('encashSumm') : '0'),
 			newEncashSumm = oldRemSumm + oldEncashSumm - options.encashSumm >= 0 ? options.encashSumm : oldRemSumm + oldEncashSumm
 		;
-
+		
 		rec.set('encashSumm', newEncashSumm);
 		rec.set('remSumm', oldRemSumm + oldEncashSumm - options.encashSumm >= 0 
 				? oldRemSumm - (newEncashSumm - oldEncashSumm) 
@@ -321,30 +320,35 @@ Ext.regController('Navigator', {
 	createUncashmentView: function(options) {
 		
 		var uploadProxy = createStore('ToUpload').getProxy();
-
+		
 		var operCount = new Ext.data.Operation({
 			filters: [{property: 'table_name', value: 'Encashment'}]
 		});
-
+		
 		uploadProxy.count(operCount, function(operation) {
-
+			
 			if(operation.result === 0) {
-
+				
 				var oldView = IOrders.viewport.getActiveItem();
 				
 				var newCard = Ext.create(Ext.apply({xtype: 'uncashmentview'}, getOwnerViewConfig(oldView)));
-
+				
 				newCard.encashStore.load({limit: 0, callback: function(recs, oper) {
 					var totalSumm = 0;
 					var totalSummWhite = 0;
-				
+					
 					Ext.each(recs, function(rec) {
 						var encashSumm = rec.get('summ');
 						totalSumm += encashSumm;
 						rec.get('isWhite') && (totalSummWhite += encashSumm);
 					});
 					
-					var uncashRec = Ext.ModelMgr.create({totalSumm: totalSumm.toFixed(2), totalSummWhite: totalSummWhite.toFixed(2), datetime: new Date().format('d/m/y H:i:s')}, 'Uncashment');
+					var uncashRec = Ext.ModelMgr.create({
+							totalSumm: totalSumm.toFixed(2),
+							totalSummWhite: totalSummWhite.toFixed(2),
+							datetime: new Date().format('Y-m-d H:i:s')
+						}, 'Uncashment'
+					);
 					
 					newCard.form.loadRecord(uncashRec);
 					
@@ -352,7 +356,7 @@ Ext.regController('Navigator', {
 				}});
 			} else {
 				
-				Ext.Msg.alert('Ошибка', 'Для того чтобы добавать сущность данного типа, требуется сделать синхронизацию с сервером');
+				Ext.Msg.alert('Ошибка', 'Для того чтобы сдать выручку, требуется сперва передать данные об инкассациях на сервер');
 				IOrders.viewport.getActiveItem().setLoading(false);
 			}
 		});

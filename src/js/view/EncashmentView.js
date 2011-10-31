@@ -79,7 +79,7 @@ var EncashmentView = Ext.extend(AbstractView, {
 					}
 				}
 				
-			},
+			}
 		});				
 		
 		this.items = [this.debtList];

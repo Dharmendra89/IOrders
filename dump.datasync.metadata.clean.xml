@@ -229,7 +229,8 @@
     </view>
     <view id="Cash" nameSet="Выручка">
       <columns set-of="column">
-        <column id="CashCustomer_name" name="Customer_name" type="string" label="Название" key="true"/>
+        <column id="Cashcustomer" name="customer" label="Клиент"/>
+        <column id="CashCustomer_name" name="Customer_name" type="string" label="Название"/>
         <column id="Cashsumm" name="summ" type="float" label="Получено"/>
         <column id="CashisWhite" name="isWhite" type="boolean" label="Выдан чек"/>
         <column id="Cashdatetime" name="datetime" type="datetime" label="Дата"/>

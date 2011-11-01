@@ -4,7 +4,7 @@ Ext.regController('Navigator', {
 		var view = options.view;
 		var newCard = Ext.create(view.ownerViewConfig);
 		if (newCard.isSetView) {
-			Ext.dispatch(Ext.apply(options, {action: 'loadSetViewStore', newCard: newCard, anim: IOrders.viewport.anims.back}));
+			Ext.dispatch(Ext.apply(options, {action: 'loadSetViewStore', newCard: newCard, anim: IOrders.viewport.anims.back, lastSelectedRecord: view.objectRecord}));
 		} else {
 			IOrders.viewport.setActiveItem(newCard, IOrders.viewport.anims.back);
 		}
@@ -418,7 +418,9 @@ Ext.regController('Navigator', {
 		
 		var oldCard = IOrders.viewport.getActiveItem(),
 		    newCard = options.newCard,
-		    store = newCard.setViewStore
+		    store = newCard.setViewStore,
+		    storeLimit = newCard.storeLimit,
+		    storePage = newCard.storePage
 		;
 		
 		oldCard.setLoading(true);
@@ -426,38 +428,57 @@ Ext.regController('Navigator', {
 		store.currentPage = 1;
 		store.clearFilter(true);
 		
+		var storeLoadCallback = function() {
+			storePage && (store.currentPage = storePage);
+			oldCard.setLoading(false);
+			IOrders.viewport.setActiveItem(newCard, options.anim);
+			options.lastSelectedRecord && Ext.dispatch(Ext.apply(options, {
+				action: 'scrollToLastSelectedRecord',
+				view: newCard
+			}));
+		};
+		
 		if (newCard.objectRecord.modelName != 'MainMenu') {
 			
 			if (newCard.objectRecord.modelName) {
 				
-				store.filter([{
-					property: newCard.objectRecord.modelName.toLowerCase(),
-					value: newCard.objectRecord.getId()
-				}]);
-				
-				oldCard.setLoading(false);
-				IOrders.viewport.setActiveItem(newCard, options.anim);
-				
-			} else {
-				
 				store.load({
-					callback: function() {
-						oldCard.setLoading(false);
-						IOrders.viewport.setActiveItem(newCard, options.anim);
-					}
+					filters: [
+						{property: newCard.objectRecord.modelName.toLowerCase(), value: newCard.objectRecord.getId()}
+					],
+					limit: storeLimit,
+					callback: storeLoadCallback
+				});
+
+			} else {
+
+				store.load({
+					limit: storeLimit,
+					callback: storeLoadCallback
 				});
 				
 			}
 		} else {
 			
 			store.load({
-				callback: function() {
-					oldCard.setLoading(false);
-					IOrders.viewport.setActiveItem(newCard, options.anim);
-				}
+				limit: storeLimit,
+				callback: storeLoadCallback
 			});
 			
 		}
+	},
+	
+	scrollToLastSelectedRecord: function(options) {
+		
+		var lastSelectedRecord = options.lastSelectedRecord,
+			view = options.view,
+			list = view.down('list'),
+			item = Ext.get(list.getNode(list.store.findExact('id', lastSelectedRecord.getId())))
+		;
+		
+		view.form.scroller.scrollTo({
+			y: item.getOffsetsTo(view.form.scrollEl)[1]
+		});
 	},
 	
 	onselectfieldLabelTap: function(options) {

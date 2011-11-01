@@ -647,17 +647,7 @@ Ext.regController('Navigator', {
 								property: recordForDeps.modelName.toLowerCase(),
 								value: recordForDeps.getId()
 							})
-						;
-						
-						var operCount = new Ext.data.Operation ({
-							filters: filters
-						});
-						
-						modelProxy.count(operCount, function(operation) {
-							depRec.count = operation.result;
-							record.data.deps = data;
-							list.store && list.refreshNode(list.indexOf(record));
-						});
+						;	
 						
 						if(depTable.hasAggregates()) {
 						
@@ -675,7 +665,18 @@ Ext.regController('Navigator', {
 								});
 								
 								depRec.aggregates = aggDepResult;
+								depRec.count = aggResults.cnt;
 								
+								record.data.deps = data;
+								list.store && list.refreshNode(list.indexOf(record));
+							});
+						} else {
+							var operCount = new Ext.data.Operation ({
+								filters: filters
+							});
+							
+							modelProxy.count(operCount, function(operation) {
+								depRec.count = operation.result;
 								record.data.deps = data;
 								list.store && list.refreshNode(list.indexOf(record));
 							});

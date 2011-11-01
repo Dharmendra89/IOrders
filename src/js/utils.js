@@ -303,21 +303,6 @@ function createDepsList(depsStore, tablesStore, view) {
 
 			var filters = [];
 			view.objectRecord.modelName != 'MainMenu' && filters.push({property: view.objectRecord.modelName.toLowerCase(), value: view.objectRecord.getId()});
-
-			var operCount = new Ext.data.Operation({
-				depRec: depRec,
-				filters: filters
-			});
-
-			modelProxy.count(operCount, function(operation) {
-				var count = operation.result;
-				
-				if(count > 0) {
-					operation.depRec.set('count', count);
-				} else if(!operation.depRec.get('extendable')) {
-					view.depStore.remove(operation.depRec);
-				}
-			});
 			
 			if(depTable.hasAggregates()) {
 				
@@ -335,6 +320,29 @@ function createDepsList(depsStore, tablesStore, view) {
 					});
 					
 					operation.depRec.set('aggregates', aggDepResult);
+					
+					var count = aggResults.cnt;
+					if(count > 0) {
+						operation.depRec.set('count', count);
+					} else if(!operation.depRec.get('extendable')) {
+						view.depStore.remove(operation.depRec);
+					}
+				});
+			} else {
+
+				var operCount = new Ext.data.Operation({
+					depRec: depRec,
+					filters: filters
+				});
+
+				modelProxy.count(operCount, function(operation) {
+					var count = operation.result;
+					
+					if(count > 0) {
+						operation.depRec.set('count', count);
+					} else if(!operation.depRec.get('extendable')) {
+						view.depStore.remove(operation.depRec);
+					}
 				});
 			}
 

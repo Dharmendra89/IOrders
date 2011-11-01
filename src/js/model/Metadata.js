@@ -2,9 +2,12 @@ var addMainMenu = function(store, tables) {
 
 	var mainMenu = Ext.ModelMgr.create({
 		id: 'MainMenu',
-		name: 'Главное меню',
-		columns: [{id: 'id', type: 'int'}]
+		name: 'Главное меню'
 	}, 'Table');
+
+	mainMenu.columns().add (
+		{id: 'MainMenuid', type: 'string', name: 'id', label: 'Логин', table_id: 'MainMenu'}
+	)
 
 	var mmDeps = mainMenu.deps();
 	

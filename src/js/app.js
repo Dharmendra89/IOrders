@@ -18,8 +18,11 @@ Ext.regApplication({
 		
 		this.viewport.setActiveItem(new NavigatorView({
 			isObjectView: true,
-			objectRecord: Ext.ModelMgr.create({id: 1}, 'MainMenu')
+			objectRecord: Ext.ModelMgr.create({id: localStorage.getItem('login')}, 'MainMenu')
 		}));
+		
+		this.viewport.getActiveItem().loadData();
+		
 	},
 	
 	launch: function() {

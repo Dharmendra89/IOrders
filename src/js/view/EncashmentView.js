@@ -80,9 +80,37 @@ var EncashmentView = Ext.extend(AbstractView, {
 				}
 				
 			}
-		});				
+		});
 		
-		this.items = [this.debtList];
+		var selectStore = createStore('Customer', getSortersConfig('Customer', {}));
+
+		this.setLoading(true);
+		selectStore.load({
+			filters: [{property: 'partner', value: this.partnerRecord.getId()}],
+			callback: function(recs) {
+				this.setLoading(false);
+				this.customerSelect.setValue(recs[0].getId());
+				this.customerRecord = recs[0];
+			},
+			scope: this
+		});
+		
+		this.customerSelect = Ext.create({
+			xtype: 'selectfield',
+			name: 'customer',
+			store: selectStore,
+			valueField: 'id', displayField: 'name'
+		});
+		
+		this.form = Ext.create({
+			xtype: 'form',
+			items: [
+				this.customerSelect,
+				this.debtList
+			]
+		});
+		
+		this.items = [this.form];
 		
 		this.dockedItems[0].items.push({name: 'SaveEncash', text: 'Сохранить', scope: this});
 	}

@@ -148,8 +148,12 @@ Ext.regController('Main', {
 
 		var field = options.field;
 		var navView = field.up('navigatorview');
+		var encashView = field.up('encashmentview');
+		
 		if(navView && field.xtype == 'filterfield') {
 			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('SelectField', 'Filter'), view: navView}));
+		} else if(encashView && field.name === 'customer') {
+			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('SelectField', 'EncashCustomer'), view: encashView}));
 		} else if(field.name === 'id') {
 			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('SelectField', 'NameSelectField'), view: navView}));
 		}

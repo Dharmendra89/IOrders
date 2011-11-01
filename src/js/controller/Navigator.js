@@ -170,10 +170,24 @@ Ext.regController('Navigator', {
 						rec.set('date', getNextWorkDay());
 					}
 					
-					if(objectRecord.modelName === 'Customer' && createdRecordModelName === 'Encashment') {
+					if(createdRecordModelName === 'Encashment') {
+						var customerRecord = undefined;
+						var partnerRecord = undefined;
+						switch(objectRecord.modelName) {
+							case 'Debt' : {
+								partnerRecord = Ext.getStore('Partner').getById(objectRecord.get('partner'));
+								break;
+							}
+							case 'Customer' : {
+								customerRecord = objectRecord;
+								break;
+							}
+						}
+						
 						Ext.dispatch(Ext.apply(options, {
 							action: 'createEncashmentView',
-							customerRecord: objectRecord
+							partnerRecord: partnerRecord,
+							customerRecord: customerRecord
 						}));
 					} else if(createdRecordModelName === 'Uncashment') {
 
@@ -366,9 +380,10 @@ Ext.regController('Navigator', {
 
 		var oldView = IOrders.viewport.getActiveItem();
 		var customerRecord = options.customerRecord;
+		var partnerRecord = options.partnerRecord ? options.partnerRecord : Ext.getStore('Partner').getById(customerRecord.get('partner'));
 		
 		var newCard = Ext.create(Ext.apply({
-				xtype: 'encashmentview', customerRecord: customerRecord, partnerRecord: Ext.getStore('Partner').getById(customerRecord.get('partner'))
+				xtype: 'encashmentview', partnerRecord: partnerRecord, customerRecord: customerRecord,
 			}, getOwnerViewConfig(oldView)));
 		IOrders.viewport.setActiveItem(newCard);
 	},
@@ -465,6 +480,15 @@ Ext.regController('Navigator', {
 
 		var newCard = Ext.create(createNavigatorView(record, IOrders.viewport.getActiveItem(), false, false, {}));
 		IOrders.viewport.setActiveItem(newCard);
+	},
+	
+	onEncashCustomerValueChange: function(options) {
+		
+		var view = options.view,
+			selected = options.selected
+		;
+		
+		view.customerRecord = selected;
 	},
 
 	onFilterValueChange: function(options) {

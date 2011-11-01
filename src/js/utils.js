@@ -271,7 +271,6 @@ var createFilterField = function(objectRecord) {
 		xtype: 'fieldset',
 		items: {
 			xtype: 'filterfield',
-			useClearIcon: true,
 			store: selectStore,
 			onFieldLabelTap: true,
 			onFieldInputTap: true,

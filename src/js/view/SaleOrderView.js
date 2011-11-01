@@ -8,6 +8,13 @@ var SaleOrderView = Ext.extend(AbstractView, {
 	 */
 	createItems: function() {
 		
+		Ext.ModelMgr.getModel('Customer').load(this.saleOrder.get('customer'), {
+			scope: this,
+			success: function(customer) {
+				this.customerRecord = customer;
+			}
+		});
+		
 		this.offerCategoryStore = createStore('OfferCategory', Ext.apply({
 			remoteFilter: true,
 			filters:[{
@@ -36,13 +43,16 @@ var SaleOrderView = Ext.extend(AbstractView, {
 		
 		this.items = [this.productCategoryList, this.productPanel];
 		
+		var summTpl = new Ext.XTemplate(
+				'<p>'
+				+'<tpl if="packageName"><small>Упаковка: {packageName}</small></tpl>'
+				+ 'Сумма заказа: {totalCost} руб.</p>'
+		);
+		
 		this.dockedItems.push({
 			id: 'bottomToolbar', xtype: 'toolbar', dock: 'bottom',
-			titleTpl: new Ext.XTemplate(
-							'<p style="text-align: right">'
-							+'<tpl if="packageName"><small>Упаковка: {packageName}</small></tpl>'
-							+ 'Сумма заказа: {totalCost} руб.</p>'
-			)
+			items: [{xtype: 'spacer'}, {text: summTpl.apply({totalCost: 0}), itemId: 'ShowCustomer', name: 'ShowCustomer', scope: this}],
+			titleTpl: summTpl
 		});
 
 		this.dockedItems[0].items.push(

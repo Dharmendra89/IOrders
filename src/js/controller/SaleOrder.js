@@ -18,6 +18,13 @@ Ext.regController('SaleOrder', {
 		); else back();
 	},
 	
+	onShowCustomerButtonTap: function(options) {
+		
+		var customer = options.view.customerRecord;
+
+		Ext.Msg.alert('', 'Клиент: ' + customer.get('name').replace(/"/g, '') + '<br/>' +'Адрес: ' + customer.get('address'));
+	},
+	
 	onSaveButtonTap: function(options) {
 		
 		Ext.dispatch(Ext.apply(options, {
@@ -286,7 +293,7 @@ Ext.regController('SaleOrder', {
 			(rec.get('totalCost') + options.addCost).toFixed (2)
 		);
 		
-		btb.setTitle( btb.titleTpl.apply ({
+		btb.getComponent('ShowCustomer').setText( btb.titleTpl.apply ({
 			totalCost: view.offerCategoryStore.sum('totalCost').toFixed(2)
 		}));
 	},

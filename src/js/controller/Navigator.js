@@ -14,7 +14,7 @@ Ext.regController('Navigator', {
 
 		IOrders.viewport.setActiveItem(new NavigatorView({
 			isObjectView: true,
-			objectRecord: Ext.ModelMgr.create({id: 1}, 'MainMenu')
+			objectRecord: IOrders.mainMenuRecord
 		}), IOrders.viewport.anims.home);
 	},
 	

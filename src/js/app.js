@@ -16,9 +16,11 @@ Ext.regApplication({
 		createModels(store);
 		createStores(store, { pageSize: 400 });
 		
+		IOrders.mainMenuRecord = Ext.ModelMgr.create({id: localStorage.getItem('login')}, 'MainMenu');
+		
 		this.viewport.setActiveItem(new NavigatorView({
 			isObjectView: true,
-			objectRecord: Ext.ModelMgr.create({id: localStorage.getItem('login')}, 'MainMenu')
+			objectRecord: IOrders.mainMenuRecord
 		}));
 		
 		this.viewport.getActiveItem().loadData();

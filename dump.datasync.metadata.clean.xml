@@ -163,23 +163,23 @@
     </table>
     <table id="SaleOrderPosition" name="Позиция заказа" nameSet="Позиции заказа" level="3" extendable="true" deletable="new-only" editable="new-only" belongs="SaleOrder">
       <columns set-of="column">
-        <column id="SaleOrderPositionsaleorder" name="saleorder" type="string" parent="SaleOrder" label="Заказ" key="true"/>
+        <column id="SaleOrderPositionsaleorder" name="saleorder" type="string" parent="SaleOrder" label="Заказ" editable="true" key="true"/>
         <column id="SaleOrderPositionvolume" name="volume" type="int" label="Кол-во" editable="true"/>
-        <column id="SaleOrderPositioncost" name="cost" type="float" label="Стоимость" editable="true"/>
+        <column id="SaleOrderPositioncost" name="cost" type="float" label="Стоимость"/>
         <column id="SaleOrderPositionxid" name="xid"/>
         <column id="SaleOrderPositionproduct" name="product" parent="Product" label="Товар" editable="new-only" key="true"/>
       </columns>
     </table>
     <table id="Encashment" name="Инкассация" nameSet="Инкассации" level="2" extendable="true" deletable="new-only" editable="true">
       <columns set-of="column">
-        <column id="Encashmentcustomer" name="customer" type="int" parent="Customer" label="Клиент"/>
+        <column id="Encashmentcustomer" name="customer" type="int" parent="Customer" label="Клиент" editable="true"/>
         <column id="Encashmentid" name="id" type="string" key="true"/>
         <column id="Encashmentxid" name="xid"/>
         <column id="EncashmentisWhite" name="isWhite" type="boolean" label="Выдан чек" editable="true"/>
         <column id="Encashmentdatetime" name="datetime" type="datetime" label="Дата" editable="true"/>
         <column id="Encashmentsumm" name="summ" type="float" label="Получено" editable="true"/>
         <column id="Encashmentdebt" name="debt" parent="Debt" label="Задолженность" editable="true"/>
-        <column id="Encashmentuncashment" name="uncashment" parent="Uncashment" label="Сданная выручка"/>
+        <column id="Encashmentuncashment" name="uncashment" parent="Uncashment" label="Сданная выручка" editable="true"/>
       </columns>
     </table>
     <table id="Route" name="Маршрут" nameSet="Маршруты" level="0">

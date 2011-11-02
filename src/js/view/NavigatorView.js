@@ -19,7 +19,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 			this.cls = 'objectView';
 			this.dockedItems[0].title = table.get('name');
 			
-			if (this.objectRecord.modelName != 'MainMenu')
+			//if (this.objectRecord.modelName != 'MainMenu')
 				formItems.push(createFieldSet(table.columns(), this.objectRecord.modelName, this));
 			
 			if(table.get('editable') || (this.editing && table.get('extendable'))) {
@@ -123,10 +123,10 @@ var NavigatorView = Ext.extend(AbstractView, {
 	
 	initComponent: function() {
 		NavigatorView.superclass.initComponent.apply(this, arguments);
+		this.on ('show', this.loadData);
 	},
 	
-	onShow: function() {
-		NavigatorView.superclass.onShow.apply(this, arguments);
+	loadData: function() {
 		this.form.loadRecord(this.objectRecord);
 		this.isObjectView && this.form.setDisabled(!this.editing);
 	}

@@ -273,7 +273,7 @@ Ext.regController('Navigator', {
 		
 		Ext.dispatch(Ext.apply(options, {action: 'goBack'}));
 	},
-	
+
 	goBack: function(options) {
 
 		var view = options.view;
@@ -284,24 +284,41 @@ Ext.regController('Navigator', {
 			IOrders.viewport.setActiveItem(newCard, IOrders.viewport.anims.back);
 		}
 	},
-	
+
 	onUncashButtonTap: function(options) {
-		var view = options.view,
-			encashStore = view.encashStore,
-			formRecord = view.form.getRecord()
-		;
-		
-		formRecord.save({callback: function(createdUncash) {
-			
-			encashStore.each(function(rec) {
-				rec.set('uncashment', createdUncash.getId());
-			});
-			
-			encashStore.sync();
-			
-			Ext.dispatch(Ext.apply(options, {action: 'goBack'}));
-			
-		}});
+
+		var uploadProxy = createStore('ToUpload').getProxy();
+
+		var operCount = new Ext.data.Operation({
+			filters: [{property: 'table_name', value: 'Encashment'}]
+		});
+
+		uploadProxy.count(operCount, function(operation) {
+
+			if(operation.result === 0) {
+
+				var view = options.view,
+					encashStore = view.encashStore,
+					formRecord = view.form.getRecord()
+				;
+				
+				formRecord.save({callback: function(createdUncash) {
+					
+					encashStore.each(function(rec) {
+						rec.set('uncashment', createdUncash.getId());
+					});
+					
+					encashStore.sync();
+					
+					Ext.dispatch(Ext.apply(options, {action: 'goBack'}));
+					
+				}});
+			} else {
+				
+				Ext.Msg.alert('Ошибка', 'Для того чтобы сдать выручку, требуется сперва передать данные об инкассациях на сервер');
+				IOrders.viewport.getActiveItem().setLoading(false);
+			}
+		});
 	},
 	
 	onDebtListItemSwipe: function(options) {
@@ -333,47 +350,31 @@ Ext.regController('Navigator', {
 	
 	createUncashmentView: function(options) {
 		
-		var uploadProxy = createStore('ToUpload').getProxy();
+		var oldView = IOrders.viewport.getActiveItem();
 		
-		var operCount = new Ext.data.Operation({
-			filters: [{property: 'table_name', value: 'Encashment'}]
-		});
+		var newCard = Ext.create(Ext.apply({xtype: 'uncashmentview'}, getOwnerViewConfig(oldView)));
 		
-		uploadProxy.count(operCount, function(operation) {
+		newCard.encashStore.load({limit: 0, callback: function(recs, oper) {
+			var totalSumm = 0;
+			var totalSummWhite = 0;
 			
-			if(operation.result === 0) {
-				
-				var oldView = IOrders.viewport.getActiveItem();
-				
-				var newCard = Ext.create(Ext.apply({xtype: 'uncashmentview'}, getOwnerViewConfig(oldView)));
-				
-				newCard.encashStore.load({limit: 0, callback: function(recs, oper) {
-					var totalSumm = 0;
-					var totalSummWhite = 0;
-					
-					Ext.each(recs, function(rec) {
-						var encashSumm = rec.get('summ');
-						totalSumm += encashSumm;
-						rec.get('isWhite') && (totalSummWhite += encashSumm);
-					});
-					
-					var uncashRec = Ext.ModelMgr.create({
-							totalSumm: totalSumm.toFixed(2),
-							totalSummWhite: totalSummWhite.toFixed(2),
-							datetime: new Date().format('Y-m-d H:i:s')
-						}, 'Uncashment'
-					);
-					
-					newCard.form.loadRecord(uncashRec);
-					
-					IOrders.viewport.setActiveItem(newCard);
-				}});
-			} else {
-				
-				Ext.Msg.alert('Ошибка', 'Для того чтобы сдать выручку, требуется сперва передать данные об инкассациях на сервер');
-				IOrders.viewport.getActiveItem().setLoading(false);
-			}
-		});
+			Ext.each(recs, function(rec) {
+				var encashSumm = rec.get('summ');
+				totalSumm += encashSumm;
+				rec.get('isWhite') && (totalSummWhite += encashSumm);
+			});
+			
+			var uncashRec = Ext.ModelMgr.create({
+					totalSumm: totalSumm.toFixed(2),
+					totalSummWhite: totalSummWhite.toFixed(2),
+					datetime: new Date().format('Y-m-d H:i:s')
+				}, 'Uncashment'
+			);
+			
+			newCard.form.loadRecord(uncashRec);
+			
+			IOrders.viewport.setActiveItem(newCard);
+		}});
 	},
 	
 	createEncashmentView: function(options) {

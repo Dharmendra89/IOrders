@@ -66,7 +66,8 @@ Ext.regModel('Column', {
 			{name: 'key', type: 'boolean'},
 			{name: 'aggregable', type: 'string'},
 			{name: 'parent', type: 'string'},
-			{name: 'contains', type: 'boolean'}
+			{name: 'contains', type: 'boolean'},
+			{name: 'editable', type: 'boolean'} 
 	],
 	associations: [
 		{type: 'belongsTo', model: 'Table'}

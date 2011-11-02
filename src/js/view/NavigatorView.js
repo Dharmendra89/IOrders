@@ -128,7 +128,25 @@ var NavigatorView = Ext.extend(AbstractView, {
 	
 	loadData: function() {
 		this.form.loadRecord(this.objectRecord);
-		this.isObjectView && this.form.setDisabled(!this.editing);
+		this.isObjectView && this.setFieldsDisabled(!this.editing);
+	},
+	
+	setFieldsDisabled: function(disable) {
+
+		if(this.isObjectView) {
+
+			var table = Ext.getStore('tables').getById(this.objectRecord.modelName),
+				columnStore = table.columns(),
+				fields = this.form.getFields()
+			;
+
+			Ext.iterate(fields, function(fieldName, field) {
+
+				var column = columnStore.getById(table.getId() + fieldName);
+
+				field.setDisabled(!column.get('editable') || disable);
+			});
+		}
 	}
 	
 });

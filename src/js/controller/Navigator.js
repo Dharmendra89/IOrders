@@ -94,7 +94,7 @@ Ext.regController('Navigator', {
 	},
 	
 	setEditing: function(options) {
-		options.view.form.setDisabled(!options.editing);
+		options.view.setFieldsDisabled(!options.editing);
 		options.view.editing = options.editing;
 
 		var toolbar = options.btn.up('toolbar');

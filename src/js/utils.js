@@ -215,7 +215,8 @@ var createFieldSet = function(columnsStore, modelName, view) {
 		if (column.get('label')) {
 			var field = {
 				name: column.get('name'),
-				label: column.get('label')
+				label: column.get('label'),
+				disabled: !column.get('editable')
 			};
 			
 			var fieldConfig;

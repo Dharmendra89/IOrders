@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.62" expect-megabytes="15">
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.63" expect-megabytes="15">
   <tables set-of="table">
     <table id="Uncashment" name="Сданная выручка" nameSet="Сданная выручка" level="0" extendable="true">
       <columns set-of="column">
@@ -149,13 +149,13 @@
     </table>
     <table id="SaleOrder" name="Заказ" nameSet="Заказы" level="2" extendable="true" deletable="new-only" editable="true">
       <columns set-of="column">
-        <column id="SaleOrdercustomer" name="customer" type="int" parent="Customer" label="Клиент"/>
+        <column id="SaleOrdercustomer" name="customer" type="int" parent="Customer" label="Клиент" editable="true"/>
         <column id="SaleOrderid" name="id" type="string" key="true"/>
         <column id="SaleOrderxid" name="xid"/>
         <column id="SaleOrderincassNeeded" name="incassNeeded" type="boolean" label="Требуется инкассация" editable="true"/>
         <column id="SaleOrderisWhite" name="isWhite" type="boolean" label="Нужен счет-фактура" editable="true"/>
         <column id="SaleOrderdate" name="date" type="date" label="Дата доставки" editable="true"/>
-        <column id="SaleOrdertotalCost" name="totalCost" type="float" label="Стоимость" editable="true"/>
+        <column id="SaleOrdertotalCost" name="totalCost" type="float" label="Стоимость"/>
       </columns>
       <deps set-of="dep">
         <dep table_id="SaleOrderPosition" id="SaleOrderPositionsaleorder" contains="true"/>

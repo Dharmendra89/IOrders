@@ -340,7 +340,7 @@ var getDepsData = function(depsStore, tablesStore, view) {
 					if(count > 0) {
 						operation.depRec.set('count', count);
 					} else {
-						operation.depRec.unjoin(view.depStore);
+						view.depStore.remove(operation.depRec);
 					}
 				});
 			} else {
@@ -356,7 +356,7 @@ var getDepsData = function(depsStore, tablesStore, view) {
 					if(count > 0) {
 						operation.depRec.set('count', count);
 					} else {
-						operation.depRec.unjoin(view.depStore);
+						view.depStore.remove(operation.depRec);
 					}
 				});
 			}

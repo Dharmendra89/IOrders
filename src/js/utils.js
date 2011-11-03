@@ -285,6 +285,20 @@ var createFilterField = function(objectRecord) {
 
 function createDepsList(depsStore, tablesStore, view) {
 
+	view.depStore = new Ext.data.Store({model: 'Dep', data: getDepsData(depsStore, tablesStore, view)}); 
+
+	return view.depList = Ext.create({
+		xtype: 'list',
+		cls: 'x-deps-list',
+		scroll: false,
+		disableSelection: true,
+		itemTpl: getItemTpl('Dep'),
+		store: view.depStore
+	});
+};
+
+var getDepsData = function(depsStore, tablesStore, view) {
+
 	var data = [];
 
 	depsStore.each(function(dep) {
@@ -325,8 +339,8 @@ function createDepsList(depsStore, tablesStore, view) {
 					var count = aggResults.cnt;
 					if(count > 0) {
 						operation.depRec.set('count', count);
-					} else if(!operation.depRec.get('extendable')) {
-						view.depStore.remove(operation.depRec);
+					} else {
+						operation.depRec.unjoin(view.depStore);
 					}
 				});
 			} else {
@@ -341,8 +355,8 @@ function createDepsList(depsStore, tablesStore, view) {
 					
 					if(count > 0) {
 						operation.depRec.set('count', count);
-					} else if(!operation.depRec.get('extendable')) {
-						view.depStore.remove(operation.depRec);
+					} else {
+						operation.depRec.unjoin(view.depStore);
 					}
 				});
 			}
@@ -351,16 +365,7 @@ function createDepsList(depsStore, tablesStore, view) {
 		}
 	});
 	
-	view.depStore = new Ext.data.Store({model: 'Dep', data: data}); 
-
-	return view.depList = Ext.create({
-		xtype: 'list',
-		cls: 'x-deps-list',
-		scroll: false,
-		disableSelection: true,
-		itemTpl: getItemTpl('Dep'),
-		store: view.depStore
-	});
+	return data;
 };
 
 var createTitlePanel = function(t) {

@@ -477,7 +477,7 @@ Ext.regController('Navigator', {
 			item = Ext.get(list.getNode(list.store.findExact('id', lastSelectedRecord.getId())))
 		;
 		
-		view.form.scroller.scrollTo({
+		item && view.form.scroller.scrollTo({
 			y: item.getOffsetsTo(view.form.scrollEl)[1]
 		});
 	},
@@ -532,26 +532,17 @@ Ext.regController('Navigator', {
 	
 	onNameSelectFieldValueChange: function(options) {
 
-		var view = options.view;
-		var record = options.selected;
-		
+		var view = options.view,
+			record = options.selected,
+			tableStore = Ext.getStore('tables')
+		;
+
 		view.objectRecord = record;
 		view.form.loadRecord(record);
-		
-		view.depStore.each(function(depRec) {
-			var modelProxy = Ext.ModelMgr.getModel(depRec.get('table_id')).prototype.getProxy();
 
-			var operCount = new Ext.data.Operation({
-				depRec: depRec,
-				filters: [{property: view.objectRecord.modelName.toLowerCase(), value: view.objectRecord.getId()}]
-			});
-
-			modelProxy.count(operCount, function(operation) {
-				operation.depRec.set('count', operation.result);
-			});
-		});
+		view.depStore.loadData(getDepsData(tableStore.getById(view.objectRecord.modelName).deps(), tableStore, view));
 	},
-	
+
 	onSyncButtonTap: function(options) {
 		options.btn.disable();
 		

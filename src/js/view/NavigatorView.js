@@ -25,9 +25,9 @@ var NavigatorView = Ext.extend(AbstractView, {
 			if(table.get('editable') || (this.editing && table.get('extendable'))) {
 				this.dockedItems[0].items.push(
 					{xtype: 'spacer'},
-					{id: 'Cancel', name: 'Cancel', text: 'Отменить', hidden: true, scope: this},
+					{itemId: 'Cancel', name: 'Cancel', text: 'Отменить', hidden: true, scope: this},
 					{
-						id: 'SaveEdit',
+						itemId: 'SaveEdit',
 						name: this.editing ? 'Save' : 'Edit',
 						text: this.editing ? 'Сохранить' : 'Редактировать',
 						scope: this
@@ -36,7 +36,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 			}
 			
 			table.get('extendable') && this.dockedItems[0].items.push({
-				id: 'Add', ui: 'plain', iconMask: true, name: 'Add', iconCls: 'add', scope: this, hidden: this.editing
+				itemId: 'Add', ui: 'plain', iconMask: true, name: 'Add', iconCls: 'add', scope: this, hidden: this.editing
 			});
 			
 			if (this.objectRecord.modelName === 'MainMenu') {

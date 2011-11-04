@@ -45,13 +45,16 @@ var SaleOrderView = Ext.extend(AbstractView, {
 		
 		var summTpl = new Ext.XTemplate(
 				'<p>'
-				+'<tpl if="packageName"><small>Упаковка: {packageName}</small></tpl>'
-				+ 'Сумма заказа: {totalCost} руб.</p>'
+			+	'<tpl if="packageName"><small>Упаковка: {packageName}</small></tpl>'
+			+	'Сумма заказа: {totalCost}'
+			+	'<tpl if="bonusRemains"> Остаток бонуса: {bonusRemains}</tpl>'
+			+	'</p>'
 		);
 		
 		this.dockedItems.push({
 			id: 'bottomToolbar', xtype: 'toolbar', dock: 'bottom',
-			items: [{xtype: 'spacer'}, {text: summTpl.apply({totalCost: 0}), itemId: 'ShowCustomer', name: 'ShowCustomer', scope: this}],
+			items: [{xtype: 'spacer'}, {
+				text: summTpl.apply({totalCost: 0}), itemId: 'ShowCustomer', name: 'ShowCustomer', scope: this}],
 			titleTpl: summTpl
 		});
 

@@ -202,9 +202,7 @@ Ext.regController('SaleOrder', {
 											Ext.dispatch({
 												controller: 'SaleOrder',
 												action: 'calculateTotalCost',
-												view: newCard,
-												record: offerRec,
-												addCost: offerRec.get('cost')
+												view: newCard
 											});
 											
 										}
@@ -264,14 +262,12 @@ Ext.regController('SaleOrder', {
 		rec.editing = false;
 		
 		Ext.dispatch(Ext.apply(options, {
-			action: 'calculateTotalCost',
-			record: rec,
-			addCost: cost - oldCost
+			action: 'saveOffer',
+			view: view
 		}));
 		
 		Ext.dispatch(Ext.apply(options, {
-			action: 'saveOffer',
-			view: view
+			action: 'calculateTotalCost'
 		}));
 		
 		Ext.get(options.item).down('.cost').dom.innerHTML = rec.get('cost');
@@ -283,18 +279,14 @@ Ext.regController('SaleOrder', {
 	
 	calculateTotalCost: function(options) {
 		
-		var view = options.list ? options.list.up('saleorderview') : options.view,
-		    btb = view.getDockedComponent('bottomToolbar'),
-		    rec = view.offerCategoryStore.findRecord('category', options.record.get('category'))
+		var view = options.view,
+			btb = view.getDockedComponent('bottomToolbar'),
+			tc = view.saleOrder.get('totalCost').toFixed(2)
 		;
 		
-		rec.set(
-			'totalCost',
-			(rec.get('totalCost') + options.addCost).toFixed (2)
-		);
-		
 		btb.getComponent('ShowCustomer').setText( btb.titleTpl.apply ({
-			totalCost: view.offerCategoryStore.sum('totalCost').toFixed(2)
+			totalCost: tc,
+			bonusRemains: view.saleOrder.get('isBonus') ? (view.customerRecord.get('bonusCost') - tc).toFixed(2): undefined
 		}));
 	},
 	

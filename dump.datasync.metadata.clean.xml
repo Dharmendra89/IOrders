@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.63" expect-megabytes="15">
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.64" expect-megabytes="15">
   <tables set-of="table">
     <table id="Uncashment" name="Сданная выручка" nameSet="Сданная выручка" level="0" extendable="true">
       <columns set-of="column">
@@ -140,6 +140,9 @@
         <column id="Customername" name="name" type="string" label="Название"/>
         <column id="Customeraddress" name="address" type="string" label="Адрес"/>
         <column id="Customerwarehouse" name="warehouse" parent="Warehouse" label="Склад"/>
+        <column id="CustomerbonusCost" name="bonusCost" type="float" label="Товарный бонус"/>
+        <column id="CustomerbonusCash" name="bonusCash" type="float" label="Денежный бонус"/>
+        <column id="CustomerbonusForecast" name="bonusForecast" type="float" label="Прогноз бонуса"/>
       </columns>
       <deps set-of="dep">
         <dep table_id="RoutePoint" id="RoutePointcustomer"/>
@@ -152,6 +155,7 @@
         <column id="SaleOrdercustomer" name="customer" type="int" parent="Customer" label="Клиент" editable="true"/>
         <column id="SaleOrderid" name="id" type="string" key="true"/>
         <column id="SaleOrderxid" name="xid"/>
+        <column id="SaleOrderisBonus" name="isBonus" type="boolean" label="Бонусный" editable="true"/>
         <column id="SaleOrderincassNeeded" name="incassNeeded" type="boolean" label="Требуется инкассация" editable="true"/>
         <column id="SaleOrderisWhite" name="isWhite" type="boolean" label="Нужен счет-фактура" editable="true"/>
         <column id="SaleOrderdate" name="date" type="date" label="Дата доставки" editable="true"/>

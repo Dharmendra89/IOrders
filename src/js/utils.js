@@ -313,19 +313,18 @@ var getDepsData = function(depsStore, tablesStore, view) {
 				contains: dep.get('contains'),
 				editing: view.editing
 			}, 'Dep');
-
+			
 			var modelProxy = Ext.ModelMgr.getModel(depTable.get('id')).prototype.getProxy();
-
+			
 			var filters = [];
 			view.objectRecord.modelName != 'MainMenu' && filters.push({property: view.objectRecord.modelName.toLowerCase(), value: view.objectRecord.getId()});
 			
-			if(depTable.hasAggregates()) {
+			var aggCols = depTable.getAggregates();
+			var aggOperation = new Ext.data.Operation({depRec: depRec, filters: filters});
+			
+			modelProxy.aggregate(aggOperation, function(operation) {
 				
-				var aggCols = depTable.getAggregates();
-				var aggOperation = new Ext.data.Operation({depRec: depRec, filters: filters});
-
-				modelProxy.aggregate(aggOperation, function(operation) {
-					
+				if (aggCols) {
 					var aggDepResult = '';
 					var aggDepTpl = new Ext.XTemplate('<tpl if="value &gt; 0"><tpl if="name">{name} : </tpl>{[values.value.toFixed(2)]} </tpl>');
 					var aggResults = operation.resultSet.records[0].data;
@@ -335,32 +334,18 @@ var getDepsData = function(depsStore, tablesStore, view) {
 					});
 					
 					operation.depRec.set('aggregates', aggDepResult);
-					
-					var count = aggResults.cnt;
-					if(count > 0) {
-						operation.depRec.set('count', count);
-					} else {
-						view.depStore.remove(operation.depRec);
-					}
-				});
-			} else {
-
-				var operCount = new Ext.data.Operation({
-					depRec: depRec,
-					filters: filters
-				});
-
-				modelProxy.count(operCount, function(operation) {
-					var count = operation.result;
-					
-					if(count > 0) {
-						operation.depRec.set('count', count);
-					} else {
-						view.depStore.remove(operation.depRec);
-					}
-				});
-			}
-
+				}
+				
+				var count = aggResults.cnt;
+				
+				if(count > 0) {
+					operation.depRec.set('count', count);
+				} else if (!depRec.get('extendable')) {
+					view.depStore.remove(operation.depRec);
+				}
+				
+			});
+			
 			data.push(depRec);
 		}
 	});

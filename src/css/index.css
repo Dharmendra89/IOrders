@@ -72,6 +72,10 @@
 	-webkit-box-flex: 1;
 }
 
+.negative {
+	color: red !important;
+}
+
 .x-list-item .hbox .aggregates {
 	padding-left: 10px;
 	-webkit-box-flex: 1;

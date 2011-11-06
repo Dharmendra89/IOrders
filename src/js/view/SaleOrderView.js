@@ -10,8 +10,11 @@ var SaleOrderView = Ext.extend(AbstractView, {
 		
 		Ext.ModelMgr.getModel('Customer').load(this.saleOrder.get('customer'), {
 			scope: this,
-			success: function(customer) {
-				this.customerRecord = customer;
+			success: function(rec) {
+				this.customerRecord = rec;
+				if (this.saleOrder.get('isBonus')){
+					this.bonusCost = rec.get('bonusCost') + this.saleOrder.get('totalCost');
+				}
 			}
 		});
 		
@@ -33,12 +36,6 @@ var SaleOrderView = Ext.extend(AbstractView, {
 		
 		this.offerCategoryStore.load({limit: 0});
 		
-		/*this.productCategoryBtn = Ext.create({
-			xtype: 'button', hidden: Ext.is.Phone || Ext.Viewport.orientation == 'landscape',
-			defaultText: 'Группы продуктов', text: 'Группы продуктов',
-			handler: this.onProdCatButtonTap, scope: this
-		});*/
-		
 		this.productPanel = Ext.create({xtype: 'panel', layout: 'fit', flex: 3});
 		
 		this.items = [this.productCategoryList, this.productPanel];
@@ -47,7 +44,7 @@ var SaleOrderView = Ext.extend(AbstractView, {
 				'<p>'
 			+	'<tpl if="packageName"><small>Упаковка: {packageName}</small></tpl>'
 			+	'Сумма заказа: {totalCost}'
-			+	'<tpl if="bonusRemains"> Остаток бонуса: {bonusRemains}</tpl>'
+			+	'<tpl if="bonusRemains"> Остаток бонуса: <span <tpl if="bonusRemains &lt; 0">class="negative"</tpl> >{bonusRemains}</span></tpl>'
 			+	'</p>'
 		);
 		
@@ -59,7 +56,6 @@ var SaleOrderView = Ext.extend(AbstractView, {
 		});
 
 		this.dockedItems[0].items.push(
-			//this.productCategoryBtn,
 			{xtype: 'spacer'},
 			this.showSaleOrderBtn = new Ext.Button({name: 'ShowSaleOrder', text: 'Показать заказ', scope: this}),
 			{ui: 'save', name: 'Save', text: 'Сохранить', scope: this}
@@ -69,37 +65,18 @@ var SaleOrderView = Ext.extend(AbstractView, {
 	/**
 	 * Handlers
 	 */
+	
 	onProdCatButtonTap: function() {
 
 		this.productCategoryList.showBy(this.productCategoryBtn, 'fade');
 	},
+	
 	/**
 	 * Overridden
 	 */
+	
 	initComponent: function() {
-
 		SaleOrderView.superclass.initComponent.apply(this, arguments);
-	}/*,
-	layoutOrientation: function(orientation, w, h) {
-
-		if (!Ext.is.Phone) {
-
-			if (orientation == 'portrait') {
-
-				this.productCategoryList.hide(false);
-				this.productCategoryList.setFloating(true);
-				this.productCategoryList.setHeight(400);
-				this.productCategoryBtn.show(false);
-			} else {
-
-				this.productCategoryList.setFloating(false);
-				this.productCategoryBtn.hide(false);
-				this.productCategoryList.show(false);
-				this.productCategoryList.setPosition(0, 0);
-			}
-		}
-
-		SaleOrderView.superclass.layoutOrientation.apply(this, arguments);
-	}*/
+	}
 });
 Ext.reg('saleorderview', SaleOrderView);

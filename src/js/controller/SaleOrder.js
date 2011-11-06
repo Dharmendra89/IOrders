@@ -64,11 +64,22 @@ Ext.regController('SaleOrder', {
 			
 		});
 		
-		view.saleOrder.set ('totalCost', view.saleOrderPositionStore.sum('cost').toFixed(2));
+		var tc = view.saleOrderPositionStore.sum('cost').toFixed(2);
+		
+		view.saleOrder.set ('totalCost', tc);
 		saleOrderPosStore.sync();
 		
 		view.saleOrder.save();
 		view.saleOrder.commit(true);
+		
+		if (view.bonusCost){
+			view.customerRecord.set (
+				'bonusCost',
+				(view.bonusCost - tc).toFixed(2)
+			);
+			view.customerRecord.save();
+			view.customerRecord.commit();
+		}
 
 	},
 	
@@ -199,14 +210,14 @@ Ext.regController('SaleOrder', {
 											offerRec.set('cost', rec.get('cost'));
 											offerRec.commit(true);
 											
-											Ext.dispatch({
-												controller: 'SaleOrder',
-												action: 'calculateTotalCost',
-												view: newCard
-											});
-											
 										}
 										
+									});
+									
+									Ext.dispatch({
+										controller: 'SaleOrder',
+										action: 'calculateTotalCost',
+										view: newCard
 									});
 									
 									newCard.productStore.filter(newCard.productStore.volumeFilter);
@@ -286,7 +297,7 @@ Ext.regController('SaleOrder', {
 		
 		btb.getComponent('ShowCustomer').setText( btb.titleTpl.apply ({
 			totalCost: tc,
-			bonusRemains: view.saleOrder.get('isBonus') ? (view.customerRecord.get('bonusCost') - tc).toFixed(2): undefined
+			bonusRemains: view.saleOrder.get('isBonus') ? (view.bonusCost - tc).toFixed(2): undefined
 		}));
 	},
 	

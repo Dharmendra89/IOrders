@@ -12,15 +12,25 @@ var NavigatorView = Ext.extend(AbstractView, {
 		
 		var tablesStore = Ext.getStore('tables'),
 		    table = tablesStore.getById(this.objectRecord.modelName),
-		    formItems = [];
+		    formItems = []
+		;
+		
+		this.dockedItems[0].title = table.get('name');
+		
+		this.syncButton = new Ext.Button ({
+			iconMask: true,
+			name: 'Sync',
+			iconCls: 'action',
+			scope: this
+		});
+		
+		this.dockedItems[0].items.push (this.syncButton);
 		
 		if(this.isObjectView) {
 			
 			this.cls = 'objectView';
-			this.dockedItems[0].title = table.get('name');
 			
-			//if (this.objectRecord.modelName != 'MainMenu')
-				formItems.push(createFieldSet(table.columns(), this.objectRecord.modelName, this));
+			formItems.push(createFieldSet(table.columns(), this.objectRecord.modelName, this));
 			
 			if(table.get('editable') || (this.editing && table.get('extendable'))) {
 				this.dockedItems[0].items.push(
@@ -41,36 +51,15 @@ var NavigatorView = Ext.extend(AbstractView, {
 			
 			if (this.objectRecord.modelName === 'MainMenu') {
 				
-				this.syncButton = new Ext.Button ({
-					iconMask: true,
-					name: 'Sync',
-					iconCls: 'action',
-					scope: this
-				});
+				this.dockedItems[0].items.push (
+					{xtype: 'spacer'}
+				);
 				
-				this.dockedItems[0].items = [
-					{xtype: 'spacer'},
-					this.syncButton,
-					{
+				this.dockedItems[0].items.push ({
 						iconMask: true,
 						name: 'Prefs',
 						iconCls: 'settings',
 						scope: this
-					}
-				];
-				
-				this.on ('activate', function(){
-					var me = this.syncButton,
-						p = new Ext.data.SQLiteProxy({
-							engine: IOrders.dbeng,
-							model: 'ToUpload'
-						})
-					;
-					
-					p.count(new Ext.data.Operation(), function(o) {
-						if (o.wasSuccessful())
-							me.setBadge(o.result);
-					});
 				});
 				
 			}
@@ -107,6 +96,20 @@ var NavigatorView = Ext.extend(AbstractView, {
 				ui: 'plain', iconMask: true, name: 'Add', iconCls: 'add', scope: this
 			});
 		}
+		
+		this.on ('activate', function(){
+			var me = this.syncButton,
+				p = new Ext.data.SQLiteProxy({
+					engine: IOrders.dbeng,
+					model: 'ToUpload'
+				})
+			;
+			
+			p.count(new Ext.data.Operation(), function(o) {
+				if (o.wasSuccessful())
+					me.setBadge(o.result);
+			});
+		});
 		
 		this.items = [
 			this.form = new Ext.form.FormPanel({

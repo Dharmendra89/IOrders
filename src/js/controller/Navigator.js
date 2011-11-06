@@ -384,7 +384,7 @@ Ext.regController('Navigator', {
 		var partnerRecord = options.partnerRecord ? options.partnerRecord : Ext.getStore('Partner').getById(customerRecord.get('partner'));
 		
 		var newCard = Ext.create(Ext.apply({
-				xtype: 'encashmentview', partnerRecord: partnerRecord, customerRecord: customerRecord,
+				xtype: 'encashmentview', partnerRecord: partnerRecord, customerRecord: customerRecord
 			}, getOwnerViewConfig(oldView)));
 		IOrders.viewport.setActiveItem(newCard);
 	},
@@ -559,9 +559,10 @@ Ext.regController('Navigator', {
 				);
 			},
 			recordSuccess: function(s) {
-				var cnt = parseInt(options.btn.getBadgeText());
+				var sb = IOrders.viewport.getActiveItem().syncButton,
+					cnt = parseInt(sb.getBadgeText());
 				
-				options.btn.setBadge(--cnt);
+				sb.setBadge(--cnt);
 			}
 		});
 	},

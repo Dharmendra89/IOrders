@@ -49,7 +49,7 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 				+							'</tpl>'
 				+							'<tpl if="!parent">'
 				+								'<tpl if="label || name">'
-				+									'<div>{label}<tpl if="name">: {name}</tpl></div>'
+				+									'<div class="{cls}">{label}<tpl if="name">: {name}</tpl></div>'
 				+								'</tpl>'
 				+							'</tpl>'
 				+						'</tpl>'
@@ -158,6 +158,7 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 			templateData.otherColumns.push({
 				parent: col.get('parent') ? true : false,
 				label: label,
+				cls: colName,
 				name: name
 			});
 			

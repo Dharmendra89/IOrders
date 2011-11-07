@@ -72,7 +72,7 @@
 	-webkit-box-flex: 1;
 }
 
-.negative {
+.negative, .isBlockedPlong {
 	color: red !important;
 }
 

@@ -137,7 +137,7 @@ Ext.regController('Navigator', {
 		    rec = undefined,
 		    list = options.list,
 		    item = options.item,
-	        view = list.up('navigatorview'),
+	        view = list.up('navigatorview') || list.up('newnavigatorview'),
 		    isTableList = list.getEl().hasCls('x-table-list') ? true : false,
 		    tappedRec = list.getRecord(item)
 		;
@@ -205,9 +205,28 @@ Ext.regController('Navigator', {
 			
 		} else if (options.isSetView) {
 			
-			Ext.dispatch(Ext.apply(options, {
-				action: 'createAndActivateView'
-			}));
+			if(list.el.hasCls('x-parent-deps-list')) {
+				
+				var parentName = list.store.parentModel; 
+
+				Ext.ModelMgr.getModel(list.store.parentModel).load(view.objectRecord.get(parentName[0].toLowerCase() + parentName.substring(1)), {
+					
+					success: function(record) {
+
+						Ext.dispatch(Ext.apply(options, {
+							action: 'createAndActivateView',
+							record: record,
+							tableRecord: tappedRec.get('table_id')
+						}));
+					}
+				});
+			} else {
+
+				Ext.dispatch(Ext.apply(options, {
+					action: 'createAndActivateView'
+				}));
+			}
+			
 			
 		} else if (isTableList && target.up('.dep')) {
 			
@@ -237,8 +256,16 @@ Ext.regController('Navigator', {
 				editing: false
 			}));
 			
+		} else if(list.el.hasCls('x-object-record-list')) {
+
+			view.setLoading(true);
+
+			view.objectRecord = tappedRec;
+			view.fireEvent('updateform', view.objectRecord);
+
+			Ext.defer(function(){view.setLoading(false);}, 300);
 		} else {
-			
+
 			Ext.defer ( function() {
 				Ext.dispatch(Ext.apply(options, {
 					controller: 'Navigator',
@@ -247,9 +274,9 @@ Ext.regController('Navigator', {
 				}));
 			}, 150);
 		}
-		
+
 	},
-	
+
 	onSaveEncashButtonTap: function(options) {
 
 		var encashStore = createStore('Encashment'),
@@ -527,6 +554,7 @@ Ext.regController('Navigator', {
 		options.filter && filters.push({property: filterRecord.modelName.toLowerCase(), value: field.getValue()});
 		
 		options.removeFilter && view.form.remove(0);
+		store.removeAll();
 		store.filter(filters);
 	},
 	

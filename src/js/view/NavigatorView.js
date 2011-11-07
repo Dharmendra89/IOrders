@@ -1,17 +1,17 @@
 var NavigatorView = Ext.extend(AbstractView, {
-	
+
 	objectRecord: undefined,
 	tableRecord: undefined,
 	layout: 'fit',
-	
+
 	/**
 	 * Own
 	 */
-	
+
 	createItems: function() {
-		
+	
 		var tablesStore = Ext.getStore('tables'),
-		    table = tablesStore.getById(this.objectRecord.modelName),
+		    table = tablesStore.getById(this.objectRecord.modelName),   
 		    formItems = []
 		;
 		

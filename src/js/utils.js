@@ -7,7 +7,7 @@ var getValueFromParent = function(field, value) {
 	return rec ? rec.get('name') : '';
 };
 
-var getItemTplMeta = function(modelName, table, filterObject, groupField) {
+var getItemTplMeta = function(modelName, table, filterObject, groupField, onlyKey) {
 
 	var tableStore = Ext.getStore('tables');
 	var tableRecord = tableStore.getById(modelName);
@@ -81,7 +81,7 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 		keyColumns: [],
 		otherColumnsLength: 0,
 		otherColumns: [],
-		buttons: buttons
+		buttons: onlyKey ? '' : buttons
 	};
 	
 	var idColExist = columnStore.findExact('name', 'id') === -1 ? false : true;
@@ -120,50 +120,52 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 		}
 	}
 
-	var otherColumns = columnStore.queryBy(function(rec) {
-		var colName = rec.get('name');
-		return !rec.get(queryValue)
-			&& ( !groupField || (groupField !== colName
-					&& groupField[0].toLowerCase() + groupField.replace('_name', '').substring(1) !== colName)
-			)
-			&& ( !filterObject || filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase())
-			&& colName !== 'id' && colName !== 'name' && rec.get('label') ? true : false;
-	});
-	
-	templateData.otherColumnsLength = otherColumns.getCount(); 
-	if(otherColumns.getCount() > 0) {
-
-		otherColumns.each(function(col) {
-			
-			var label = undefined, name = undefined;
-
-			var colName = col.get('name');
-			switch(col.get('type')) {
- 				case 'boolean' : {
-					label = '{[values.' + colName + ' == true ? "' + col.get('label') + '" : ""]}';
-					break;
-				}
-				case 'date' : {
-					label = col.get('label');
-					name = '{[Ext.util.Format.date(values.' + colName + ')]}';
-					break;
-				}
-				default : {
-					label = col.get('label');
-					name = col.get('parent') ? colName : '{' + colName + '}';
-					break;
-				}
-			}
-			
-			templateData.otherColumns.push({
-				parent: col.get('parent') ? true : false,
-				label: label,
-				name: name
-			});
-			
+	if(!onlyKey) {
+		var otherColumns = columnStore.queryBy(function(rec) {
+			var colName = rec.get('name');
+			return !rec.get(queryValue)
+				&& ( !groupField || (groupField !== colName
+						&& groupField[0].toLowerCase() + groupField.replace('_name', '').substring(1) !== colName)
+				)
+				&& ( !filterObject || filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase())
+				&& colName !== 'id' && colName !== 'name' && rec.get('label') ? true : false;
 		});
-	}
+		
+		templateData.otherColumnsLength = otherColumns.getCount(); 
+		if(otherColumns.getCount() > 0) {
 	
+			otherColumns.each(function(col) {
+				
+				var label = undefined, name = undefined;
+	
+				var colName = col.get('name');
+				switch(col.get('type')) {
+	 				case 'boolean' : {
+						label = '{[values.' + colName + ' == true ? "' + col.get('label') + '" : ""]}';
+						break;
+					}
+					case 'date' : {
+						label = col.get('label');
+						name = '{[Ext.util.Format.date(values.' + colName + ')]}';
+						break;
+					}
+					default : {
+						label = col.get('label');
+						name = col.get('parent') ? colName : '{' + colName + '}';
+						break;
+					}
+				}
+				
+				templateData.otherColumns.push({
+					parent: col.get('parent') ? true : false,
+					label: label,
+					name: name
+				});
+				
+			});
+		}
+	}
+
 	return {itemTpl: new Ext.XTemplate(templateString).apply(templateData), modelForDeps: modelForDeps};
 };
 
@@ -265,8 +267,8 @@ var createFilterField = function(objectRecord) {
 
 	var modelName = objectRecord.modelName;	
 	var selectStore = createStore(modelName, getSortersConfig(modelName, {}));
-	selectStore.load();
 	selectStore.add(objectRecord);
+	selectStore.load();
 
 	return {
 		xtype: 'fieldset',
@@ -297,6 +299,27 @@ function createDepsList(depsStore, tablesStore, view) {
 	});
 };
 
+var loadDepData = function(depRec, depTable, filters, aggregatesHandler) {
+
+	var modelProxy = Ext.ModelMgr.getModel(depTable.get('id')).prototype.getProxy();
+		
+	var aggCols = depTable.getAggregates();
+	var aggOperation = new Ext.data.Operation({depRec: depRec, filters: filters});
+
+	modelProxy.aggregate(aggOperation, function(operation) {
+
+		var aggDepResult = '';
+		var aggDepTpl = new Ext.XTemplate('<tpl if="value &gt; 0"><tpl if="name">{name} : </tpl>{[values.value.toFixed(2)]} </tpl>');
+		var aggResults = operation.resultSet.records[0].data;
+
+		aggCols.each(function(aggCol) {
+			aggDepResult += aggDepTpl.apply({name: aggCol.get('label') != depTable.get('nameSet') ? aggCol.get('label') : '', value: aggResults[aggCol.get('name')]});
+		});
+		
+		aggregatesHandler.apply(this, [operation, aggResults, aggDepResult]);
+	});
+};
+
 var getDepsData = function(depsStore, tablesStore, view) {
 
 	var data = [];
@@ -313,43 +336,26 @@ var getDepsData = function(depsStore, tablesStore, view) {
 				contains: dep.get('contains'),
 				editing: view.editing
 			}, 'Dep');
-			
-			var modelProxy = Ext.ModelMgr.getModel(depTable.get('id')).prototype.getProxy();
-			
+
 			var filters = [];
 			view.objectRecord.modelName != 'MainMenu' && filters.push({property: view.objectRecord.modelName.toLowerCase(), value: view.objectRecord.getId()});
-			
-			var aggCols = depTable.getAggregates();
-			var aggOperation = new Ext.data.Operation({depRec: depRec, filters: filters});
-			
-			modelProxy.aggregate(aggOperation, function(operation) {
-				
-				if (aggCols) {
-					var aggDepResult = '';
-					var aggDepTpl = new Ext.XTemplate('<tpl if="value &gt; 0"><tpl if="name">{name} : </tpl>{[values.value.toFixed(2)]} </tpl>');
-					var aggResults = operation.resultSet.records[0].data;
-					
-					aggCols.each(function(aggCol) {
-						aggDepResult += aggDepTpl.apply({name: aggCol.get('label') != depTable.get('nameSet') ? aggCol.get('label') : '', value: aggResults[aggCol.get('name')]});
-					});
-					
-					operation.depRec.set('aggregates', aggDepResult);
-				}
-				
+
+			loadDepData(depRec, depTable, filters, function(operation, aggResults, aggDepResult) {
+
+				operation.depRec.set('aggregates', aggDepResult);
 				var count = aggResults.cnt;
-				
+
 				if(count > 0) {
 					operation.depRec.set('count', count);
 				} else if (!depRec.get('extendable')) {
 					view.depStore.remove(operation.depRec);
 				}
-				
 			});
-			
+
 			data.push(depRec);
 		}
 	});
-	
+
 	return data;
 };
 
@@ -366,26 +372,21 @@ var createTitlePanel = function(t) {
 
 var createNavigatorView = function(rec, oldCard, isSetView, editing, config) {
 
-	var view = Ext.apply({
-			xtype: 'navigatorview',
-			isObjectView: isSetView ? undefined : true,
-			isSetView: isSetView ? true : undefined,
-			objectRecord: isSetView ? oldCard.objectRecord : rec,
-			tableRecord: isSetView ? rec.get('table_id') : undefined,
-			editing: editing,
-			extendable: rec.get('extendable'),
-			ownerViewConfig: {
+	var view = undefined;
+	if(!isSetView) {
+		view = Ext.apply({xtype: 'newnavigatorview', objectRecord: rec}, getOwnerViewConfig(oldCard));
+		
+	} else {
+		view = Ext.apply(Ext.apply({
 				xtype: 'navigatorview',
-				extendable: oldCard.extendable,
-				isObjectView: oldCard.isObjectView,
-				isSetView: oldCard.isSetView,
-				objectRecord: oldCard.objectRecord,
-				tableRecord: oldCard.tableRecord,
-				ownerViewConfig: oldCard.ownerViewConfig,
-				storeLimit: oldCard.isSetView ? oldCard.setViewStore.currentPage * oldCard.setViewStore.pageSize : undefined,
-				storePage: oldCard.isSetView && oldCard.setViewStore.currentPage
-			}
-		}, config);
+				isObjectView: isSetView ? undefined : true,
+				isSetView: isSetView ? true : undefined,
+				objectRecord: isSetView ? oldCard.objectRecord : rec,
+				tableRecord: isSetView ? rec.get('table_id') : undefined,
+				editing: editing,
+				extendable: rec.get('extendable')
+			}, getOwnerViewConfig(oldCard)), config);
+	}
 		
 	return view;
 };

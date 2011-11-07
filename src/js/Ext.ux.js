@@ -20,7 +20,7 @@ var ExpandableGroupedList = Ext.extend(Ext.List, {
 		});
 		this.el.addCls ('expandable');
 	},
-	
+
 	onListHeaderTap: function(e, t) {
 		
 		var tapedHeaderEl = Ext.get(t),

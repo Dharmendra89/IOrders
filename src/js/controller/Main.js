@@ -5,7 +5,7 @@ Ext.regController('Main', {
 		var view = options.view,
 			redirectTo = this;
 		
-		if ( view.isXType('navigatorview') || view.isXType('encashmentview') || view.isXType('uncashmentview')) {
+		if ( view.isXType('navigatorview') || view.isXType('newnavigatorview') || view.isXType('encashmentview') || view.isXType('uncashmentview')) {
 			redirectTo = 'Navigator';
 		} else if ( view.isXType('saleorderview') ) {
 			redirectTo = 'SaleOrder';
@@ -27,7 +27,7 @@ Ext.regController('Main', {
 		
 		var list = options.list,
 			rec = options.list.getRecord(options.item),
-		    navView = list.up('navigatorview'),
+		    navView = list.up('navigatorview') || list.up('newnavigatorview'),
 		    saleOrderView = list.up('saleorderview'),
 		    listEl = list.getEl()
 		;
@@ -75,7 +75,7 @@ Ext.regController('Main', {
 				default : {
 					Ext.dispatch(Ext.apply(options, {
 						controller: 'Navigator',
-						isSetView: listEl.hasCls('x-deps-list')
+						isSetView: listEl.hasCls('x-deps-list') || listEl.hasCls('x-parent-deps-list')
 					}));
 				}
 			};
@@ -87,7 +87,7 @@ Ext.regController('Main', {
 	onListItemDisclosure: function(options) {
 
 		var list = options.list,
-	    	navView = list.up('navigatorview'),
+	    	navView = list.up('navigatorview') || list.up('newnavigatorview'),
 	    	listEl = list.getEl()
 		;
 	
@@ -129,7 +129,7 @@ Ext.regController('Main', {
 	onFieldLabelTap: function(options) {
 
 		var field = options.field;
-		var navView = field.up('navigatorview');
+		var navView = field.up('navigatorview') || field.up('newnavigatorview');
 		if(navView) {
 			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('Field', 'selectfield'), view: navView}));
 		}
@@ -138,7 +138,7 @@ Ext.regController('Main', {
 	onFieldInputTap: function(options) {
 
 		var field = options.field;
-		var navView = field.up('navigatorview');
+		var navView = field.up('navigatorview') || field.up('newnavigatorview');
 		if(navView) {
 			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', action: options.action.replace('Field', field.xtype), view: navView}));
 		}
@@ -147,7 +147,7 @@ Ext.regController('Main', {
 	onSelectFieldValueChange: function(options) {
 
 		var field = options.field;
-		var navView = field.up('navigatorview');
+		var navView = field.up('navigatorview') || field.up('newnavigatorview');
 		var encashView = field.up('encashmentview');
 		
 		if(navView && field.xtype == 'filterfield') {
@@ -270,7 +270,7 @@ Ext.regController('Main', {
 					true
 				);
 			}
-		})
+		});
 	},
 
 	onReloadButtonTap: function(options) {
@@ -287,7 +287,7 @@ Ext.regController('Main', {
 
 	onListSelectionChange: function(options) {
 		
-		var navView = options.list.up('navigatorview');
+		var navView = options.list.up('navigatorview') || options.list.up('newnavigatorview');
 		
 		if(navView) {
 			Ext.dispatch(Ext.apply(options, {controller: 'Navigator', view: navView}));

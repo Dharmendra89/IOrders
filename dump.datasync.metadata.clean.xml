@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.64" expect-megabytes="15">
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.671" expect-megabytes="15">
   <tables set-of="table">
     <table id="Uncashment" name="Сданная выручка" nameSet="Сданная выручка" level="0" extendable="true">
       <columns set-of="column">
@@ -97,6 +97,7 @@
     <table id="Partner" name="Партнер" nameSet="Партнеры" level="0">
       <columns set-of="column">
         <column id="Partnerid" name="id" type="int" key="true"/>
+        <column id="PartnerisBlockedPlong" name="isBlockedPlong" type="boolean" label="Заблокирован по просрочке"/>
         <column id="Partnername" name="name" type="string" label="Название"/>
         <column id="Partnerplong" name="plong" type="int" label="Отсрочка оплаты"/>
         <column id="Partnermaxdebt" name="maxdebt" type="float" label="Лимит задолженности"/>
@@ -127,6 +128,8 @@
         <column id="DebtfullSumm" name="fullSumm" type="float" label="Сумма"/>
         <column id="DebtisWhite" name="isWhite" type="boolean" label="Нужен чек"/>
         <column id="DebtremSumm" name="remSumm" type="float" label="Задолженность" aggregable="sum"/>
+        <column id="DebtdateUntil" name="dateUntil" type="date" label="Оплата до"/>
+        <column id="DebtisOverdue" name="isOverdue" type="boolean" label="Просрочено"/>
         <column id="Debtpartner" name="partner" parent="Partner" label="Партнер"/>
       </columns>
       <deps set-of="dep">
@@ -140,8 +143,8 @@
         <column id="Customername" name="name" type="string" label="Название"/>
         <column id="Customeraddress" name="address" type="string" label="Адрес"/>
         <column id="Customerwarehouse" name="warehouse" parent="Warehouse" label="Склад"/>
+        <column id="CustomerisBlockedPlong" name="isBlockedPlong" type="boolean" label="Заблокирован по просрочке"/>
         <column id="CustomerbonusCost" name="bonusCost" type="float" label="Товарный бонус"/>
-        <column id="CustomerbonusCash" name="bonusCash" type="float" label="Денежный бонус"/>
         <column id="CustomerbonusForecast" name="bonusForecast" type="float" label="Прогноз бонуса"/>
       </columns>
       <deps set-of="dep">

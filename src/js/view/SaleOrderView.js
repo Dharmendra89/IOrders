@@ -34,8 +34,6 @@ var SaleOrderView = Ext.extend(AbstractView, {
 			itemTpl: getItemTpl('OfferCategory')
 		});
 		
-		this.offerCategoryStore.load({limit: 0});
-		
 		this.productPanel = Ext.create({xtype: 'panel', layout: 'fit', flex: 3});
 		
 		this.items = [this.productCategoryList, this.productPanel];

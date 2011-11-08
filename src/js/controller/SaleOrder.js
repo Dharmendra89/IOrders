@@ -156,80 +156,96 @@ Ext.regController('SaleOrder', {
                 }
 			});
 			
+			var failureCb = function (n) {
+				Ext.Msg.alert ('Ошибка', 'Не получилось загрузить список '+n, function() {
+					oldCard.setLoading(false);
+				});
+			};
+			
 			oldCard.setLoading(true);
 			
-			newCard.productStore = createStore('Offer', {
-				remoteFilter: true,
-				remoteSort: true,
-				getGroupString: function(rec) {
-					return rec.get('firstName');
-				},
-				sorters: [{property: 'firstName', direction: 'ASC'}, {property: 'name', direction: 'ASC'}],
-				filters: [{property: 'customer', value: options.saleOrder.get('customer')}],
-				volumeFilter: new Ext.util.Filter({
-					filterFn: function(item) {
-						return item.get('volume') > 0;
-				    }
-				})
-			});
-			
-			var saleOrderPositionStore = newCard.saleOrderPositionStore = createStore('SaleOrderPosition', {
-				remoteFilter: true,
-				filters: [{
-					property: 'saleorder',
-					value: options.saleOrder.getId()
-				}]
-			});
-			
-			newCard.productList = newCard.productPanel.add( new ExpandableGroupedList (Ext.apply (offerProductList, {
-				store: newCard.productStore
-			})));
-			
-			newCard.productPanel.doLayout();
-			
-			newCard.productStore.load({
+			newCard.offerCategoryStore.load({
 				limit: 0,
-				callback: function(r, o, s) {
+				callback: function(r, o, s){
 					
-					if (s) {
+					if (!s) failureCb('категорий'); else {
 						
-						newCard.productStore.remoteFilter = false;
-						
-						saleOrderPositionStore.load({
-							limit: 0,
-							callback: function(records, operation, s) {
-								if(s) {
-									
-									Ext.each(records, function(rec, idx, all) {
-										var offerRec = newCard.productStore.findRecord('product', rec.get('product'));
-										
-										if (offerRec) {
-											
-											offerRec.editing = true;
-											offerRec.set('volume', rec.get('volume'));
-											offerRec.set('cost', rec.get('cost'));
-											offerRec.commit(true);
-											
-										}
-										
-									});
-									
-									Ext.dispatch({
-										controller: 'SaleOrder',
-										action: 'calculateTotalCost',
-										view: newCard
-									});
-									
-									newCard.productStore.filter(newCard.productStore.volumeFilter);
-									oldCard.setLoading(false);
-									IOrders.viewport.setActiveItem(newCard);
-									
+						newCard.productStore = createStore('Offer', {
+							remoteFilter: true,
+							remoteSort: true,
+							getGroupString: function(rec) {
+								return rec.get('firstName');
+							},
+							sorters: [{property: 'firstName', direction: 'ASC'}, {property: 'name', direction: 'ASC'}],
+							filters: [{property: 'customer', value: options.saleOrder.get('customer')}],
+							volumeFilter: new Ext.util.Filter({
+								filterFn: function(item) {
+									return item.get('volume') > 0;
 								}
+							})
+						});
+						
+						var saleOrderPositionStore = newCard.saleOrderPositionStore = createStore('SaleOrderPosition', {
+							remoteFilter: true,
+							filters: [{
+								property: 'saleorder',
+								value: options.saleOrder.getId()
+							}]
+						});
+						
+						newCard.productList = newCard.productPanel.add( new ExpandableGroupedList (Ext.apply (offerProductList, {
+							store: newCard.productStore
+						})));
+						
+						newCard.productPanel.doLayout();
+						
+						newCard.productStore.load({
+							limit: 0,
+							callback: function(r, o, s) {
+								
+								if (s) {
+									
+									newCard.productStore.remoteFilter = false;
+									
+									saleOrderPositionStore.load({
+										limit: 0,
+										callback: function(records, operation, s) {
+											if(s) {
+												
+												Ext.each(records, function(rec, idx, all) {
+													var offerRec = newCard.productStore.findRecord('product', rec.get('product'));
+													
+													if (offerRec) {
+														
+														offerRec.editing = true;
+														offerRec.set('volume', rec.get('volume'));
+														offerRec.set('cost', rec.get('cost'));
+														offerRec.commit(true);
+														
+													}
+													
+												});
+												
+												Ext.dispatch({
+													controller: 'SaleOrder',
+													action: 'calculateTotalCost',
+													view: newCard
+												});
+												
+												newCard.productStore.filter(newCard.productStore.volumeFilter);
+												oldCard.setLoading(false);
+												IOrders.viewport.setActiveItem(newCard);
+												
+											} else failureCb('товаров');
+										}
+									});
+								} else failureCb('остатков');
 							}
 						});
 					}
 				}
 			});
+			
 		};
 	},
 	

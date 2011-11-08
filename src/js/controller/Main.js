@@ -186,10 +186,10 @@ Ext.regController('Main', {
 	
 	prefsCb : {
 		success: function(r,o) {
-			Ext.Msg.alert(o.command, 'Success');
+			Ext.Msg.alert(o.command, 'Получилось');
 		},
 		failure: function(r,o) {
-			Ext.Msg.alert(o.command, 'Failed: ' + r.responseText);
+			Ext.Msg.alert(o.command, 'Не получилось: ' + r.responseText);
 		}
 	},
 	
@@ -236,7 +236,7 @@ Ext.regController('Main', {
 							}
 						}
 					);
-				else {
+				else if (!options.silent) {
 					localStorage.setItem('metadata', Ext.encode(metadata));
 					Ext.Msg.alert('Метаданные в норме', 'Версия: ' + metadata.version);
 				}
@@ -279,10 +279,12 @@ Ext.regController('Main', {
 
 	onXiNoServerButtonTap: function(options) {
 		IOrders.xi.noServer = true;
+		localStorage.setItem('realServer', false);
 	},
 
 	onXiYesServerButtonTap: function(options) {
 		IOrders.xi.noServer = false;
+		localStorage.setItem('realServer', true);
 	},
 
 	onListSelectionChange: function(options) {

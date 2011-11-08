@@ -72,7 +72,7 @@
 	-webkit-box-flex: 1;
 }
 
-.negative, .isBlockedPlong {
+.negative, .isBlockedPlong, .isOverdue {
 	color: red !important;
 }
 

@@ -57,7 +57,7 @@ Ext.regApplication({
 		
 		IOrders.xi = new Ext.data.XmlInterface({
 			view: 'iorders',
-			noServer: (location.protocol == 'http:')
+			noServer: ! (location.protocol == 'https:' || localStorage.getItem('realServer') == 'true')
 		});
 		
 		IOrders.getMetadata = {
@@ -111,7 +111,43 @@ Ext.regApplication({
 				password: localStorage.getItem('password')
 			});
 			
-			IOrders.dbeng.startDatabase(metadata);
+			if (!this.xi.noServer){
+				var r = function(db) {
+					if (!db.clean) {
+						IOrders.xi.reconnect({
+							success: function() {
+								p = new Ext.data.SQLiteProxy({engine: IOrders.dbeng, model: 'ToUpload'});
+								
+								p.count(new Ext.data.Operation(),
+									function(o) {
+										if (o.result == 0)
+											Ext.dispatch ({controller: 'Main', action: 'onXiMetaButtonTap', silent: true});
+										else
+											console.log ('There are unuploaded data');
+									}
+								);
+							}
+						})
+					}
+				}, f = function() {
+					IOrders.xi.reconnect({
+						success: function() {
+							p = new Ext.data.SQLiteProxy({engine: IOrders.dbeng, model: 'ToUpload'});
+							
+							Ext.Msg.confirm ('Не удалось обновить БД', 'Проверим метаданные?', function (b) {
+								if (b == 'yes')
+									Ext.dispatch ({controller: 'Main', action: 'onXiMetaButtonTap'});
+							});
+						}
+				})};
+
+					
+				this.dbeng.on ('dbstart', r);
+				this.dbeng.on ('upgradefail', f);
+			}
+			
+			this.dbeng.startDatabase(metadata);
+			
 		}
 	}
 });

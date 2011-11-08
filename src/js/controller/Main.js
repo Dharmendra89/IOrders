@@ -48,11 +48,12 @@ Ext.regController('Main', {
 							
 							var errors = formRec.validate();
 							if(errors.isValid()) {
-								formRec.save();
-								Ext.dispatch(Ext.apply(options, {
-									controller: 'SaleOrder',
-									saleOrder: navView.objectRecord
-								}));
+								formRec.save({success: function() {
+									Ext.dispatch(Ext.apply(options, {
+										controller: 'SaleOrder',
+										saleOrder: navView.objectRecord
+									}));
+								}})
 							} else {
 								var msg = '';
 								errors.each(function(err) {

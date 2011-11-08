@@ -8,16 +8,6 @@ var SaleOrderView = Ext.extend(AbstractView, {
 	 */
 	createItems: function() {
 		
-		Ext.ModelMgr.getModel('Customer').load(this.saleOrder.get('customer'), {
-			scope: this,
-			success: function(rec) {
-				this.customerRecord = rec;
-				if (this.saleOrder.get('isBonus')){
-					this.bonusCost = rec.get('bonusCost') + this.saleOrder.get('totalCost');
-				}
-			}
-		});
-		
 		this.offerCategoryStore = createStore('OfferCategory', Ext.apply({
 			remoteFilter: true,
 			filters:[{

@@ -197,14 +197,13 @@ Ext.regController('SaleOrder', {
 							store: newCard.productStore
 						})));
 						
-						newCard.productPanel.doLayout();
-						
 						newCard.productStore.load({
 							limit: 0,
 							callback: function(r, o, s) {
 								
 								if (s) {
 									
+									newCard.productPanel.doLayout();
 									newCard.productStore.remoteFilter = false;
 									
 									saleOrderPositionStore.load({
@@ -226,10 +225,18 @@ Ext.regController('SaleOrder', {
 													
 												});
 												
-												Ext.dispatch({
-													controller: 'SaleOrder',
-													action: 'calculateTotalCost',
-													view: newCard
+												Ext.ModelMgr.getModel('Customer').load(newCard.saleOrder.get('customer'), {
+													success: function(rec) {
+														newCard.customerRecord = rec;
+														if (newCard.saleOrder.get('isBonus')){
+															newCard.bonusCost = rec.get('bonusCost') + newCard.saleOrder.get('totalCost');
+														};
+														Ext.dispatch({
+															controller: 'SaleOrder',
+															action: 'calculateTotalCost',
+															view: newCard
+														});
+													}
 												});
 												
 												newCard.productStore.filter(newCard.productStore.volumeFilter);
@@ -308,11 +315,11 @@ Ext.regController('SaleOrder', {
 		
 		var view = options.view,
 			btb = view.getDockedComponent('bottomToolbar'),
-			tc = view.saleOrder.get('totalCost').toFixed(2)
+			tc = view.saleOrder.get('totalCost')
 		;
 		
 		btb.getComponent('ShowCustomer').setText( btb.titleTpl.apply ({
-			totalCost: tc,
+			totalCost: tc.toFixed(2),
 			bonusRemains: view.saleOrder.get('isBonus') ? (view.bonusCost - tc).toFixed(2): undefined
 		}));
 	},

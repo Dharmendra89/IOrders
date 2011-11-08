@@ -114,7 +114,7 @@ Ext.regApplication({
 			if (!this.xi.noServer){
 				var r = function(db) {
 					if (!db.clean) {
-						IOrders.xi.reconnect({
+						IOrders.xi.login ({
 							success: function() {
 								p = new Ext.data.SQLiteProxy({engine: IOrders.dbeng, model: 'ToUpload'});
 								

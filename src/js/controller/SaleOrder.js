@@ -225,19 +225,25 @@ Ext.regController('SaleOrder', {
 													
 												});
 												
-												Ext.ModelMgr.getModel('Customer').load(newCard.saleOrder.get('customer'), {
-													success: function(rec) {
-														newCard.customerRecord = rec;
-														if (newCard.saleOrder.get('isBonus')){
-															newCard.bonusCost = rec.get('bonusCost') + newCard.saleOrder.get('totalCost');
-														};
-														Ext.dispatch({
-															controller: 'SaleOrder',
-															action: 'calculateTotalCost',
-															view: newCard
-														});
-													}
-												});
+												var customer = newCard.saleOrder.get('customer');
+												
+												if (customer) {
+													Ext.ModelMgr.getModel('Customer').load(customer, {
+														success: function(rec) {
+															newCard.customerRecord = rec;
+															if (newCard.saleOrder.get('isBonus')){
+																newCard.bonusCost = rec.get('bonusCost') + newCard.saleOrder.get('totalCost');
+															};
+															Ext.dispatch({
+																controller: 'SaleOrder',
+																action: 'calculateTotalCost',
+																view: newCard
+															});
+														}
+													});
+												} else {
+													console.log ('SaleOrder: empty customer');
+												}
 												
 												newCard.productStore.filter(newCard.productStore.volumeFilter);
 												oldCard.setLoading(false);

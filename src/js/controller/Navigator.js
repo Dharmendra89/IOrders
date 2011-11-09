@@ -443,10 +443,8 @@ Ext.regController('Navigator', {
 			
 			if (newCard.objectRecord.modelName) {
 				
+				store.filters.add({property: newCard.objectRecord.modelName.toLowerCase(), value: newCard.objectRecord.getId()});
 				store.load({
-					filters: [
-						{property: newCard.objectRecord.modelName.toLowerCase(), value: newCard.objectRecord.getId()}
-					],
 					limit: storeLimit,
 					callback: storeLoadCallback
 				});
@@ -632,7 +630,7 @@ Ext.regController('Navigator', {
 						;
 						
 						recordForDeps = list.modelForDeps && !hasIdColumn 
-								? Ext.getStore(list.modelForDeps).getById(record.get(list.modelForDeps.toLowerCase())) 
+								? Ext.getStore(list.modelForDeps).getById(record.get(list.modelForDeps[0].toLowerCase() + list.modelForDeps.substring(1))) 
 								: record;
 						
 						recordForDeps.modelName != 'MainMenu'

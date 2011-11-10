@@ -3,7 +3,7 @@ var EncashmentView = Ext.extend(AbstractView, {
 	/**
 	 * Config
 	 */
-	layout: {type: 'fit'},
+	layout: {type: 'vbox', pack: 'justify', align: 'stretch'},
 
 	/**
 	 * Inherited
@@ -21,6 +21,7 @@ var EncashmentView = Ext.extend(AbstractView, {
 		
 		this.debtList = Ext.create({
 			xtype: 'list',
+			flex: 6,
 			itemTpl: getItemTpl('Debt'),
 			emptyText: '<div class="emptyListText">' + debtTable.get('nameSet') + ' отсутствуют</div>',
 			store: store,
@@ -104,13 +105,13 @@ var EncashmentView = Ext.extend(AbstractView, {
 		
 		this.form = Ext.create({
 			xtype: 'form',
+			flex: 1,
 			items: [
-				this.customerSelect,
-				this.debtList
+				this.customerSelect
 			]
 		});
 		
-		this.items = [this.form];
+		this.items = [this.form, this.debtList];
 		
 		this.dockedItems[0].items.push({name: 'SaveEncash', text: 'Сохранить', scope: this});
 	}

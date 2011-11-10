@@ -271,7 +271,7 @@ Ext.regController('Main', {
 					true
 				);
 			}
-		})
+		});
 	},
 
 	onReloadButtonTap: function(options) {

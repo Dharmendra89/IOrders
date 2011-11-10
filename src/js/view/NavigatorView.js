@@ -90,7 +90,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 				disableSelection: true,
 				onItemDisclosure: true,
 				store: this.setViewStore
-			}, getItemTplMeta(this.tableRecord, table, this.objectRecord, listGroupedConfig.field)));
+			}, getItemTplMeta(this.tableRecord, {filterObject: this.objectRecord, groupField: listGroupedConfig.field})));
 			
 			this.extendable && this.dockedItems[0].items.push({xtype: 'spacer'}, {
 				ui: 'plain', iconMask: true, name: 'Add', iconCls: 'add', scope: this

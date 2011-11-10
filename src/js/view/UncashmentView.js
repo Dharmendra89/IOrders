@@ -20,7 +20,7 @@ var UncashmentView = Ext.extend(AbstractView, {
 		this.debtList = Ext.create({
 			xtype: 'list',
 			flex: 4,
-			itemTpl: getItemTplMeta('Encashment', '', Ext.ModelMgr.create({}, 'Uncashment'), 'debt').itemTpl,
+			itemTpl: getItemTplMeta('Encashment', {filterObject: Ext.ModelMgr.create({}, 'Uncashment'), groupField: 'debt'}).itemTpl,
 			emptyText: '<div class="emptyListText">' + debtTable.get('nameSet') + ' отсутствуют</div>',
 			store: this.encashStore
 		});	

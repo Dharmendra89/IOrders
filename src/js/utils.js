@@ -2,16 +2,29 @@ Ext.util.Format.defaultDateFormat = 'd/m/Y';
 Date.monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
 var getValueFromParent = function(field, value) {
+
 	var parentStore = Ext.getStore(field[0].toUpperCase() + field.substring(1));
 	var rec = parentStore.getById(value);
 	return rec ? rec.get('name') : '';
 };
 
-var getItemTplMeta = function(modelName, table, filterObject, groupField) {
+var getParentInfo = function(field, value) {
 
-	var tableStore = Ext.getStore('tables');
-	var tableRecord = tableStore.getById(modelName);
-	var columnStore = tableRecord.columns();
+	var parentStore = Ext.getStore(field[0].toUpperCase() + field.substring(1));
+	var rec = parentStore.getById(value);
+
+	return new Ext.XTemplate(getItemTplMeta(rec.modelName, {useDeps: false}).itemTpl).apply(rec.data);
+};
+
+var getItemTplMeta = function(modelName, config) {
+
+	var tableStore = Ext.getStore('tables'),
+		tableRecord = tableStore.getById(modelName),
+		columnStore = tableRecord.columns(),
+		filterObject = config.filterObject,
+		groupField = config.groupField,
+		useDeps = config.useDeps !== false ? true : false
+	;
 	
 	var modelForDeps = undefined;
 	
@@ -23,8 +36,11 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 				+			'<tpl if="!hasName && keyColumnsLength &gt; 0">'
 				+				'<p class="key">'
 				+					'<tpl for="keyColumns">'
-				+						'<tpl if="parent">'
+				+						'<tpl if="parent && !parentInfo">'
 				+							'<span>\\{[getValueFromParent("{name}", values.{name})]\\}<tpl if="!end"> : </tpl></span>&nbsp;'
+				+						'</tpl>'
+				+						'<tpl if="parent && parentInfo">'
+				+							'<div class="parent-info">\\{[getParentInfo("{name}", values.{name})]\\}</div>'
 				+						'</tpl>'
 				+						'<tpl if="!parent">'
 				+							'<span>\\{{name}\\}<tpl if="!end"> : </tpl></span>&nbsp;'
@@ -81,7 +97,7 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 		keyColumns: [],
 		otherColumnsLength: 0,
 		otherColumns: [],
-		buttons: buttons
+		buttons: useDeps ? buttons : ''
 	};
 	
 	var idColExist = columnStore.findExact('name', 'id') === -1 ? false : true;
@@ -110,6 +126,7 @@ var getItemTplMeta = function(modelName, table, filterObject, groupField) {
 				templateData.keyColumns.push({
 					parent: col.get('parent') ? true: false,
 					name: col.get('name'),
+					parentInfo: keyColumns.getCount() === 1,
 					end: keyColumns.indexOf(col) + 1 >= length
 				});
 			});

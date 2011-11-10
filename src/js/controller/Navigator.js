@@ -243,6 +243,7 @@ Ext.regController('Navigator', {
 				Ext.dispatch(Ext.apply(options, {
 					controller: 'Navigator',
 					action: 'onListSelectionChange',
+					view: view,
 					selections: [list.getRecord(item)]
 				}));
 			}, 150);
@@ -599,7 +600,7 @@ Ext.regController('Navigator', {
 	onListSelectionChange: function(options) {
 		
 		var list = options.list;
-		
+
 		var tableRecord = undefined,
 		    depStore = undefined,
 		    hasIdColumn = undefined,
@@ -664,6 +665,8 @@ Ext.regController('Navigator', {
 								
 								record.data.deps = data;
 								list.store && list.refreshNode(list.indexOf(record));
+								
+								list.doComponentLayout();
 							});
 						} else {
 							var operCount = new Ext.data.Operation ({
@@ -674,14 +677,14 @@ Ext.regController('Navigator', {
 								depRec.count = operation.result;
 								record.data.deps = data;
 								list.store && list.refreshNode(list.indexOf(record));
+								
+								list.doComponentLayout();
 							});
 						}
 						
 						data.push(depRec);
 					}
 				});
-				
-//				list.getSelectionModel().select(record, true, false);
 			}
 		});
 	}

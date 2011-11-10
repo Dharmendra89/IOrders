@@ -286,16 +286,16 @@ var createFilterField = function(objectRecord) {
 };
 
 function createDepsList(depsStore, tablesStore, view) {
-
-	view.depStore = new Ext.data.Store({model: 'Dep', data: getDepsData(depsStore, tablesStore, view)}); 
-
-	return view.depList = Ext.create({
-		xtype: 'list',
+	
+	return Ext.create({
+		xtype: 'deplist',
 		cls: 'x-deps-list',
-		scroll: false,
-		disableSelection: true,
-		itemTpl: getItemTpl('Dep'),
-		store: view.depStore
+		objectRecord: view.objectRecord,
+		modelForDeps: view.objectRecord.modelName,
+		depFilter: view.objectRecord.modelName != 'MainMenu'
+			? {property: view.objectRecord.modelName.toLowerCase(), value: view.objectRecord.getId()}
+			: undefined,
+		editing: view.editing
 	});
 };
 
@@ -318,56 +318,6 @@ var loadDepData = function(depRec, depTable, filters, aggregatesHandler) {
 		
 		aggregatesHandler.apply(this, [operation, aggResults, aggDepResult]);
 	});
-};
-
-var getDepsData = function(depsStore, tablesStore, view) {
-
-	var data = [];
-
-	depsStore.each(function(dep) {
-
-		var depTable = tablesStore.getById(dep.get('table_id'));
-
-		if(depTable.get('id') != 'SaleOrderPosition' || view.objectRecord.modelName == 'SaleOrder') {
-			var depRec = Ext.ModelMgr.create({
-				name: depTable.get('nameSet'),
-				table_id: depTable.get('id'),
-				extendable: depTable.get('extendable'),
-				contains: dep.get('contains'),
-				editing: view.editing
-			}, 'Dep');
-
-			var filters = [];
-			view.objectRecord.modelName != 'MainMenu' && filters.push({property: view.objectRecord.modelName.toLowerCase(), value: view.objectRecord.getId()});
-
-			loadDepData(depRec, depTable, filters, function(operation, aggResults, aggDepResult) {
-
-				operation.depRec.set('aggregates', aggDepResult);
-				var count = aggResults.cnt;
-
-				if(count > 0) {
-					operation.depRec.set('count', count);
-				} else if (!depRec.get('extendable')) {
-					view.depStore.remove(operation.depRec);
-				}
-			});
-
-			data.push(depRec);
-		}
-	});
-
-	return data;
-};
-
-var createTitlePanel = function(t) {
-
-	var htmlTpl = new Ext.XTemplate('<div>{title}</div>');
-	
-	return {
-			xtype: 'panel',
-			cls: 'x-title-panel',
-			html: htmlTpl.apply({title: t})
-	};
 };
 
 var createNavigatorView = function(rec, oldCard, isSetView, editing, config) {
@@ -488,4 +438,8 @@ var getOwnerViewConfig = function(view) {
         storeLimit: view.isSetView ? view.setViewStore.currentPage * view.setViewStore.pageSize : undefined,
 		storePage: view.isSetView && view.setViewStore.currentPage
     }};
-};;
+};
+
+var getColumnNameFromModelName = function(modelName) {
+	return modelName[0].toLowerCase() + modelName.substring(1);
+};

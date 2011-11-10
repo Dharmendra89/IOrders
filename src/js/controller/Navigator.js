@@ -35,7 +35,7 @@ Ext.regController('Navigator', {
 			btn.setText('Редактировать');
 			Ext.apply(btn, {name: 'Edit'});
 			
-			options.view.depStore.each(function(rec) {
+			options.view.depsList.store.each(function(rec) {
 				rec.set('editing', false);
 			});
 			
@@ -64,7 +64,7 @@ Ext.regController('Navigator', {
 		btn.setText('Сохранить');
 		Ext.apply(btn, {name: 'Save'});
 		
-		options.view.depStore.each(function(rec) {
+		options.view.depsList.store.each(function(rec) {
 			rec.set('editing', true);
 		});
 		
@@ -83,7 +83,7 @@ Ext.regController('Navigator', {
 		
 		var saveEditBtn = toolbar.getComponent('SaveEdit');
 		
-		options.view.depStore.each(function(rec) {
+		options.view.depsList.store.each(function(rec) {
 			rec.set('editing', false);
 		});
 		
@@ -98,7 +98,7 @@ Ext.regController('Navigator', {
 		options.view.editing = options.editing;
 
 		var toolbar = options.btn.up('toolbar');
-		toolbar.getComponent('Add')[options.editing ? 'hide' : 'show']();
+		toolbar.getComponent('Add') && toolbar.getComponent('Add')[options.editing ? 'hide' : 'show']();
 	},
 	
 	onAddButtonTap: function(options) {

@@ -21,7 +21,11 @@
         <file>src/js/view/OfferProductList.js</file>
         <file>src/js/view/SaleOrderView.js</file>
         <file>src/js/view/Viewport.js</file>
-        
+        <file>src/js/view/NewNavigatorView.js</file>
+
+		<file>src/js/ux/DepList.js</file>
+		<file>src/js/ux/ComponentCreator.js</file>
+
         <file>src/js/app.js</file>
         <file>src/js/utils.js</file>
         <file>src/js/Ext.ux.js</file>

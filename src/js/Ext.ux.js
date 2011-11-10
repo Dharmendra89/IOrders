@@ -188,7 +188,7 @@ Ext.override(Ext.form.Select, {
             }, 'after');
         }
         
-        this.onFieldLabelTap && this.labelEl.on('tap', function(evt, el, o) {
+        this.onFieldLabelTap && this.mon(this.labelEl,'tap', function(evt, el, o) {
         	Ext.dispatch({
         		action: 'onFieldLabelTap',
         		field: this
@@ -247,7 +247,7 @@ var FilterField = Ext.extend(PagingSelectField, {
 
 		FilterField.superclass.onRender.apply(this, arguments);
 		this.removeFilterBtn = this.labelEl.insertHtml('beforeBegin', '<div class="x-button remove-filter">X</div>', true);
-		this.removeFilterBtn.on('tap', function(evt, el, o) {
+		this.mon (this.removeFilterBtn, 'tap', function(evt, el, o) {
         	Ext.dispatch({
         		action: 'onSelectFieldValueChange',
         		field: this,

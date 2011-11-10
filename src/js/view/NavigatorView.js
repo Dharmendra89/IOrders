@@ -97,7 +97,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 			});
 		}
 		
-		this.on ('activate', function(){
+		this.mon (this, 'activate', function(){
 			var me = this.syncButton,
 				p = new Ext.data.SQLiteProxy({
 					engine: IOrders.dbeng,
@@ -126,7 +126,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 	
 	initComponent: function() {
 		NavigatorView.superclass.initComponent.apply(this, arguments);
-		this.on ('show', this.loadData);
+		this.mon (this,'show', this.loadData);
 	},
 	
 	loadData: function() {

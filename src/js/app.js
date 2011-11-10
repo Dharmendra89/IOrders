@@ -1,3 +1,11 @@
+var DEBUG = localStorage.getItem('DEBUG') || true; // set to false to disable debugging
+var oldConsoLog = console.log;
+console.log = function() {
+	if (DEBUG) {
+		oldConsoLog.apply(this, arguments);
+	}
+};
+
 applicationCache.addEventListener('updateready', function() {
 	location.replace (location.href);
 });

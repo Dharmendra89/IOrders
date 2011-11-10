@@ -579,6 +579,10 @@ Ext.regController('Navigator', {
 					{text: 'Localdata', name: 'XiNoServer', pressed: IOrders.xi.noServer},
 					{text: 'System', name: 'XiYesServer', pressed: !IOrders.xi.noServer},
 				]},
+				{ xtype: 'segmentedbutton', layout: {align: 'none'}, items: [
+ 					{text: 'Enable logging', name: 'EnableLog', pressed: DEBUG},
+ 					{text: 'Disable logging', name: 'DisableLog', pressed: !DEBUG},
+ 				]},
 				{ text: 'Сервер-логин', name: 'XiLogin'},
 				{ text: 'Сервер-логоф', name: 'XiLogoff'},
 				{ text: 'Перезапустить', name: 'Reload'}

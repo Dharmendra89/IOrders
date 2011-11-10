@@ -288,6 +288,16 @@ Ext.regController('Main', {
 		localStorage.setItem('realServer', true);
 	},
 
+	onEnableLogButtonTap: function(options) {
+		DEBUG = true;
+		localStorage.setItem('DEBUG', true);
+	},
+
+	onDisableLogButtonTap: function(options) {
+		DEBUG = false;
+		localStorage.setItem('DEBUG', false);
+	},
+
 	onListSelectionChange: function(options) {
 		
 		var navView = options.list.up('navigatorview');

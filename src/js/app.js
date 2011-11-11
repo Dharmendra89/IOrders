@@ -144,7 +144,11 @@ Ext.regApplication({
 							
 							Ext.Msg.confirm ('Не удалось обновить БД', 'Проверим метаданные?', function (b) {
 								if (b == 'yes')
-									Ext.dispatch ({controller: 'Main', action: 'onXiMetaButtonTap'});
+									IOrders.xi.reconnect ({
+										success: function() {
+											Ext.dispatch ({controller: 'Main', action: 'onXiMetaButtonTap'});
+										}
+									});
 							});
 						}
 				})};

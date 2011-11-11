@@ -72,10 +72,6 @@
 	-webkit-box-flex: 1;
 }
 
-.negative, .isBlockedPlong, .isOverdue {
-	color: red !important;
-}
-
 .x-list-item .hbox .aggregates {
 	padding-left: 10px;
 	-webkit-box-flex: 1;
@@ -117,9 +113,6 @@
     background: white;
 }
 
-.caution {
-	color: red !important;
-}
 
 .x-ipad    .x-navigator-form .x-list > .x-list-item,
 .x-desktop .x-navigator-form .x-list > .x-list-item {
@@ -179,4 +172,12 @@
 
 .x-list-item.editing {
 	background-color: #FFCCFF;
+}
+
+.negative, .isBlockedPlong, .isOverdue, .red, .caution{
+	color: red !important;
+}
+
+.blue {
+	color: blue !important;
 }

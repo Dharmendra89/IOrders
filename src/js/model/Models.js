@@ -44,10 +44,7 @@ function continueLoad (store,r,s){
 				page : store.currentPage,
 				start: (store.currentPage - 1) * this.pageSize,
 				limit: this.pageSize,
-				addRecords: true,
-				listeners: {
-					load: continueLoad
-				}
+				addRecords: true
 			});
 		}
 	}
@@ -93,7 +90,7 @@ var createStore = function(name, config) {
 			remoteFilter: true,
 			remoteSort: true,
 			clearOnPageLoad: false,
-			pageSize: 35,
+			pageSize: 20,
 			model: name,
 			proxy: {
 				type: 'sql',

@@ -19,7 +19,7 @@ var UncashmentView = Ext.extend(AbstractView, {
 		
 		this.debtList = Ext.create({
 			xtype: 'list',
-			flex: 4,
+			flex: 2,
 			itemTpl: getItemTplMeta('Encashment', {filterObject: Ext.ModelMgr.create({}, 'Uncashment'), groupField: 'debt'}).itemTpl,
 			emptyText: '<div class="emptyListText">' + debtTable.get('nameSet') + ' отсутствуют</div>',
 			store: this.encashStore
@@ -27,7 +27,7 @@ var UncashmentView = Ext.extend(AbstractView, {
 
 		this.form = Ext.create({
 			xtype: 'form',
-			flex: 1,
+			height: 200,
 			items: [
 				createFieldSet(Ext.getStore('tables').getById('Uncashment').columns(), 'Uncashment', this)
 			]

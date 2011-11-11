@@ -21,7 +21,7 @@ var EncashmentView = Ext.extend(AbstractView, {
 		
 		this.debtList = Ext.create({
 			xtype: 'list',
-			flex: 6,
+			flex: 2,
 			itemTpl: getItemTpl('Debt'),
 			emptyText: '<div class="emptyListText">' + debtTable.get('nameSet') + ' отсутствуют</div>',
 			store: store,
@@ -105,7 +105,7 @@ var EncashmentView = Ext.extend(AbstractView, {
 		
 		this.form = Ext.create({
 			xtype: 'form',
-			flex: 1,
+			height: 100,
 			items: [
 				this.customerSelect
 			]

@@ -238,15 +238,21 @@ Ext.regController('Navigator', {
 			}));
 			
 		} else {
-			
-			Ext.defer ( function() {
-				Ext.dispatch(Ext.apply(options, {
-					controller: 'Navigator',
-					action: 'onListSelectionChange',
-					view: view,
-					selections: [list.getRecord(item)]
-				}));
-			}, 150);
+
+			var table = Ext.getStore('tables').getById(tappedRec.modelName),
+				depStore = table.deps()
+			;
+
+			if(depStore.getCount() !== 1 || table.hasExtendableDep())
+				Ext.defer ( function() {
+
+					Ext.dispatch(Ext.apply(options, {
+						controller: 'Navigator',
+						action: 'onListSelectionChange',
+						view: view,
+						selections: [list.getRecord(item)]
+					}));
+				}, 150);
 		}
 		
 	},

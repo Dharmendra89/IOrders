@@ -126,13 +126,13 @@ var getItemTplMeta = function(modelName, config) {
 				templateData.keyColumns.push({
 					parent: col.get('parent') ? true: false,
 					name: col.get('name'),
-					parentInfo: keyColumns.getCount() === 1,
+					parentInfo: keyColumns.getCount() === 1 && !tableRecord.hasIdColumn(),
 					end: keyColumns.indexOf(col) + 1 >= length
 				});
 			});
 		}
 		
-		if(keyColumns.getCount() == 1) {
+		if(keyColumns.getCount() == 1 && !tableRecord.hasIdColumn()) {
 			modelForDeps = keyColumns.getAt(0).get('parent');
 		}
 	}

@@ -89,16 +89,36 @@ Ext.regController('Main', {
 
 		var list = options.list,
 	    	navView = list.up('navigatorview'),
-	    	listEl = list.getEl()
+	    	listEl = list.getEl(),
+	    	tappedRec = list.getRecord(options.item)
 		;
 	
 		if(navView) {
-			Ext.dispatch(Ext.apply(options, {
-				controller: 'Navigator',
-				action: 'createAndActivateView',
-				isSetView: listEl.hasCls('x-deps-list'),
-				editable: false
-			}));
+
+			var tableStore = Ext.getStore('tables'),
+				table = tableStore.getById(tappedRec.modelName),
+				depStore = table.deps()
+			;
+
+			if(depStore.getCount() === 1 && !table.hasExtendableDep()) {
+				Ext.dispatch(Ext.apply(options, {
+					controller: 'Navigator',
+					action: 'createAndActivateView',
+					record: list.modelForDeps && !Ext.getStore('tables').getById(tappedRec.modelName).hasIdColumn()
+							? Ext.getStore(list.modelForDeps).getById(tappedRec.get(list.modelForDeps.toLowerCase())) 
+							: tappedRec,
+					tableRecord: depStore.getAt(0).get('table_id'),
+					isSetView: true,
+					editing: false
+				}));
+			} else {
+				Ext.dispatch(Ext.apply(options, {
+					controller: 'Navigator',
+					action: 'createAndActivateView',
+					isSetView: listEl.hasCls('x-deps-list'),
+					editable: false
+				}));
+			}
 		}
 	},
 	

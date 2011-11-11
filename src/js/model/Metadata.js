@@ -53,6 +53,20 @@ Ext.regModel('Table', {
 	},
 	getAggregates: function() {
 		return this.columns().queryBy(function(rec) {return rec.get('aggregable') ? true : false;});
+	},
+	hasExtendableDep: function() {
+
+		var tableStore = Ext.getStore('tables'),
+			depStore = this.deps(),
+			result = false
+		;
+
+		depStore.each(function(dep) {
+
+			result = tableStore.getById(dep.get('table_id')).get('extendable');
+			return !result;
+		});
+		return result;
 	}
 });
 

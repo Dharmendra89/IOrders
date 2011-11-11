@@ -213,7 +213,7 @@ function getItemTpl (modelName) {
 		case 'OfferProduct': {
 			return '<div class="hbox">'
 			       +'<div class="info {cls} data ' + '<tpl if="stockLevel==1">caution</tpl>' + '">'
-				     + '<p>{name}</p>'
+				     + '<p>{name}<tpl if="extraLabel"><span class="blue"> [{extraLabel}]</span></tpl></p>'
 				     + '<small><span>Цена: {price} руб. </span>'
 					   + '<tpl if="rel &gt; 1"><span>Вложение: {rel}; </span></tpl>' + '<span>Кратность: {factor} </span>'
 					   + '<span>Стоимость: <span class="cost">{cost}</span></span>'

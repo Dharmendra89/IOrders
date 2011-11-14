@@ -567,7 +567,7 @@ Ext.regController('Navigator', {
 				var sb = IOrders.viewport.getActiveItem().syncButton,
 					cnt = parseInt(sb.getBadgeText());
 				
-				sb.setBadge(--cnt);
+				sb.setBadge( --cnt > 0 ? cnt : 0 );
 			}
 		});
 	},

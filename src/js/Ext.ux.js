@@ -277,41 +277,38 @@ Ext.override(Ext.form.Toggle, {
 });
 
 
-Ext.override(Ext.plugins.ListPagingPlugin, {
+Ext.plugins.ListPagingPlugin = Ext.extend(Ext.util.Observable, {
 	
-	onListUpdate: function() {
+	init: function(list) {
+		var me = this;
+		
+		me.list = list;
+		
+		me.mon(list, 'update', me.onListUpdate, me);
+		
+		me.mon(list, 'render', function() {
+				me.mon(list.getTargetEl().getScrollParent()
+				, 'scrollend', me.onScrollEnd, me);
+		},me)
+		
+	},
+
+    onListUpdate : function() {
 		
 		var store = this.list.store,
 			scroller = this.list.ownerCt.scroller;
-		
+			
 		if (scroller)
 			scroller.noMorePages = (!store.proxy.lastRowCount || store.proxy.lastRowCount < store.pageSize);
-		
-		
-		if( !this.rendered) {
-			this.render();
-		}
-		
+			
 		this.loading = false;
 		
-		if (scroller.noMorePages)
-			this.el.remove();
-		else {
-			this.el.dom && this.el.appendTo(this.list.getTargetEl());
-			this.el.hide();
-			if(!this.autoPaging) {
-				this.el.removeCls('x-loading');
-			}
-		}
-		
-		
-	},
+    },
 	
 	onScrollEnd: function(scroller, pos) {
 		if( !(scroller.noMorePages || this.loading) && scroller.containerBox.height >= Math.abs(pos.y + scroller.offsetBoundary.top)/2) {
 			this.loading = true;
 			this.list.store.nextPage();
-			this.el.show();
 		}
 	}
 	

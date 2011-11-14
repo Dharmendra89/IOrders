@@ -12,7 +12,10 @@ var NavigatorView = Ext.extend(AbstractView, {
 		
 		var tablesStore = Ext.getStore('tables'),
 		    table = tablesStore.getById(this.objectRecord.modelName),
-		    formItems = []
+		    formItems = [],
+			me = this,
+			statusesStore = Ext.getStore('statuses'),
+			formConfig = {}
 		;
 		
 		this.dockedItems[0].title = table.get('name');
@@ -28,6 +31,37 @@ var NavigatorView = Ext.extend(AbstractView, {
 		
 		if(this.isObjectView) {
 			
+			table.columns().each( function (c) {
+				if (String.right(c.get('name'), 3) == 'ing') {
+					var statusButtons = [];
+					
+					statusButtons =  [
+						{text: 'Черновик', name: 'draft', pressed: true },
+						{text: 'Обработка', name: 'processing'},
+						{text: 'Готово', name: 'done', disabled: true}
+					];
+					
+					if (me.objectRecord) Ext.each (statusButtons, function(b) {
+						b.pressed = (b.name == me.objectRecord.get(c.get('name')));
+						if (b.pressed) b.disabled = false;
+					});
+					
+					me.dockedItems.push({
+						xtype: 'toolbar',
+						dock: 'top',
+						items:[
+							{	xtype: 'segmentedbutton', items: statusButtons, name: c.get('name'), cls: 'statuses',
+								listeners: {
+									layout: function() {
+										this.setPressed (0);
+									}
+								}
+							}
+						]
+					})
+				}
+			});
+		
 			this.cls = 'objectView';
 			
 			formItems.push(createFieldSet(table.columns(), this.objectRecord.modelName, this));
@@ -112,11 +146,11 @@ var NavigatorView = Ext.extend(AbstractView, {
 		});
 		
 		this.items = [
-			this.form = new Ext.form.FormPanel({
+			this.form = new Ext.form.FormPanel(Ext.apply({
 				cls: 'x-navigator-form ' + this.cls,
 				scroll: true,
 				items: formItems
-			})
+			}, formConfig))
 		];
 	},
 	

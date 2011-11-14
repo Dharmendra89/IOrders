@@ -282,6 +282,8 @@ Ext.plugins.ListPagingPlugin = Ext.extend(Ext.util.Observable, {
 	init: function(list) {
 		var me = this;
 		
+		list.onBeforeLoad = Ext.util.Functions.createInterceptor(list.onBeforeLoad, me.onBeforeLoad, me);
+		
 		me.list = list;
 		
 		me.mon(list, 'update', me.onListUpdate, me);
@@ -292,6 +294,15 @@ Ext.plugins.ListPagingPlugin = Ext.extend(Ext.util.Observable, {
 		},me)
 		
 	},
+	
+	onBeforeLoad : function() {
+        if (this.loading && this.list.store.getCount() > 0) {
+            this.list.loadMask.disable();
+            return false;
+        }
+		
+		return true;
+    },
 
     onListUpdate : function() {
 		
@@ -354,6 +365,40 @@ Ext.override ( Ext.util.Observable, {
 
 });
 
+Ext.override (Ext.SegmentedButton, {
+	onTap : function(e, t) {
+        if (!this.disabled && (t = e.getTarget('.x-button'))) {
+            if (!t.disabled) this.setPressed(t.id, this.allowDepress ? undefined : true);
+        }
+    },
+	
+	afterLayout : function(layout) {
+        var me = this;
+        
+        Ext.SegmentedButton.superclass.afterLayout.call(me, layout);
+		
+        if (!me.initialized) {
+            me.items.each(function(item, index) {
+                item.disabled || me.setPressed(item, !!item.pressed, true); 
+            });
+            if (me.allowMultiple) {
+                me.pressedButtons = me.getPressedButtons();
+            }
+            me.initialized = true;
+        }
+    }
+});
+
+String.right = function (str, n){
+    if (n <= 0)
+       return "";
+    else if (n > String(str).length)
+       return str;
+    else {
+       var iLen = String(str).length;
+       return String(str).substring(iLen, iLen - n);
+    }
+}
 
 Ext.MessageBox.YESNO[1].text = 'Да';
 Ext.MessageBox.YESNO[0].text = 'Нет';

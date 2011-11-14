@@ -1,19 +1,35 @@
+Ext.regController('Status', {
+	statusChange: function (options) {
+		var view = options.btn.up('navigatorview');
+		console.log (options.btn.name);
+	}
+});
+
 Ext.regController('Main', {
 	
 	onButtonTap: function(options) {
 		
 		var view = options.view,
-			redirectTo = this;
+			redirectTo = this,
+			action
+			;
 		
 		if ( view.isXType('navigatorview') || view.isXType('encashmentview') || view.isXType('uncashmentview')) {
 			redirectTo = 'Navigator';
 		} else if ( view.isXType('saleorderview') ) {
 			redirectTo = 'SaleOrder';
-		};
+		} else {
+			var sb = view.up('segmentedbutton');
+			if (sb && sb.name) {
+				redirectTo = 'Status';
+				action = 'statusChange';
+			}
+		}
+		;
 		
 		Ext.dispatch(Ext.apply(options, {
 			controller: redirectTo,
-			action: options.action.replace('Button', options.btn.name + 'Button')
+			action: action || options.action.replace('Button', options.btn.name + 'Button')
 		}));
 		
 	},

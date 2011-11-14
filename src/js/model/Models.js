@@ -1,32 +1,46 @@
 var createModels = function(tablesStore) {
 
 	tablesStore.each(function(table) {
-		var fields = [], validations = [], tableName = table.getId();
+		
+		var fields = [], validations = [], tableName = table.getId(),
+			config = {
+				fields: fields,
+				modelName: tableName,
+				proxy: {
+					type: 'sql',
+					engine: IOrders.dbeng
+				},
+				validations: validations
+			}
+		;
 		
 		table.columns().each(function(column) {
-			fields.push({
+			
+			var fieldConfig = {
 				name: column.get('name'),
 				type: column.get('type'),
 				useNull: true,
 				defaultValue: null
-			});
+			};
 			
 			column.get('name') == 'date'
 				&& validations.push({
 					type: 'length', field: column.get('name'), min: 1, message: 'обязательное для заполнения'
 				})
 			;
+			
+			column.get('name') == 'deviceCts'
+				config.init = function () {
+					if (!this.data['deviceCts'])
+						this.data['deviceCts'] = new Date().format('Y-m-d H:i:s');
+				}
+			;
+			
+			fields.push(fieldConfig);
+			
 		});
 		
-		Ext.regModel(tableName, {
-			fields: fields,
-			modelName: tableName,
-			proxy: {
-				type: 'sql',
-				engine: IOrders.dbeng
-			},
-			validations: validations
-		});
+		Ext.regModel(tableName, config);
 		
 		regStore(tableName);
 	});

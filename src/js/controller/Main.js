@@ -244,7 +244,7 @@ Ext.regController('Main', {
 				
 				var metadata = this.xml2obj(m).metadata;
 				
-				if ( metadata.version != IOrders.dbeng.db.version )
+				if ( metadata.version > IOrders.dbeng.db.version )
 					Ext.Msg.confirm(
 						'Требуется пересоздать БД',
 						'Текущая версия: '+IOrders.dbeng.db.version + '<br/>' +

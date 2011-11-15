@@ -210,15 +210,16 @@ Ext.regController('Navigator', {
 			
 		} else if (options.isSetView) {
 			
-			Ext.dispatch(Ext.apply(options, {
+			tappedRec.get('count') && Ext.dispatch(Ext.apply(options, {
 				action: 'createAndActivateView'
 			}));
 			
 		} else if (isTableList && target.up('.dep')) {
 			
 			var dep = target.up('.dep');
+			var count = dep.down('.count').dom.innerText;
 			
-			Ext.dispatch(Ext.apply(options, {
+			count && Ext.dispatch(Ext.apply(options, {
 				controller: 'Navigator',
 				action: 'createAndActivateView',
 				record: list.modelForDeps && !Ext.getStore('tables').getById(tappedRec.modelName).hasIdColumn()

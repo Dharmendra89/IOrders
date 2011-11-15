@@ -4,7 +4,7 @@ Ext.regController('Navigator', {
 		var view = options.view;
 		var newCard = Ext.create(view.ownerViewConfig);
 		if (newCard.isSetView) {
-			Ext.dispatch(Ext.apply(options, {action: 'loadSetViewStore', newCard: newCard, anim: IOrders.viewport.anims.back, lastSelectedRecord: view.objectRecord}));
+			Ext.dispatch(Ext.apply(options, {action: 'loadSetViewStore', newCard: newCard, anim: IOrders.viewport.anims.back}));
 		} else {
 			IOrders.viewport.setActiveItem(newCard, IOrders.viewport.anims.back);
 		}
@@ -146,7 +146,9 @@ Ext.regController('Navigator', {
 		    isTableList = list.getEl().hasCls('x-table-list') ? true : false,
 		    tappedRec = list.getRecord(item)
 		;
-		
+
+		view.lastSelectedRecord = tappedRec;
+
 		if (target.hasCls('x-button')) {
 			
 			if (target.hasCls('extend')) {
@@ -446,9 +448,10 @@ Ext.regController('Navigator', {
 			storePage && (store.currentPage = storePage);
 			oldCard.setLoading(false);
 			IOrders.viewport.setActiveItem(newCard, options.anim);
-			options.lastSelectedRecord && Ext.dispatch(Ext.apply(options, {
+			newCard.lastSelectedRecord && Ext.dispatch(Ext.apply(options, {
 				action: 'scrollToLastSelectedRecord',
-				view: newCard
+				view: newCard,
+				lastSelectedRecord: newCard.lastSelectedRecord
 			}));
 		};
 		

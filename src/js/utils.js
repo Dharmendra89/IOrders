@@ -401,7 +401,8 @@ var createNavigatorView = function(rec, oldCard, isSetView, editing, config) {
 				tableRecord: oldCard.tableRecord,
 				ownerViewConfig: oldCard.ownerViewConfig,
 				storeLimit: oldCard.isSetView ? oldCard.setViewStore.currentPage * oldCard.setViewStore.pageSize : undefined,
-				storePage: oldCard.isSetView && oldCard.setViewStore.currentPage
+				storePage: oldCard.isSetView && oldCard.setViewStore.currentPage,
+				lastSelectedRecord: oldCard.lastSelectedRecord
 			}
 		}, config);
 		
@@ -488,21 +489,22 @@ var getSortersConfig = function(model, storeConfig) {
 var getNextWorkDay = function() {
 	var today = new Date();
 	var todayWeekDay = today.getDay();
-	
+
 	var addDays = todayWeekDay >= 5 && todayWeekDay <= 6 ? 7 + 1 - todayWeekDay : 1;
 	return today.add(Date.DAY, addDays);
 };
 
 var getOwnerViewConfig = function(view) {
 	return {ownerViewConfig: {
-        xtype: view.xtype,
-        extendable: view.extendable,
-        isObjectView: view.isObjectView,
-        isSetView: view.isSetView,
-        objectRecord: view.objectRecord,
-        tableRecord: view.tableRecord,
-        ownerViewConfig: view.ownerViewConfig,
-        storeLimit: view.isSetView ? view.setViewStore.currentPage * view.setViewStore.pageSize : undefined,
-		storePage: view.isSetView && view.setViewStore.currentPage
-    }};
-};;
+		xtype: view.xtype,
+		extendable: view.extendable,
+		isObjectView: view.isObjectView,
+		isSetView: view.isSetView,
+		objectRecord: view.objectRecord,
+		tableRecord: view.tableRecord,
+		ownerViewConfig: view.ownerViewConfig,
+		storeLimit: view.isSetView ? view.setViewStore.currentPage * view.setViewStore.pageSize : undefined,
+		storePage: view.isSetView && view.setViewStore.currentPage,
+		lastSelectedRecord: view.lastSelectedRecord
+	}};
+};

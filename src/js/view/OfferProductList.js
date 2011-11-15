@@ -26,32 +26,32 @@ var offerProductList = {
 			var rec = list.getRecord (item);
 			
 			if (rec) {
-				var msg = new Ext.MessageBox(),
-					volume = rec.get('volume')
-				;
-				
-				Ext.get(item).addCls ('editing');
-				
-				msg.prompt ('Изменить количество?', rec.get ('name'),
-					function(button, value){
-						
-						Ext.get(item).removeCls ('editing');
-						
-						if (button == 'ok'){
+				var volume = rec.get('volume');
+
+				Ext.get(item).addCls('editing');
+				var keyboard = Ext.create({
+					xtype: 'numkeyboard',
+					value: volume,
+					onConfirmButtonTap: function(button, value) {
+
+						Ext.get(item).removeCls('editing');
+
+						if (button == 'ok') {
 							Ext.dispatch ({
 								controller: 'SaleOrder',
 								action: 'setVolume',
 								list: list,
 								rec: rec,
-								volume: value,
+								volume: value || 0,
 								item: item
 							});
 						};
-						
-						Ext.defer (function() {Ext.destroy (msg);}, 1000);
-					},
-					msg, false, volume, { type: 'number', autofocus: true }
-				);
+						this.hide();
+
+						Ext.defer(function() {this.destroy();}, 1000, this);
+					}
+				});
+				keyboard.show();
 			}
 		}
 		

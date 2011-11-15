@@ -32,7 +32,9 @@ var NavigatorView = Ext.extend(AbstractView, {
 		if(this.isObjectView) {
 			
 			table.columns().each( function (c) {
-				if (String.right(c.get('name'), 3) == 'ing') {
+				var cName = c.get('name');
+				
+				if (String.right(cName, 3) == 'ing') {
 					var statusButtons = [];
 					
 					statusButtons =  [
@@ -42,15 +44,18 @@ var NavigatorView = Ext.extend(AbstractView, {
 					];
 					
 					if (me.objectRecord) Ext.each (statusButtons, function(b) {
-						b.pressed = (b.name == me.objectRecord.get(c.get('name')));
+						b.pressed = (b.name == me.objectRecord.get(cName));
 						if (b.pressed) b.disabled = false;
 					});
 					
-					me.dockedItems.push({
+					formItems.push({
 						xtype: 'toolbar',
 						dock: 'top',
+						ui: 'none',
 						items:[
-							{	xtype: 'segmentedbutton', items: statusButtons, name: c.get('name'), cls: 'statuses',
+							{	xtype: 'segmentedbutton',
+								items: statusButtons,
+								name: cName, cls: 'statuses',
 								listeners: {
 									layout: function() {
 										this.setPressed (0);

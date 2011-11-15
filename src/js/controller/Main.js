@@ -1,7 +1,17 @@
 Ext.regController('Status', {
 	statusChange: function (options) {
-		var view = options.btn.up('navigatorview');
-		console.log (options.btn.name);
+		var btn = options.btn,
+			bar = btn.up('segmentedbutton'),
+			view = bar.up('navigatorview'),
+			rec = view.form.getRecord(),
+			field = view.form.getFields(bar.name)
+		;
+		console.log( btn.name );
+		field.setValue( btn.name )
+		rec.set( bar.name, btn.name );
+		rec.save();
+		
+		//Ext.dispatch ({ controller: 'Navigator', action: 'onSaveButtonTap', view: view });
 	}
 });
 
@@ -11,7 +21,7 @@ Ext.regController('Main', {
 		
 		var view = options.view,
 			redirectTo = this,
-			action
+			action = options.action.replace('Button', options.btn.name + 'Button')
 			;
 		
 		if ( view.isXType('navigatorview') || view.isXType('encashmentview') || view.isXType('uncashmentview')) {
@@ -23,13 +33,14 @@ Ext.regController('Main', {
 			if (sb && sb.name) {
 				redirectTo = 'Status';
 				action = 'statusChange';
+				if (options.btn.wasPressed) action = false;
 			}
 		}
 		;
 		
-		Ext.dispatch(Ext.apply(options, {
+		if (action) Ext.dispatch(Ext.apply(options, {
 			controller: redirectTo,
-			action: action || options.action.replace('Button', options.btn.name + 'Button')
+			action: action
 		}));
 		
 	},

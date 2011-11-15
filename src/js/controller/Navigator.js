@@ -22,28 +22,33 @@ Ext.regController('Navigator', {
 		
 		var view = options.view,
 		    form = view.form,
-		    formRec = form.getRecord()
+		    rec = form.getRecord()
 		;
 		
-		form.updateRecord(formRec);
+		form.updateRecord(rec);
 		
-		var errors = formRec.validate();
+		var errors = rec.validate();
 		
 		if(errors.isValid()) {
 			
 			var btn = options.btn;
-			btn.setText('Редактировать');
-			Ext.apply(btn, {name: 'Edit'});
 			
-			options.view.depStore.each(function(rec) {
-				rec.set('editing', false);
-			});
+			if (btn) {
+				btn.setText('Редактировать');
+				
+				Ext.apply(btn, {name: 'Edit'});
+				
+				options.view.depStore.each(function(rec) {
+					rec.set('editing', false);
+				});
+				
+				var toolbar = btn.up('toolbar');
+				
+				toolbar.getComponent('Cancel').hide();
+				Ext.dispatch(Ext.apply(options, {action: 'setEditing', editing: false}));
+			}
 			
-			var toolbar = btn.up('toolbar');
-			toolbar.getComponent('Cancel').hide();
-			
-			formRec.save();
-			Ext.dispatch(Ext.apply(options, {action: 'setEditing', editing: false}));
+			rec.save();
 			
 		} else {
 			

@@ -371,7 +371,7 @@ Ext.override (Ext.SegmentedButton, {
         if (!this.disabled && (t = e.getTarget('.x-button'))) {
 			var b = Ext.getCmp(t.id);
 			b.wasPressed = b.pressed;
-            if (!t.disabled ) this.setPressed(t.id, this.allowDepress ? undefined : true);
+            if (!b.disabled ) this.setPressed(t.id, this.allowDepress ? undefined : true);
         }
     },
 	

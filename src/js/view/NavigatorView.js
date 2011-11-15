@@ -35,16 +35,24 @@ var NavigatorView = Ext.extend(AbstractView, {
 				var cName = c.get('name');
 				
 				if (String.right(cName, 3) == 'ing') {
-					var statusButtons = [];
+					var statusButtons = [],
+						state = me.objectRecord.get(cName) || 'draft'
+					;
 					
 					statusButtons =  [
-						{text: 'Черновик', name: 'draft', pressed: true },
-						{text: 'Обработка', name: 'processing'},
-						{text: 'Готово', name: 'done', disabled: true}
+						{text: 'Черновик', name: 'draft', enable: function(s) { return s == 'incomplete' }},
+						{text: 'На сервер', name: 'incomplete', enable: function(s) { return s == 'draft' } },
+						{text: 'На склад', name: 'processing'},
+						{text: 'Готово', name: 'done'}
 					];
 					
 					if (me.objectRecord) Ext.each (statusButtons, function(b) {
-						b.pressed = (b.name == me.objectRecord.get(cName));
+						b.pressed = (b.name == state);
+						
+						b.disabled = true;
+						
+						if (b.enable) b.disabled = !b.enable(state);
+						
 						if (b.pressed) b.disabled = false;
 					});
 					
@@ -55,12 +63,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 						items:[
 							{	xtype: 'segmentedbutton',
 								items: statusButtons,
-								name: cName, cls: 'statuses',
-								listeners: {
-									layout: function() {
-										this.setPressed (0);
-									}
-								}
+								name: cName, cls: 'statuses'
 							}
 						]
 					})

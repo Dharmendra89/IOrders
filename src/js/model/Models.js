@@ -16,20 +16,24 @@ var createModels = function(tablesStore) {
 		
 		table.columns().each(function(column) {
 			
-			var fieldConfig = {
-				name: column.get('name'),
+			var cName = column.get('name'),
+				fieldConfig = {
+				name: cName,
 				type: column.get('type'),
 				useNull: true,
 				defaultValue: null
 			};
 			
-			column.get('name') == 'date'
+			if (String.right(cName, 3) == 'ing')
+				fieldConfig.defaultValue = 'draft';
+			
+			cName == 'date'
 				&& validations.push({
-					type: 'length', field: column.get('name'), min: 1, message: 'обязательное для заполнения'
+					type: 'length', field: cName, min: 1, message: 'обязательное для заполнения'
 				})
 			;
 			
-			column.get('name') == 'deviceCts'
+			cName == 'deviceCts'
 				config.init = function () {
 					if (!this.data['deviceCts'])
 						this.data['deviceCts'] = new Date().format('Y-m-d H:i:s');

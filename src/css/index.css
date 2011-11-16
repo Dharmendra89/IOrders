@@ -89,6 +89,11 @@
 	-webkit-box-flex: 1;
 }
 
+.hbox .buttons {
+	-webkit-box-flex: 1;
+	padding-right: 30px;
+}
+
 .x-list-item .hbox .aggregates {
 	padding-left: 10px;
 	-webkit-box-flex: 1;

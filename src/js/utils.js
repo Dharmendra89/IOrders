@@ -29,7 +29,7 @@ var getItemTplMeta = function(modelName, config) {
 	var modelForDeps = undefined;
 	
 	var templateString = '<div class="hbox">'
-				+		'<div>'
+				+		'<div class="data">'
 				+			'<tpl if="hasName">'
 				+				'<p class="name">\\{name\\}</p>'
 				+			'</tpl>'
@@ -71,9 +71,9 @@ var getItemTplMeta = function(modelName, config) {
 				+						'</tpl>'
 				+					'</small>'
 				+				'</tpl>'
-				+				'{buttons}'
 				+			'</div>'
-				+		'</div>'	
+				+		'</div>'
+				+		'{buttons}'
 				+	'</div>';
 	
 	var buttons = 

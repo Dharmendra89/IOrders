@@ -314,22 +314,24 @@ Ext.regController('Navigator', {
 
 				var view = options.view,
 					encashStore = view.encashStore,
+					debtStore = view.debtStore,
 					formRecord = view.form.getRecord()
 				;
-				
+
 				formRecord.save({callback: function(createdUncash) {
 					
 					encashStore.each(function(rec) {
 						rec.set('uncashment', createdUncash.getId());
 					});
-					
+
 					encashStore.sync();
-					
+					debtStore.sync();
+
 					Ext.dispatch(Ext.apply(options, {action: 'goBack'}));
-					
+
 				}});
 			} else {
-				
+
 				Ext.Msg.alert('Ошибка', 'Для того чтобы сдать выручку, требуется сперва передать данные об инкассациях на сервер');
 				IOrders.viewport.getActiveItem().setLoading(false);
 			}
@@ -362,7 +364,24 @@ Ext.regController('Navigator', {
 				? oldRemSumm - (newEncashSumm - oldEncashSumm) 
 				: 0);
 	},
-	
+
+	updateEncashment: function(options) {
+
+		var rec = options.rec,
+			encashSumm = options.encashSumm,
+			view = options.view,
+			encashDebtRec = view.debtStore.getById(rec.get('debt')),
+			oldEncashSumm = rec.get('summ'),
+			debtRemSumm = encashDebtRec.get('remSumm')
+		;
+
+		encashSumm = oldEncashSumm + debtRemSumm >= encashSumm ? encashSumm : oldEncashSumm + debtRemSumm;
+		rec.set('summ', encashSumm);
+
+		encashDebtRec.set('encashSumm', encashSumm);
+		encashDebtRec.set('remSumm', oldEncashSumm + debtRemSumm - encashSumm);
+	},
+
 	createUncashmentView: function(options) {
 		
 		var oldView = IOrders.viewport.getActiveItem();

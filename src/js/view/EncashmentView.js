@@ -51,32 +51,31 @@ var EncashmentView = Ext.extend(AbstractView, {
 					var rec = list.getRecord (item);
 					
 					if (rec) {
-						var msg = new Ext.MessageBox(),
-							encashSumm = rec.get('encashSumm')
-						;
+						var	encashSumm = rec.get('encashSumm');
 						
 						Ext.get(item).addCls('editing');
-						
-						msg.prompt('Изменить сумму?', rec.get ('name'),
-							function(button, value) {
-								
-								Ext.get(item).removeCls ('editing');
-								
-								if (button == 'ok'){
-									Ext.dispatch ({
+
+						this.keyboard = this.keyboard || Ext.create({
+							xtype: 'numkeyboard',
+							view: this.up('encashmentview'),
+							onConfirmButtonTap: function(button, value) {
+
+								Ext.get(item).removeCls('editing');
+
+								if (button == 'ok') {
+									Ext.dispatch (Ext.apply({
 										controller: 'Navigator',
 										action: 'setEncashSumm',
-										list: list,
-										rec: rec,
-										encashSumm: value,
-										item: item
-									});
+										encashSumm: value || 0,
+										view: this.view
+									}, this.options));
 								};
-								
-								Ext.defer (function() {Ext.destroy(msg);}, 1000);
-							},
-							msg, false, encashSumm, { type: 'number', autofocus: true }
-						);
+								this.hide();
+							}
+						});this.keyboard.show();
+
+						this.keyboard.setValue(encashSumm);
+						this.keyboard.options = {item: item, list: list, rec: rec};
 					}
 				}
 				

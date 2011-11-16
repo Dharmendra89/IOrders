@@ -29,7 +29,7 @@ var offerProductList = {
 				var volume = rec.get('volume');
 
 				Ext.get(item).addCls('editing');
-				var keyboard = Ext.create({
+				this.keyboard = this.keyboard || Ext.create({
 					xtype: 'numkeyboard',
 					value: volume,
 					onConfirmButtonTap: function(button, value) {
@@ -37,21 +37,19 @@ var offerProductList = {
 						Ext.get(item).removeCls('editing');
 
 						if (button == 'ok') {
-							Ext.dispatch ({
+							Ext.dispatch (Ext.apply({
 								controller: 'SaleOrder',
 								action: 'setVolume',
-								list: list,
-								rec: rec,
 								volume: value || 0,
-								item: item
-							});
+							}, this.options));
 						};
 						this.hide();
-
-						Ext.defer(function() {this.destroy();}, 1000, this);
 					}
 				});
-				keyboard.show();
+				this.keyboard.show();
+				
+				this.keyboard.setValue(volume);
+				this.keyboard.options = {item: item, list: list, rec: rec};
 			}
 		}
 		

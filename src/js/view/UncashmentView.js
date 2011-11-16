@@ -33,31 +33,29 @@ var UncashmentView = Ext.extend(AbstractView, {
 					if (rec) {
 						var encashSumm = rec.get('summ');
 
-						var keyboard = Ext.create({
+						this.keyboard = this.keyboard || Ext.create({
 							xtype: 'numkeyboard',
-							value: encashSumm,
 							view: this.up('uncashmentview'),
 							onConfirmButtonTap: function(button, value) {
 
 								Ext.get(item).removeCls('editing');
 
 								if (button == 'ok') {
-									Ext.dispatch ({
+									Ext.dispatch (Ext.apply({
 										controller: 'Navigator',
 										action: 'updateEncashment',
-										list: list,
-										rec: rec,
 										encashSumm: value || 0,
-										item: item,
 										view: this.view
-									});
+									}, this.options));
 								};
 								this.hide();
-
-								Ext.defer(function() {this.destroy();}, 1000, this);
 							}
 						});
-						keyboard.show();
+						this.keyboard.show();
+
+						this.keyboard.setValue(encashSumm);
+						this.keyboard.options = {item: item, list: list, rec: rec};
+
 						Ext.get(item).addCls('editing');
 					}
 				}

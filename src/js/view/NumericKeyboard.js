@@ -1,8 +1,6 @@
 var NumericKeyboard = Ext.extend(Ext.Sheet, {
 
 	cls: 'x-keyboard',
-	width: 500,
-	
 	renderSelectors: {
 		field: 'input.keyboard-value'
 	},
@@ -36,6 +34,30 @@ var NumericKeyboard = Ext.extend(Ext.Sheet, {
 		'</div>'
 	],
 
+	setPNU : function(update) {
+
+        if (this.rendered && update) {
+            var x, y;
+            if (!this.ownerCt) {
+                x = (Ext.Element.getViewportWidth()) - (this.getWidth() + 50);
+                y = (Ext.Element.getViewportHeight()) - (this.getHeight() + 50);
+            }
+            else {
+                x = (this.ownerCt.getTargetEl().getWidth()) - (this.getWidth() + 50);
+                y = (this.ownerCt.getTargetEl().getHeight()) - (this.getHeight() + 50);
+            }
+            this.setPosition(x, y);
+        }
+
+        return this;
+    },
+
+    onShow: function() {
+
+    	NumericKeyboard.superclass.onShow.apply(this, arguments);
+    	this.setPNU(true);
+    },
+
 	onRender: function() {
 
 		Ext.apply(this.renderData, {value: this.value});
@@ -52,7 +74,7 @@ var NumericKeyboard = Ext.extend(Ext.Sheet, {
 
 		switch(oper) {
 			case 'C' : {
-				this.field.set({value: value.substring(0, value.length - 1)});
+				this.setValue(value.substring(0, value.length - 1));
 				break;
 			}
 			case '?' : {
@@ -67,10 +89,15 @@ var NumericKeyboard = Ext.extend(Ext.Sheet, {
 				break;
 			}
 			default: {
-				this.field.set({value: value + oper});
+				this.setValue(value + oper);
 				this.value = value + oper;
 			}
 		}
+	},
+
+	setValue: function(value) {
+
+		this.field.set({value: value || ''});
 	}
 });
 Ext.reg('numkeyboard', NumericKeyboard);

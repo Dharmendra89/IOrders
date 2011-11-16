@@ -21,6 +21,7 @@
         <file>src/js/view/OfferProductList.js</file>
         <file>src/js/view/SaleOrderView.js</file>
         <file>src/js/view/Viewport.js</file>
+        <file>src/js/view/NumericKeyboard.js</file>
         
         <file>src/js/app.js</file>
         <file>src/js/utils.js</file>

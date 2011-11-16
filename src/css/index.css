@@ -21,6 +21,23 @@
 	-webkit-box-shadow: none;
 }
 
+.keyboard-button-line {
+	display: -webkit-box;
+	-webkit-box-orient: horizontal;
+	-webkit-box-align: stretch;
+}
+
+.keyboard-button-line .x-button {
+	-webkit-box-flex: 1;
+	text-align: center;
+	margin: 2px;
+}
+
+.keyboard-value {
+	width: 170px;
+	margin: 5px 0;
+}
+
 .x-list-item .hbox {
 	display: -webkit-box;
 	-webkit-box-orient: horizontal;

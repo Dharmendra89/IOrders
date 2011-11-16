@@ -4,7 +4,7 @@ Ext.regController('Navigator', {
 		var view = options.view;
 		var newCard = Ext.create(view.ownerViewConfig);
 		if (newCard.isSetView) {
-			Ext.dispatch(Ext.apply(options, {action: 'loadSetViewStore', newCard: newCard, anim: IOrders.viewport.anims.back, lastSelectedRecord: view.objectRecord}));
+			Ext.dispatch(Ext.apply(options, {action: 'loadSetViewStore', newCard: newCard, anim: IOrders.viewport.anims.back}));
 		} else {
 			IOrders.viewport.setActiveItem(newCard, IOrders.viewport.anims.back);
 		}
@@ -146,7 +146,9 @@ Ext.regController('Navigator', {
 		    isTableList = list.getEl().hasCls('x-table-list') ? true : false,
 		    tappedRec = list.getRecord(item)
 		;
-		
+
+		view.lastSelectedRecord = tappedRec;
+
 		if (target.hasCls('x-button')) {
 			
 			if (target.hasCls('extend')) {
@@ -210,15 +212,16 @@ Ext.regController('Navigator', {
 			
 		} else if (options.isSetView) {
 			
-			Ext.dispatch(Ext.apply(options, {
+			tappedRec.get('count') && Ext.dispatch(Ext.apply(options, {
 				action: 'createAndActivateView'
 			}));
 			
 		} else if (isTableList && target.up('.dep')) {
 			
 			var dep = target.up('.dep');
+			var count = dep.down('.count').dom.innerText;
 			
-			Ext.dispatch(Ext.apply(options, {
+			count && Ext.dispatch(Ext.apply(options, {
 				controller: 'Navigator',
 				action: 'createAndActivateView',
 				record: list.modelForDeps && !Ext.getStore('tables').getById(tappedRec.modelName).hasIdColumn()
@@ -311,22 +314,24 @@ Ext.regController('Navigator', {
 
 				var view = options.view,
 					encashStore = view.encashStore,
+					debtStore = view.debtStore,
 					formRecord = view.form.getRecord()
 				;
-				
+
 				formRecord.save({callback: function(createdUncash) {
 					
 					encashStore.each(function(rec) {
 						rec.set('uncashment', createdUncash.getId());
 					});
-					
+
 					encashStore.sync();
-					
+					debtStore.sync();
+
 					Ext.dispatch(Ext.apply(options, {action: 'goBack'}));
-					
+
 				}});
 			} else {
-				
+
 				Ext.Msg.alert('Ошибка', 'Для того чтобы сдать выручку, требуется сперва передать данные об инкассациях на сервер');
 				IOrders.viewport.getActiveItem().setLoading(false);
 			}
@@ -359,7 +364,24 @@ Ext.regController('Navigator', {
 				? oldRemSumm - (newEncashSumm - oldEncashSumm) 
 				: 0);
 	},
-	
+
+	updateEncashment: function(options) {
+
+		var rec = options.rec,
+			encashSumm = options.encashSumm,
+			view = options.view,
+			encashDebtRec = view.debtStore.getById(rec.get('debt')),
+			oldEncashSumm = rec.get('summ'),
+			debtRemSumm = encashDebtRec.get('remSumm')
+		;
+
+		encashSumm = oldEncashSumm + debtRemSumm >= encashSumm ? encashSumm : oldEncashSumm + debtRemSumm;
+		rec.set('summ', encashSumm);
+
+		encashDebtRec.set('encashSumm', encashSumm);
+		encashDebtRec.set('remSumm', oldEncashSumm + debtRemSumm - encashSumm);
+	},
+
 	createUncashmentView: function(options) {
 		
 		var oldView = IOrders.viewport.getActiveItem();
@@ -445,9 +467,10 @@ Ext.regController('Navigator', {
 			storePage && (store.currentPage = storePage);
 			oldCard.setLoading(false);
 			IOrders.viewport.setActiveItem(newCard, options.anim);
-			options.lastSelectedRecord && Ext.dispatch(Ext.apply(options, {
+			newCard.lastSelectedRecord && Ext.dispatch(Ext.apply(options, {
 				action: 'scrollToLastSelectedRecord',
-				view: newCard
+				view: newCard,
+				lastSelectedRecord: newCard.lastSelectedRecord
 			}));
 		};
 		

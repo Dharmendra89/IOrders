@@ -26,16 +26,20 @@ var offerProductList = {
 			var rec = list.getRecord (item);
 			
 			if (rec) {
-				var volume = rec.get('volume');
-
-				Ext.get(item).addCls('editing');
+				var volume = rec.get('volume'),
+					iel = Ext.get(item);
+					
+				iel.addCls('editing');
+				
 				this.keyboard = this.keyboard || Ext.create({
 					xtype: 'numkeyboard',
 					value: volume,
 					onConfirmButtonTap: function(button, value) {
-
-						Ext.get(item).removeCls('editing');
-
+						
+						this.sourceEl.removeCls('editing');
+						
+						this.sourceEl = false;
+						
 						if (button == 'ok') {
 							Ext.dispatch (Ext.apply({
 								controller: 'SaleOrder',
@@ -47,6 +51,7 @@ var offerProductList = {
 					}
 				});
 				this.keyboard.show();
+				this.keyboard.sourceEl = iel;
 				
 				this.keyboard.setValue(volume);
 				this.keyboard.options = {item: item, list: list, rec: rec};

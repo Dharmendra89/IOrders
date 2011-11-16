@@ -84,7 +84,7 @@ var NumericKeyboard = Ext.extend(Ext.Sheet, {
 				break;
 			}
 			case 'Отмена' : {
-				this.onConfirmButtonTap('cancel', parseInt(value));
+				this.onConfirmButtonTap('cancel', value);
 				break;
 			}
 			default: {

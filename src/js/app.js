@@ -57,7 +57,7 @@ Ext.regApplication({
 				},
 				fail: function() {
 					localStorage.clear();
-					location.replace (location.href);
+					location.reload();
 				}
 			}
 		});

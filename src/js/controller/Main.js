@@ -283,7 +283,7 @@ Ext.regController('Main', {
 						function (yn) {
 							if (yn == 'yes'){
 								localStorage.setItem('metadata', Ext.encode(metadata));				
-								location.replace(location.href);
+								location.reload();
 							}
 						}
 					);
@@ -303,7 +303,7 @@ Ext.regController('Main', {
 				localStorage.clear();
 				Ext.defer (function() {
 					Ext.Msg.alert('Все стерто', 'Необходим перезапуск', function() {
-						location.replace(location.href);
+						location.reload();
 					});
 				}, 500);
 			}

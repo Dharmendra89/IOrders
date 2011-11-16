@@ -40,7 +40,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 					;
 					
 					statusButtons =  [
-						{text: 'Черновик', name: 'draft', enable: function(s) { return s == 'incomplete' }},
+						{text: 'Черновик', name: 'draft', enable: function(s) { return s == 'upload' }},
 						{text: 'На сервер', name: 'upload', enable: function(s) { return s == 'draft' } },
 						{text: 'На склад', name: 'processing'},
 						{text: 'Готово', name: 'done'}

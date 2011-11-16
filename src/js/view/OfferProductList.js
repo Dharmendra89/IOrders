@@ -40,7 +40,7 @@ var offerProductList = {
 							Ext.dispatch (Ext.apply({
 								controller: 'SaleOrder',
 								action: 'setVolume',
-								volume: value || 0,
+								volume: value || 0
 							}, this.options));
 						};
 						this.hide();

@@ -1,6 +1,8 @@
 var NumericKeyboard = Ext.extend(Ext.Sheet, {
 
 	cls: 'x-keyboard',
+	//enter: 'down',
+	
 	renderSelectors: {
 		field: 'input.keyboard-value'
 	},
@@ -23,9 +25,9 @@ var NumericKeyboard = Ext.extend(Ext.Sheet, {
 				'<div class="x-button">9</div>',
 			'</div>',
 			'<div class="keyboard-button-line">',
-				'<div class="x-button">C</div>',
-				'<div class="x-button">?</div>',
 				'<div class="x-button">0</div>',
+				'<div class="x-button">.</div>',
+				'<div class="x-button">C</div>',
 			'</div>',
 			'<div class="keyboard-button-line">',
 				'<div class="x-button">OK</div>',
@@ -34,28 +36,25 @@ var NumericKeyboard = Ext.extend(Ext.Sheet, {
 		'</div>'
 	],
 
-	setPNU : function(update) {
-
+	setPos : function(update) {
         if (this.rendered && update) {
-            var x, y;
-            if (!this.ownerCt) {
-                x = (Ext.Element.getViewportWidth()) - (this.getWidth() + 50);
-                y = (Ext.Element.getViewportHeight()) - (this.getHeight() + 50);
-            }
-            else {
-                x = (this.ownerCt.getTargetEl().getWidth()) - (this.getWidth() + 50);
-                y = (this.ownerCt.getTargetEl().getHeight()) - (this.getHeight() + 50);
-            }
+            var x, y,
+				el = !this.ownerCt ? Ext.Element : this.ownerCt
+			;
+			
+            x = el.getViewportWidth() - this.getWidth() - 10;
+            y = el.getViewportHeight() - this.getHeight() - 150;
+			
             this.setPosition(x, y);
         }
-
+		
         return this;
     },
 
     onShow: function() {
 
     	NumericKeyboard.superclass.onShow.apply(this, arguments);
-    	this.setPNU(true);
+    	this.setPos(true);
     },
 
 	onRender: function() {
@@ -81,7 +80,7 @@ var NumericKeyboard = Ext.extend(Ext.Sheet, {
 				break;
 			}
 			case 'OK' : {
-				this.onConfirmButtonTap('ok', parseInt(value));
+				this.onConfirmButtonTap('ok', value);
 				break;
 			}
 			case 'Отмена' : {

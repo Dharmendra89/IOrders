@@ -31,6 +31,11 @@
 	-webkit-box-flex: 1;
 	text-align: center;
 	margin: 2px;
+	padding: 12px 0;
+}
+
+.x-sheet.x-keyboard .x-button {
+	display: block;
 }
 
 .keyboard-value {
@@ -90,8 +95,7 @@
 }
 
 .hbox .buttons {
-	-webkit-box-flex: 1;
-	padding-right: 30px;
+	padding-right: 10px;
 }
 
 .x-list-item .hbox .aggregates {

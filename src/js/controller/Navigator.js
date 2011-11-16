@@ -356,7 +356,7 @@ Ext.regController('Navigator', {
 		var rec = options.rec,
 			oldRemSumm = rec.get('remSumm'),
 			oldEncashSumm = parseFloat(rec.get('encashSumm') ? rec.get('encashSumm') : '0'),
-			newEncashSumm = oldRemSumm + oldEncashSumm - options.encashSumm >= 0 ? options.encashSumm : oldRemSumm + oldEncashSumm
+			newEncashSumm = oldRemSumm + oldEncashSumm - parseFloat(options.encashSumm) >= 0 ? options.encashSumm : oldRemSumm + oldEncashSumm
 		;
 		
 		rec.set('encashSumm', newEncashSumm);
@@ -602,7 +602,8 @@ Ext.regController('Navigator', {
 	
 	onPrefsButtonTap: function(options) {
 		
-		new Ext.ActionSheet ({
+		var p = IOrders.prefSheet || (IOrders.prefSheet = Ext.create({
+			xtype: 'actionsheet',
 			enter: 'right',
 			items: [
 				{ text: 'Закрыть панель настроек', name: 'PrefsClose'},
@@ -623,13 +624,10 @@ Ext.regController('Navigator', {
 				{ text: 'Включить Heartbeat', name: 'HeartbeatOn'},
 				{ text: 'Обновить кэш', name: 'CacheRefresh'},
 				{ text: 'Перезапустить', name: 'Reload'}
-			],
-			listeners: {
-				hide: function() {
-					this.destroy();
-				}
-			}
-		}).show();
+			]
+		}));
+		
+		p.show();
 		
 	},
 

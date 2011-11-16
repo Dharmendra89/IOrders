@@ -72,8 +72,9 @@ var EncashmentView = Ext.extend(AbstractView, {
 								};
 								this.hide();
 							}
-						});this.keyboard.show();
-
+						});
+						
+						this.keyboard.show();
 						this.keyboard.setValue(encashSumm);
 						this.keyboard.options = {item: item, list: list, rec: rec};
 					}

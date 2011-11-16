@@ -282,9 +282,9 @@ Ext.plugins.ListPagingPlugin = Ext.extend(Ext.util.Observable, {
 	init: function(list) {
 		var me = this;
 		
-		list.onBeforeLoad = Ext.util.Functions.createInterceptor(list.onBeforeLoad, me.onBeforeLoad, me);
-		
 		me.list = list;
+		
+		list.onBeforeLoad = Ext.util.Functions.createInterceptor(list.onBeforeLoad, me.onBeforeLoad, me);
 		
 		me.mon(list, 'update', me.onListUpdate, me);
 		
@@ -317,7 +317,9 @@ Ext.plugins.ListPagingPlugin = Ext.extend(Ext.util.Observable, {
     },
 	
 	onScrollEnd: function(scroller, pos) {
-		if( !(scroller.noMorePages || this.loading) && scroller.containerBox.height >= Math.abs(pos.y + scroller.offsetBoundary.top)/2) {
+		if( !(scroller.noMorePages || this.loading) &&
+			//scroller.containerBox.height >= Math.abs(pos.y + scroller.offsetBoundary.top)/2
+			pos.y >= Math.abs(scroller.offsetBoundary.top) ) {
 			this.loading = true;
 			this.list.store.nextPage();
 		}

@@ -32,6 +32,23 @@ Ext.regController('Main', {
 		options.btn.up('form').submit();
 	},
 	
+	onCacheRefreshButtonTap: function(options) {
+		var queue = function() {
+			Ext.Msg.alert('refresh end');
+		};
+		
+		Ext.StoreMgr.each( function(store) {
+			if (store.autoLoad) {
+				queue = Ext.util.Functions.createDelegate(store.load, store, [{
+					callback: queue
+				}]);
+				store.currentPage = 1;
+			}
+		});
+		
+		queue();
+	},
+	
 	onListItemTap: function(options) {
 		
 		var list = options.list,
@@ -227,6 +244,10 @@ Ext.regController('Main', {
 		IOrders.xi.download ( IOrders.dbeng );
 	},
 
+	onXiDownloadButtonTap: function(options) {
+		IOrders.xi.download ( IOrders.dbeng );
+	},
+
 	onXiLoginButtonTap: function(options) {
 		IOrders.xi.login ( this.prefsCb );
 	},
@@ -304,9 +325,27 @@ Ext.regController('Main', {
 	},
 
 	onReloadButtonTap: function(options) {
-		location.replace(location.href);
+		location.reload();
 	},
 
+	onHeartbeatOnButtonTap: function(options) {
+		if (!window.xmlhttp) {
+		  window.xmlhttp = new XMLHttpRequest();
+		  window.xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4) {
+			   if(xmlhttp.status == 200) {
+				var url = location.href+'?username='+IOrders.xi.username+'&ts='+new Date().format('YmdHis');
+				window.xmlhttp.open ('GET', url, true);
+				window.nextHeartBeat = setTimeout (function() { window.xmlhttp.send(null) }, 10000);
+			   }
+			}
+		  };
+		}
+		var url = location.href+'?username='+IOrders.xi.username+'&ts='+new Date().format('YmdHis');
+		window.xmlhttp.open ('GET', url, true);
+		window.xmlhttp.send(null) ;
+	},
+	
 	onXiNoServerButtonTap: function(options) {
 		IOrders.xi.noServer = true;
 		localStorage.setItem('realServer', false);

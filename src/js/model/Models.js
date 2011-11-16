@@ -57,7 +57,6 @@ function continueLoad (store,r,s){
 		
 		if (r.length >= store.pageSize) {
 			store.currentPage++;
-			
 			store.load({
 				page : store.currentPage,
 				start: (store.currentPage - 1) * this.pageSize,

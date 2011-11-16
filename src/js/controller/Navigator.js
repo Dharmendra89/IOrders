@@ -597,6 +597,8 @@ Ext.regController('Navigator', {
  				]},
 				{ text: 'Сервер-логин', name: 'XiLogin'},
 				{ text: 'Сервер-логоф', name: 'XiLogoff'},
+				{ text: 'Включить Heartbeat', name: 'HeartbeatOn'},
+				{ text: 'Обновить кэш', name: 'CacheRefresh'},
 				{ text: 'Перезапустить', name: 'Reload'}
 			],
 			listeners: {

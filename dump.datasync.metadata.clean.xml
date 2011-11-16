@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.671" expect-megabytes="15">
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.677" expect-megabytes="15">
   <tables set-of="table">
     <table id="Uncashment" name="Сданная выручка" nameSet="Сданная выручка" level="0" extendable="true">
       <columns set-of="column">
@@ -59,6 +59,7 @@
         <column id="Productcategory" name="category" type="int" parent="Category" label="Категория товаров"/>
         <column id="Productid" name="id" type="int" key="true"/>
         <column id="Productname" name="name" type="string" label="Наименование"/>
+        <column id="ProductextraLabel" name="extraLabel" type="string" label="Подсказка"/>
         <column id="ProductfirstName" name="firstName" type="string" label="Преднаименование"/>
         <column id="Productfactor" name="factor" type="int" label="Кратность"/>
         <column id="Productrel" name="rel" type="int" label="Шт. в упаковке"/>
@@ -140,10 +141,12 @@
       <columns set-of="column">
         <column id="Customerpartner" name="partner" type="int" parent="Partner" label="Партнер"/>
         <column id="Customerid" name="id" type="int" key="true"/>
-        <column id="Customername" name="name" type="string" label="Название"/>
-        <column id="Customeraddress" name="address" type="string" label="Адрес"/>
         <column id="Customerwarehouse" name="warehouse" parent="Warehouse" label="Склад"/>
         <column id="CustomerisBlockedPlong" name="isBlockedPlong" type="boolean" label="Заблокирован по просрочке"/>
+        <column id="Customername" name="name" type="string" label="Название"/>
+        <column id="Customeraddress" name="address" type="string" label="Адрес"/>
+        <column id="Customerphone" name="phone" type="string" label="Телефон"/>
+        <column id="Customerinfo" name="info" type="string" label="Комментарии"/>
         <column id="CustomerbonusCost" name="bonusCost" type="float" label="Товарный бонус"/>
         <column id="CustomerbonusForecast" name="bonusForecast" type="float" label="Прогноз бонуса"/>
       </columns>
@@ -158,6 +161,8 @@
         <column id="SaleOrdercustomer" name="customer" type="int" parent="Customer" label="Клиент" editable="true"/>
         <column id="SaleOrderid" name="id" type="string" key="true"/>
         <column id="SaleOrderxid" name="xid"/>
+        <column id="SaleOrderdeviceCts" name="deviceCts" type="datetime" editable="new-only"/>
+        <column id="SaleOrderprocessing" name="processing" type="string" label="Статус" editable="status"/>
         <column id="SaleOrderisBonus" name="isBonus" type="boolean" label="Бонусный" editable="true"/>
         <column id="SaleOrderincassNeeded" name="incassNeeded" type="boolean" label="Требуется инкассация" editable="true"/>
         <column id="SaleOrderisWhite" name="isWhite" type="boolean" label="Нужен счет-фактура" editable="true"/>
@@ -172,7 +177,7 @@
       <columns set-of="column">
         <column id="SaleOrderPositionsaleorder" name="saleorder" type="string" parent="SaleOrder" label="Заказ" editable="true" key="true"/>
         <column id="SaleOrderPositionvolume" name="volume" type="int" label="Кол-во" editable="true"/>
-        <column id="SaleOrderPositioncost" name="cost" type="float" label="Стоимость"/>
+        <column id="SaleOrderPositioncost" name="cost" type="float" label="Стоимость" editable="compute"/>
         <column id="SaleOrderPositionxid" name="xid"/>
         <column id="SaleOrderPositionproduct" name="product" parent="Product" label="Товар" editable="new-only" key="true"/>
       </columns>
@@ -218,10 +223,11 @@
         <column id="Offername" name="name" type="string" label="Наименование"/>
         <column id="Offerrel" name="rel" type="int" label="Шт. в упаковке"/>
         <column id="Offerfactor" name="factor" type="int" label="Кратность"/>
+        <column id="OfferextraLabel" name="extraLabel" type="string" label="Подсказка"/>
         <column id="OfferstockLevel" name="stockLevel" type="int" label="Уровень запаса"/>
         <column id="Offercost" name="cost" type="float" label="Стоимость"/>
       </columns>
-      <sql>select c.id as customer, g.category, p.price, g.id as Product, g.firstName, g.name, g.rel, g.factor, s.stockLevel, 0 as isActive, null as cost from Customer c join PartnerPriceList ppl on ppl.partner = c.partner join Price p on p.pricelistSet = ppl.pricelistSet and p.priceList = ppl.priceList join Product g on g.id = p.product join Stock s on s.product = g.id and s.warehouse = c.warehouse and s.stockLevel &gt; 0</sql>
+      <sql>select c.id as customer, g.category, p.price, g.id as Product, g.firstName, g.name, g.rel, g.factor, g.extraLabel, s.stockLevel, 0 as isActive, null as cost from Customer c join PartnerPriceList ppl on ppl.partner = c.partner join Price p on p.pricelistSet = ppl.pricelistSet and p.priceList = ppl.priceList join Product g on g.id = p.product join Stock s on s.product = g.id and s.warehouse = c.warehouse and s.stockLevel &gt; 0</sql>
     </view>
     <view id="OfferCategory">
       <columns set-of="column">
@@ -237,7 +243,6 @@
     <view id="Cash" nameSet="Выручка">
       <columns set-of="column">
         <column id="Cashcustomer" name="customer" label="Клиент"/>
-        <column id="CashCustomer_name" name="Customer_name" type="string" label="Название"/>
         <column id="Cashsumm" name="summ" type="float" label="Получено"/>
         <column id="CashisWhite" name="isWhite" type="boolean" label="Выдан чек"/>
         <column id="Cashdatetime" name="datetime" type="datetime" label="Дата"/>

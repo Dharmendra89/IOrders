@@ -505,4 +505,4 @@ var getOwnerViewConfig = function(view) {
         storeLimit: view.isSetView ? view.setViewStore.currentPage * view.setViewStore.pageSize : undefined,
 		storePage: view.isSetView && view.setViewStore.currentPage
     }};
-};;
+};

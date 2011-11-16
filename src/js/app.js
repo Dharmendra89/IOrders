@@ -1,5 +1,6 @@
 var DEBUG = localStorage.getItem('DEBUG') || true; // set to false to disable debugging
 var oldConsoLog = console.log;
+
 console.log = function() {
 	if (DEBUG) {
 		oldConsoLog.apply(this, arguments);
@@ -7,7 +8,7 @@ console.log = function() {
 };
 
 applicationCache.addEventListener('updateready', function() {
-	location.replace (location.href);
+	location.reload();
 });
 
 
@@ -40,8 +41,6 @@ Ext.regApplication({
 		var tStore = Ext.getStore('tables'),
 			metadata = Ext.decode(localStorage.getItem('metadata'))
 		;
-		
-		//document.body.addEventListener('touchstart', function(e) {e.preventDefault();}, false);
 		
 		this.viewport = Ext.create({xtype: 'viewport'});
 		

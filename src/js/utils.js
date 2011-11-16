@@ -65,7 +65,7 @@ var getItemTplMeta = function(modelName, config) {
 				+							'</tpl>'
 				+							'<tpl if="!parent">'
 				+								'<tpl if="label || name">'
-				+									'<div class="{cls}">{label}<tpl if="name">: {name}</tpl></div>'
+				+									'<div class="{cls}"><tpl if="name">{name}</tpl></div>'
 				+								'</tpl>'
 				+							'</tpl>'
 				+						'</tpl>'
@@ -162,12 +162,14 @@ var getItemTplMeta = function(modelName, config) {
 				}
 				case 'date' : {
 					label = col.get('label');
-					name = '{[Ext.util.Format.date(values.' + colName + ')]}';
+					name = '<tpl if="' + colName + '">' + label + ' : {[Ext.util.Format.date(values.' + colName + ')]}</tpl>';
 					break;
 				}
 				default : {
 					label = col.get('label');
-					name = col.get('parent') ? colName : '{' + colName + '}';
+					name = col.get('parent')
+						? colName
+						: '<tpl if="' + colName + '">' + label + ' : {' + colName + '}</tpl>';
 					break;
 				}
 			}

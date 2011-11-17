@@ -87,7 +87,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 				);
 			}
 			
-			table.get('extendable') && this.dockedItems[0].items.push({
+			table.get('extendable') && !table.get('belongs') && this.dockedItems[0].items.push({
 				itemId: 'Add', ui: 'plain', iconMask: true, name: 'Add', iconCls: 'add', scope: this, hidden: this.editing
 			});
 			
@@ -134,7 +134,9 @@ var NavigatorView = Ext.extend(AbstractView, {
 				store: this.setViewStore
 			}, getItemTplMeta(this.tableRecord, {filterObject: this.objectRecord, groupField: listGroupedConfig.field})));
 			
-			this.extendable && this.dockedItems[0].items.push({xtype: 'spacer'}, {
+			var table = tablesStore.getById(this.tableRecord);
+			
+			table.get('extendable') && !table.get('belongs') && this.dockedItems[0].items.push({xtype: 'spacer'}, {
 				ui: 'plain', iconMask: true, name: 'Add', iconCls: 'add', scope: this
 			});
 		}

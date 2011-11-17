@@ -385,6 +385,21 @@ Ext.regController('Navigator', {
 
 		encashDebtRec.set('encashSumm', encashSumm);
 		encashDebtRec.set('remSumm', oldEncashSumm + debtRemSumm - encashSumm);
+
+		var totalSumm = 0;
+		var totalSummWhite = 0;
+		
+		view.encashStore.each(function(rec) {
+			var encashSumm = rec.get('summ');
+			totalSumm += encashSumm;
+			rec.get('isWhite') && (totalSummWhite += encashSumm);
+		});
+
+		var formRecord = view.form.getRecord();
+		formRecord.set('totalSumm', totalSumm);
+		formRecord.set('totalSummWhite', totalSummWhite);
+		
+		view.form.loadRecord(formRecord);
 	},
 
 	createUncashmentView: function(options) {

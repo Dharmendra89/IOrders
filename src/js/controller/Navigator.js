@@ -131,9 +131,14 @@ Ext.regController('Navigator', {
 		}
 		
 		var oldCard = IOrders.viewport.getActiveItem();
-		var newCard = Ext.create(createNavigatorView(rec, oldCard, false, true));
+		if(rec.modelName === 'Uncashment') {
+
+			Ext.dispatch(Ext.apply(options, {action: 'createUncashmentView'}));
+		} else {
+			IOrders.viewport.setActiveItem(Ext.create(createNavigatorView(rec, oldCard, false, true)));
+		}
 		
-		IOrders.viewport.setActiveItem(newCard);
+		
 	},
 	
 	onListItemTap: function(options) {

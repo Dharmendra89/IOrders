@@ -14,7 +14,7 @@ var NumericKeyboard = Ext.extend(Ext.Panel, {
 	},
 	renderTpl: [
 		'<div class="{baseCls}-body<tpl if="bodyCls"> {bodyCls}</tpl>"<tpl if="bodyStyle"> style="{bodyStyle}"</tpl>>',
-			'<div class="x-form-field-container"><input class="keyboard-value" value="{value}"><div class="x-field-mask"></div></div>',
+			'<div class="x-form-field-container"><input class="keyboard-value" value="{value}"/><div class="x-field-mask"></div></div>',
 			'<div class="keyboard-button-line">',
 				'<div class="x-button">1</div>',
 				'<div class="x-button">2</div>',

@@ -38,7 +38,10 @@ var UncashmentView = Ext.extend(AbstractView, {
 							view: this.up('uncashmentview'),
 							onConfirmButtonTap: function(button, value) {
 								
-								this.iel.removeCls('editing');
+								if (this.iel) {
+									this.iel.removeCls('editing');
+									this.iel = false;
+								}
 								
 								if (button == 'ok') {
 									Ext.dispatch (Ext.apply({

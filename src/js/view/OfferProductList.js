@@ -36,9 +36,10 @@ var offerProductList = {
 					value: volume,
 					onConfirmButtonTap: function(button, value) {
 						
-						this.sourceEl.removeCls('editing');
-						
-						this.sourceEl = false;
+						if (this.iel) {
+							this.iel.removeCls('editing');
+							this.iel = false;
+						}
 						
 						if (button == 'ok') {
 							Ext.dispatch (Ext.apply({
@@ -52,7 +53,7 @@ var offerProductList = {
 				});
 				
 				this.keyboard.showBy(iel.down('.volume'), false, false);
-				this.keyboard.sourceEl = iel;
+				this.keyboard.iel = iel;
 				this.keyboard.setValue(volume);
 				this.keyboard.options = {item: item, list: list, rec: rec};
 			}

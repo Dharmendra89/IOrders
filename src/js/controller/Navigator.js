@@ -605,11 +605,12 @@ Ext.regController('Navigator', {
 				Ext.Msg.alert('Загрузка завершена', 'Передано записей: '+s.getCount(),
 				  function() { if (!IOrders.xi.isBusy()) options.btn.enable();}
 				);
-			},
-			failure: function(s,e) {
-				var sb = IOrders.viewport.getActiveItem().syncButton;
-				sb.setBadge('!');
 			},*/
+			failure: function(s,e) {
+				Ext.Msg.alert('Загрузка не удалась', e,
+					function() {options.btn.enable();}
+                );
+			},
 			recordSuccess: function(s) {
 				var sb = IOrders.viewport.getActiveItem().syncButton,
 					cnt = sb.cnt > 0 ? --sb.cnt : sb.cnt = null;

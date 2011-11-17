@@ -24,7 +24,8 @@ var NavigatorView = Ext.extend(AbstractView, {
 			iconMask: true,
 			name: 'Sync',
 			iconCls: 'action',
-			scope: this
+			scope: this,
+			disabled: IOrders.xi.isBusy()
 		});
 		
 		this.dockedItems[0].items.push (this.syncButton);
@@ -41,9 +42,9 @@ var NavigatorView = Ext.extend(AbstractView, {
 					
 					statusButtons =  [
 						{text: 'Черновик', name: 'draft', enable: function(s) { return s == 'upload' }},
-						{text: 'На сервер', name: 'upload', enable: function(s) { return s == 'draft' } },
-						{text: 'На склад', name: 'processing'},
-						{text: 'Готово', name: 'done'}
+						{text: 'В работу', name: 'upload', enable: function(s) { return s == 'draft' } },
+						{text: 'Проверка', name: 'processing'},
+						{text: 'На складе', name: 'done'}
 					];
 					
 					if (me.objectRecord) Ext.each (statusButtons, function(b) {

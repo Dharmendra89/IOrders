@@ -47,12 +47,12 @@ var offerProductList = {
 								volume: value || 0
 							}, this.options));
 						};
-						this.hide();
+						//this.hide();
 					}
 				});
-				this.keyboard.show();
-				this.keyboard.sourceEl = iel;
 				
+				this.keyboard.showBy(iel.down('.volume'), false, false);
+				this.keyboard.sourceEl = iel;
 				this.keyboard.setValue(volume);
 				this.keyboard.options = {item: item, list: list, rec: rec};
 			}

@@ -1,8 +1,14 @@
-var NumericKeyboard = Ext.extend(Ext.Sheet, {
+var NumericKeyboard = Ext.extend(Ext.Panel, {
 
 	cls: 'x-keyboard',
+	floating: true,
 	//enter: 'down',
 	
+	listeners: {
+		hide: function() {
+			this.onConfirmButtonTap('cancel', this.field.getValue() || '');
+		}
+	},
 	renderSelectors: {
 		field: 'input.keyboard-value'
 	},
@@ -54,7 +60,7 @@ var NumericKeyboard = Ext.extend(Ext.Sheet, {
     onShow: function() {
 
     	NumericKeyboard.superclass.onShow.apply(this, arguments);
-    	this.setPos(true);
+    	//this.setPos(true);
     },
 
 	onRender: function() {
@@ -81,10 +87,12 @@ var NumericKeyboard = Ext.extend(Ext.Sheet, {
 			}
 			case 'OK' : {
 				this.onConfirmButtonTap('ok', value);
+				this.hide();
 				break;
 			}
 			case 'Отмена' : {
 				this.onConfirmButtonTap('cancel', value);
+				this.hide();
 				break;
 			}
 			default: {

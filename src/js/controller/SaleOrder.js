@@ -321,7 +321,7 @@ Ext.regController('SaleOrder', {
 		
 		var view = options.view,
 			btb = view.getDockedComponent('bottomToolbar'),
-			tc = view.saleOrder.get('totalCost')
+			tc = view.saleOrder.get('totalCost') || 0
 		;
 		
 		btb.getComponent('ShowCustomer').setText( btb.titleTpl.apply ({

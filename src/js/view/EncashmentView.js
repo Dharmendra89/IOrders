@@ -53,15 +53,14 @@ var EncashmentView = Ext.extend(AbstractView, {
 					if (rec) {
 						var	encashSumm = rec.get('encashSumm');
 						
-						Ext.get(item).addCls('editing');
-
 						this.keyboard = this.keyboard || Ext.create({
 							xtype: 'numkeyboard',
 							view: this.up('encashmentview'),
 							onConfirmButtonTap: function(button, value) {
-
-								Ext.get(item).removeCls('editing');
-
+								
+								this.iel.removeCls('editing');
+								this.iel = false;
+								
 								if (button == 'ok') {
 									Ext.dispatch (Ext.apply({
 										controller: 'Navigator',
@@ -70,11 +69,18 @@ var EncashmentView = Ext.extend(AbstractView, {
 										view: this.view
 									}, this.options));
 								};
-								this.hide();
+								//this.hide();
 							}
 						});
 						
-						this.keyboard.show();
+						this.keyboard.iel = Ext.get(item);
+						
+						this.keyboard.iel.addCls('editing');
+						
+						var e = this.keyboard.iel.down ('.encashSumm');
+						
+						if (!e) e = this.keyboard.iel;
+						this.keyboard.showBy(e, false, false);
 						this.keyboard.setValue(encashSumm);
 						this.keyboard.options = {item: item, list: list, rec: rec};
 					}

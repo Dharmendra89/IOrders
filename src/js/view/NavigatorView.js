@@ -20,13 +20,44 @@ var NavigatorView = Ext.extend(AbstractView, {
 		
 		this.dockedItems[0].title = table.get('name');
 		
-		this.syncButton = new Ext.Button ({
+		var sb = this.syncButton = new Ext.Button ({
 			iconMask: true,
 			name: 'Sync',
 			iconCls: 'action',
 			scope: this,
-			disabled: IOrders.xi.isBusy()
+			checkDisabled: function(){
+				this.setDisabled(IOrders.xi.isBusy())
+			}
 		});
+		
+		sb.checkDisabled();
+		
+		sb.mon (
+			IOrders.xi.connection,
+			'beforerequest',
+			sb.setDisabled,
+			sb
+		);
+		sb.mon (
+			IOrders.xi.connection,
+			'requestcomplete',
+			function () {
+				sb.checkDisabled();
+				if (sb.getBadgeText() == '!!')
+					sb.setBadge(sb.cnt);
+			},
+			sb, {delay: 1000}
+		);
+		sb.mon (
+			IOrders.xi.connection,
+			'requestexception',
+			function () {
+				sb.checkDisabled();
+				sb.setBadge('!!');
+			},
+			sb, {delay: 1000}
+		);
+		
 		
 		this.dockedItems[0].items.push (this.syncButton);
 		
@@ -152,7 +183,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 			
 			p.count(new Ext.data.Operation(), function(o) {
 				if (o.wasSuccessful())
-					me.setBadge(o.result);
+					me.setBadge(me.cnt = o.result);
 			});
 		});
 		

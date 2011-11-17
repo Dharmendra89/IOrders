@@ -601,53 +601,83 @@ Ext.regController('Navigator', {
 		
 		IOrders.xi.upload ({
 			engine: IOrders.dbeng,
-			success: function(s) {
+			/*success: function(s) {
 				Ext.Msg.alert('Загрузка завершена', 'Передано записей: '+s.getCount(),
-							  function() {options.btn.enable();}
+				  function() { if (!IOrders.xi.isBusy()) options.btn.enable();}
 				);
 			},
 			failure: function(s,e) {
-				Ext.Msg.alert('Загрузка не удалась', e,
-							  function() {options.btn.enable();}
-				);
-			},
+				var sb = IOrders.viewport.getActiveItem().syncButton;
+				sb.setBadge('!');
+			},*/
 			recordSuccess: function(s) {
 				var sb = IOrders.viewport.getActiveItem().syncButton,
-					cnt = parseInt(sb.getBadgeText());
+					cnt = sb.cnt > 0 ? --sb.cnt : sb.cnt = null;
 				
-				sb.setBadge( --cnt > 0 ? cnt : 0 );
+				sb.setBadge(cnt);
 			}
 		});
 	},
 	
 	onPrefsButtonTap: function(options) {
 		
-		var p = IOrders.prefSheet || (IOrders.prefSheet = Ext.create({
-			xtype: 'actionsheet',
-			enter: 'right',
-			items: [
-				{ text: 'Закрыть панель настроек', name: 'PrefsClose'},
-				{ text: 'Запросить данные', name: 'XiDownload'},
-				{ text: 'Запросить метаданные', name: 'XiMeta'},
-				{ text: 'Стереть локальные данные', name: 'ClearLocalStorage'},
-				{ text: 'Пересоздать БД', name: 'DbRebuild'},
-				{ xtype: 'segmentedbutton', layout: {align: 'none'}, items: [
-					{text: 'Localdata', name: 'XiNoServer', pressed: IOrders.xi.noServer},
-					{text: 'System', name: 'XiYesServer', pressed: !IOrders.xi.noServer},
-				]},
-				{ xtype: 'segmentedbutton', layout: {align: 'none'}, items: [
- 					{text: 'Enable logging', name: 'EnableLog', pressed: DEBUG},
- 					{text: 'Disable logging', name: 'DisableLog', pressed: !DEBUG},
- 				]},
-				{ text: 'Сервер-логин', name: 'XiLogin'},
-				{ text: 'Сервер-логоф', name: 'XiLogoff'},
-				{ text: 'Включить Heartbeat', name: 'HeartbeatOn'},
-				{ text: 'Обновить кэш', name: 'CacheRefresh'},
-				{ text: 'Перезапустить', name: 'Reload'}
-			]
-		}));
+		if (!IOrders.prefSheet)  {
+			IOrders.prefSheet = Ext.create({
+				xtype: 'actionsheet',
+				enter: 'right',
+				items: [
+					{ text: 'Закрыть панель настроек', name: 'PrefsClose'},
+					{ text: 'Запросить данные', name: 'XiDownload'},
+					{ text: 'Запросить метаданные', name: 'XiMeta'},
+					{ text: 'Стереть локальные данные', name: 'ClearLocalStorage'},
+					{ text: 'Пересоздать БД', name: 'DbRebuild'},
+					{ xtype: 'segmentedbutton', layout: {align: 'none'}, items: [
+						{text: 'Localdata', name: 'XiNoServer', pressed: IOrders.xi.noServer},
+						{text: 'System', name: 'XiYesServer', pressed: !IOrders.xi.noServer},
+					]},
+					{ xtype: 'segmentedbutton', layout: {align: 'none'}, items: [
+						{text: 'Enable logging', name: 'EnableLog', pressed: DEBUG},
+						{text: 'Disable logging', name: 'DisableLog', pressed: !DEBUG},
+					]},
+					{ text: 'Сервер-логин', name: 'XiLogin'},
+					{ text: 'Сервер-логоф', name: 'XiLogoff'},
+					{ text: 'Включить Heartbeat', name: 'HeartbeatOn'},
+					{ text: 'Обновить кэш', name: 'CacheRefresh'},
+					{ text: 'Перезапустить', name: 'Reload'}
+				],
+				setDisabled: function(state) {
+					var disableXi = state == true || IOrders.xi.isBusy();
+					
+					this.items.each (function(b) {
+						if (b.name && b.name.slice(0,2) == 'Xi')
+							b.setDisabled (disableXi)
+					});
+				}
+			});
+			IOrders.prefSheet.mon (
+				IOrders.xi.connection,
+				'beforerequest',
+				function () {
+					IOrders.prefSheet.setDisabled(true)
+				},
+				IOrders.prefSheet
+			);
+			IOrders.prefSheet.mon (
+				IOrders.xi.connection,
+				'requestcomplete',
+				IOrders.prefSheet.setDisabled,
+				IOrders.prefSheet, {delay: 1000}
+			);
+			IOrders.prefSheet.mon (
+				IOrders.xi.connection,
+				'requestexception',
+				IOrders.prefSheet.setDisabled,
+				IOrders.prefSheet, {delay: 1000}
+			);
+		};
 		
-		p.show();
+		IOrders.prefSheet.setDisabled();
+		IOrders.prefSheet.show();
 		
 	},
 

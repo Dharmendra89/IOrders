@@ -625,6 +625,7 @@ Ext.regController('Navigator', {
 		if (!IOrders.prefSheet)  {
 			IOrders.prefSheet = Ext.create({
 				xtype: 'actionsheet',
+				cls: 'prefsheet',
 				enter: 'right',
 				items: [
 					{ text: 'Закрыть панель настроек', name: 'PrefsClose'},
@@ -632,7 +633,7 @@ Ext.regController('Navigator', {
 					{ text: 'Запросить метаданные', name: 'XiMeta'},
 					{ text: 'Стереть локальные данные', name: 'ClearLocalStorage'},
 					{ text: 'Пересоздать БД', name: 'DbRebuild'},
-					{ xtype: 'segmentedbutton', layout: {align: 'none'}, items: [
+					{ xtype: 'segmentedbutton', items: [
 						{text: 'Localdata', name: 'XiNoServer', pressed: IOrders.xi.noServer},
 						{text: 'System', name: 'XiYesServer', pressed: !IOrders.xi.noServer},
 					]},

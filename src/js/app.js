@@ -39,10 +39,9 @@ Ext.regApplication({
 	launch: function() {
 		
 		var tStore = Ext.getStore('tables'),
-			metadata = Ext.decode(localStorage.getItem('metadata'))
+			metadata = Ext.decode(localStorage.getItem('metadata')),
+			vp = this.viewport = Ext.create({xtype: 'viewport'});
 		;
-		
-		this.viewport = Ext.create({xtype: 'viewport'});
 		
 		this.dbeng = new Ext.data.Engine({
 			listeners: {
@@ -52,8 +51,22 @@ Ext.regApplication({
 					tStore.getProxy().data = this.metadata;
 					tStore.load(function() {IOrders.init();});
 					
-					if (db.clean)
+					if (db.clean){
+						vp.setLoading(true);
+						vp.mon (
+							IOrders.xi.connection,
+							'requestcomplete',
+							function(){ vp.setLoading(false); },
+							vp, {delay: 1000}
+						);
+						vp.mon (
+							IOrders.xi.connection,
+							'requestexception',
+							function(){ vp.setLoading(false); },
+							vp, {delay: 1000}
+						);
 						IOrders.xi.download(IOrders.dbeng);
+					}
 				},
 				fail: function() {
 					localStorage.clear();

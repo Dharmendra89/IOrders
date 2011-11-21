@@ -65,7 +65,7 @@ var getItemTplMeta = function(modelName, config) {
 				+							'</tpl>'
 				+							'<tpl if="!parent">'
 				+								'<tpl if="label || name">'
-				+									'<div class="{cls}"><tpl if="type=\'boolean\'">{label}</tpl><tpl if="name">{name}</tpl></div>'
+				+									'<div class="{cls}"><tpl if="name">{name}</tpl></div>'
 				+								'</tpl>'
 				+							'</tpl>'
 				+						'</tpl>'
@@ -157,7 +157,7 @@ var getItemTplMeta = function(modelName, config) {
 			var colName = col.get('name');
 			switch(col.get('type')) {
  				case 'boolean' : {
-					label = '{[values.' + colName + ' == true ? "' + col.get('label') + '" : ""]}';
+					name = '{[values.' + colName + ' == true ? "' + col.get('label') + '" : ""]}';
 					break;
 				}
 				case 'date' : {

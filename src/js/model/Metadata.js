@@ -98,7 +98,8 @@ Ext.regModel('Dep', {
 		{name: 'editing', type: 'boolean'},
 		{name: 'count', type: 'int'},
 		{name: 'contains', type: 'boolean'},
-		{name: 'aggregates', type: 'string'}
+		{name: 'aggregates', type: 'string'},
+		{name: 'stats', type: 'string'}
 	]
 });
 

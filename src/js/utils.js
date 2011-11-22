@@ -83,6 +83,7 @@ var getItemTplMeta = function(modelName, config) {
 				+	'<div class="hbox dep">'
 				+ 		'<input type="hidden" value="{table_id}" />'
 				+ 		'<div class="count"><tpl if="count &gt; 0">{count}</tpl></div>'
+				+ 		'<div class="stats"><tpl if="stats">{stats}</tpl></div>'
 				+ 		'<div class="data">{name}</div>'
 				+ 		'<div class="aggregates">{aggregates}</div>'
 				+ 		'<tpl if="extendable && (!editing && !contains || editing && contains)"><div class="x-button extend add">+</div></tpl>'
@@ -193,6 +194,7 @@ function getItemTpl (modelName) {
 		case 'Dep': {
 			return '<div class="hbox dep">'
 					+	'<div class="count"><tpl if="count &gt; 0">{count}</tpl></div>'
+					+	'<div class="stats"><tpl if="stats">{stats}</tpl></div>'
 					+	'<div class="data">{name}</div>'
 					+	'<div class="aggregates">{aggregates}</div>'
 					+	'<tpl if="extendable && (!editing && !contains || editing && contains)"><div class="x-button extend add">+</div></tpl>'
@@ -365,7 +367,20 @@ var getDepsData = function(depsStore, tablesStore, view) {
 				}
 				
 			});
-			
+
+			if(depRec.get('table_id') === 'SaleOrder') {
+
+				filters.push({property: 'processing', value: 'draft'})
+
+				var countOperation = new Ext.data.Operation({depRec: depRec, filters: filters});
+				modelProxy.aggregate(countOperation, function(operation) {
+
+					var aggResults = operation.resultSet.records[0].data;
+
+					operation.depRec.set('stats', aggResults.cnt);
+				});
+			}
+
 			data.push(depRec);
 		}
 	});

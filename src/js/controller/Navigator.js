@@ -717,39 +717,39 @@ Ext.regController('Navigator', {
 								contains: dep.get('contains'),
 								editing: false
 							},
-						    modelProxy = Ext.ModelMgr.getModel(depTable.get('id')).prototype.getProxy(),
+							modelProxy = Ext.ModelMgr.getModel(depTable.get('id')).prototype.getProxy(),
 							filters = []
 						;
-						
+
 						recordForDeps = list.modelForDeps && !hasIdColumn 
 								? Ext.getStore(list.modelForDeps).getById(record.get(list.modelForDeps[0].toLowerCase() + list.modelForDeps.substring(1))) 
 								: record;
-						
+
 						recordForDeps.modelName != 'MainMenu'
 							&& filters.push({
 								property: recordForDeps.modelName.toLowerCase(),
 								value: recordForDeps.getId()
 							})
 						;	
-						
+
 						if(depTable.hasAggregates()) {
 						
 							var aggCols = depTable.getAggregates();
 							var aggOperation = new Ext.data.Operation({filters: filters});
 
 							modelProxy.aggregate(aggOperation, function(operation) {
-								
+
 								var aggDepResult = '';
 								var aggDepTpl = new Ext.XTemplate('<tpl if="value &gt; 0"><tpl if="name">{name} : </tpl>{[values.value.toFixed(2)]} </tpl>');
 								var aggResults = operation.resultSet.records[0].data;
-								
+
 								aggCols.each(function(aggCol) {
 									aggDepResult += aggDepTpl.apply({name: aggCol.get('label') != depTable.get('nameSet') ? aggCol.get('label') : '', value: aggResults[aggCol.get('name')]});
 								});
-								
+
 								depRec.aggregates = aggDepResult;
 								depRec.count = aggResults.cnt;
-								
+
 								record.data.deps = data;
 								list.store && list.refreshNode(list.indexOf(record));
 								
@@ -768,7 +768,23 @@ Ext.regController('Navigator', {
 								list.doComponentLayout();
 							});
 						}
-						
+
+						if(depRec.table_id === 'SaleOrder') {
+
+							filters.push({property: 'processing', value: 'draft'});
+
+							var countOperation = new Ext.data.Operation({depRec: depRec, filters: filters});
+							modelProxy.aggregate(countOperation, function(operation) {
+
+								var aggResults = operation.resultSet.records[0].data;
+
+								operation.depRec.stats = aggResults.cnt;
+
+								record.data.deps = data;
+								list.store && list.refreshNode(list.indexOf(record));
+							});
+						}
+
 						data.push(depRec);
 					}
 				});

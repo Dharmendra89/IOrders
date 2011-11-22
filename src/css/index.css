@@ -64,6 +64,13 @@
 	margin-right: 0.5em;
 }
 
+.stats {
+	width: 2.75em;
+	color: teal;
+	text-align: center;
+	margin-right: 0.5em;
+}
+
 .x-phone .x-form .x-panel-body {
 	padding: 0;
 }

@@ -344,6 +344,43 @@ Ext.regController('SaleOrder', {
 		Ext.defer(Ext.dispatch, 100, this, [options]);
 	},
 
+	onProductListItemLongTap: function(options) {
+
+		var list = options.list,
+			item = options.item,
+			iel = Ext.get(item),
+			productRec = list.getRecord(item),
+			store = createStore('Price', Ext.apply(getSortersConfig('Price', {}), {filters: [{property: 'product', value: productRec.get('product')}]}))
+		;
+
+		store.load();
+
+		iel.addCls('editing');
+
+		this.pricePanel = this.pricePanel || Ext.create({
+			xtype: 'panel',
+			centered: true,
+			floating: true,
+			layout: 'fit',
+			width: list.getWidth() / 2,
+			height: list.getHeight() / 2,
+			items: [{
+				xtype: 'list',
+				itemTpl: getItemTplMeta('Price', {useDeps: false, groupField: 'category', filterObject: {modelName: 'Product'}}).itemTpl,
+				store: store
+			}],
+			listeners: {
+				hide: function() {
+					this.iel.removeCls('editing');
+				}
+			}
+		});
+
+		this.pricePanel.iel = iel;
+
+		this.pricePanel.show();
+	},
+
 	addOfferProductList: function(options) {
 		
 		var rec = options.categoryRec,

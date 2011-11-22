@@ -76,5 +76,23 @@ var offerProductList = {
 			}
 		}*/
 		
+	},
+	
+
+	onRender: function() {
+
+		ExpandableGroupedList.prototype.onRender.apply(this, arguments);
+
+		this.mon(this.el, 'taphold', function(event, item, obj) {
+
+			var list = this,
+				idx = list.indexOf(item)
+			;
+
+			Ext.dispatch({
+				controller: 'SaleOrder', action: 'onProductListItemLongTap',
+				list: list, idx: idx, item: item, event: event
+			});
+		}, this, {delegate: '.x-list-item'});
 	}
 };

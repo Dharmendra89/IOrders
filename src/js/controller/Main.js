@@ -366,6 +366,16 @@ Ext.regController('Main', {
 		localStorage.setItem('DEBUG', false);
 	},
 
+	onNewDesignButtonTap: function(options) {
+		IOrders.newDesign = true;
+		localStorage.setItem('newDesign', true);
+	},
+
+	onOldDesignButtonTap: function(options) {
+		IOrders.newDesign = false;
+		localStorage.setItem('newDesign', false);
+	},
+
 	onListSelectionChange: function(options) {
 		
 		var navView = options.list.up('navigatorview');

@@ -23,7 +23,8 @@ var getItemTplMeta = function(modelName, config) {
 		columnStore = tableRecord.columns(),
 		filterObject = config.filterObject,
 		groupField = config.groupField,
-		useDeps = config.useDeps !== false ? true : false
+		useDeps = config.useDeps !== false ? true : false,
+		onlyKey = config.onlyKey === true ? true : false
 	;
 	
 	var modelForDeps = undefined;
@@ -98,7 +99,7 @@ var getItemTplMeta = function(modelName, config) {
 		keyColumns: [],
 		otherColumnsLength: 0,
 		otherColumns: [],
-		buttons: useDeps ? buttons : ''
+		buttons: useDeps && !onlyKey ? buttons : ''
 	};
 	
 	var idColExist = columnStore.findExact('name', 'id') === -1 ? false : true;
@@ -138,51 +139,54 @@ var getItemTplMeta = function(modelName, config) {
 		}
 	}
 
-	var otherColumns = columnStore.queryBy(function(rec) {
-		var colName = rec.get('name');
-		return !rec.get(queryValue)
-			&& ( !groupField || (groupField !== colName
-					&& groupField[0].toLowerCase() + groupField.replace('_name', '').substring(1) !== colName)
-			)
-			&& ( !filterObject || filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase())
-			&& colName !== 'id' && colName !== 'name' && rec.get('label') ? true : false;
-	});
-	
-	templateData.otherColumnsLength = otherColumns.getCount(); 
-	if(otherColumns.getCount() > 0) {
+	if(!onlyKey) {
 
-		otherColumns.each(function(col) {
-			
-			var label = undefined, name = undefined;
-
-			var colName = col.get('name');
-			switch(col.get('type')) {
- 				case 'boolean' : {
-					name = '{[values.' + colName + ' == true ? "' + col.get('label') + '" : ""]}';
-					break;
-				}
-				case 'date' : {
-					label = col.get('label');
-					name = '<tpl if="' + colName + '">' + label + ' : {[Ext.util.Format.date(values.' + colName + ')]}</tpl>';
-					break;
-				}
-				default : {
-					label = col.get('label');
-					name = col.get('parent')
-						? colName
-						: '<tpl if="' + colName + '">' + label + ' : {' + colName + '}</tpl>';
-					break;
-				}
-			}
-			
-			templateData.otherColumns.push({
-				parent: col.get('parent') ? true : false,
-				label: label,
-				cls: colName,
-				name: name
-			});
-			
+		var otherColumns = columnStore.queryBy(function(rec) {
+			var colName = rec.get('name');
+			return !rec.get(queryValue)
+				&& ( !groupField || (groupField !== colName
+						&& groupField[0].toLowerCase() + groupField.replace('_name', '').substring(1) !== colName)
+				)
+				&& ( !filterObject || filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase())
+				&& colName !== 'id' && colName !== 'name' && rec.get('label') ? true : false;
 		});
+		
+		templateData.otherColumnsLength = otherColumns.getCount(); 
+		if(otherColumns.getCount() > 0) {
+	
+			otherColumns.each(function(col) {
+				
+				var label = undefined, name = undefined;
+	
+				var colName = col.get('name');
+				switch(col.get('type')) {
+	 				case 'boolean' : {
+						name = '{[values.' + colName + ' == true ? "' + col.get('label') + '" : ""]}';
+						break;
+					}
+					case 'date' : {
+						label = col.get('label');
+						name = '<tpl if="' + colName + '">' + label + ' : {[Ext.util.Format.date(values.' + colName + ')]}</tpl>';
+						break;
+					}
+					default : {
+						label = col.get('label');
+						name = col.get('parent')
+							? colName
+							: '<tpl if="' + colName + '">' + label + ' : {' + colName + '}</tpl>';
+						break;
+					}
+				}
+				
+				templateData.otherColumns.push({
+					parent: col.get('parent') ? true : false,
+					label: label,
+					cls: colName,
+					name: name
+				});
+				
+			});
+		}
 	}
 	
 	return {itemTpl: new Ext.XTemplate(templateString).apply(templateData), modelForDeps: modelForDeps};
@@ -259,7 +263,7 @@ var createFieldSet = function(columnsStore, modelName, view) {
 					break;
 				}
 				default : {
-					if(column.get('name') == 'name') {
+					if(column.get('name') == 'name' && !IOrders.newDesign) {
 						var selectStore = createStore(modelName, getSortersConfig(modelName, {}));
 						selectStore.load();
 						selectStore.add(view.objectRecord);
@@ -403,6 +407,7 @@ var createNavigatorView = function(rec, oldCard, isSetView, editing, config) {
 
 	var view = Ext.apply({
 			xtype: 'navigatorview',
+			layout: IOrders.newDesign ? {type: 'hbox', pack: 'justify', align: 'stretch'} : 'fit',
 			isObjectView: isSetView ? undefined : true,
 			isSetView: isSetView ? true : undefined,
 			objectRecord: isSetView ? oldCard.objectRecord : rec,
@@ -411,6 +416,7 @@ var createNavigatorView = function(rec, oldCard, isSetView, editing, config) {
 			extendable: rec.get('extendable'),
 			ownerViewConfig: {
 				xtype: 'navigatorview',
+				layout: IOrders.newDesign ? {type: 'hbox', pack: 'justify', align: 'stretch'} : 'fit',
 				extendable: oldCard.extendable,
 				isObjectView: oldCard.isObjectView,
 				isSetView: oldCard.isSetView,
@@ -514,6 +520,7 @@ var getNextWorkDay = function() {
 var getOwnerViewConfig = function(view) {
 	return {ownerViewConfig: {
 		xtype: view.xtype,
+		layout: IOrders.newDesign ? {type: 'hbox', pack: 'justify', align: 'stretch'} : 'fit',
 		extendable: view.extendable,
 		isObjectView: view.isObjectView,
 		isSetView: view.isSetView,

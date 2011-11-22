@@ -147,6 +147,7 @@ Ext.regController('SaleOrder', {
 				saleOrder: options.saleOrder,
 				ownerViewConfig: {
                     xtype: 'navigatorview',
+                    layout: IOrders.newDesign ? {type: 'hbox', pack: 'justify', align: 'stretch'} : 'fit',
                     extendable: oldCard.extendable,
                     isObjectView: oldCard.isObjectView,
                     isSetView: oldCard.isSetView,

@@ -582,7 +582,10 @@ Ext.regController('Navigator', {
 		options.removeFilter && view.form.remove(0);
 		store.filter(filters);
 	},
-	
+	/**
+	 * @Deprecated
+	 * @param options
+	 */
 	onNameSelectFieldValueChange: function(options) {
 
 		var view = options.view,
@@ -593,6 +596,19 @@ Ext.regController('Navigator', {
 		view.objectRecord = record;
 		view.form.loadRecord(record);
 
+		view.depStore.loadData(getDepsData(tableStore.getById(view.objectRecord.modelName).deps(), tableStore, view));
+	},
+
+	onObjectListItemSelect: function(options) {
+
+		var view = options.view,
+			record = options.selected,
+			tableStore = Ext.getStore('tables')
+		;
+
+		view.objectRecord = record;
+		view.form.loadRecord(record);
+	
 		view.depStore.loadData(getDepsData(tableStore.getById(view.objectRecord.modelName).deps(), tableStore, view));
 	},
 
@@ -641,6 +657,10 @@ Ext.regController('Navigator', {
 						{text: 'Enable logging', name: 'EnableLog', pressed: DEBUG},
 						{text: 'Disable logging', name: 'DisableLog', pressed: !DEBUG},
 					]},
+					{ xtype: 'segmentedbutton', layout: {align: 'none'}, items: [
+ 						{text: 'Новый дизайн', name: 'NewDesign', pressed: IOrders.newDesign},
+ 						{text: 'Старый дизайн', name: 'OldDesign', pressed: !IOrders.newDesign},
+ 					]},
 					{ text: 'Сервер-логин', name: 'XiLogin'},
 					{ text: 'Сервер-логоф', name: 'XiLogoff'},
 					{ text: 'Включить Heartbeat', name: 'HeartbeatOn'},
@@ -652,7 +672,7 @@ Ext.regController('Navigator', {
 					
 					this.items.each (function(b) {
 						if (b.name && b.name.slice(0,2) == 'Xi')
-							b.setDisabled (disableXi)
+							b.setDisabled (disableXi);
 					});
 				}
 			});
@@ -660,7 +680,7 @@ Ext.regController('Navigator', {
 				IOrders.xi.connection,
 				'beforerequest',
 				function () {
-					IOrders.prefSheet.setDisabled(true)
+					IOrders.prefSheet.setDisabled(true);
 				},
 				IOrders.prefSheet
 			);

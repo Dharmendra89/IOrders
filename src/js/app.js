@@ -1,4 +1,4 @@
-var DEBUG = localStorage.getItem('DEBUG') || true; // set to false to disable debugging
+var DEBUG = localStorage.getItem('DEBUG') === false ? false : true; // set to false to disable debugging
 var oldConsoLog = console.log;
 
 console.log = function() {
@@ -19,7 +19,9 @@ Ext.regApplication({
 //    phoneStartupScreen: 'phone_startup.png',
 	
 	init: function() {
-		
+
+		IOrders.newDesign = localStorage.getItem('newDesign');
+
 		var store = Ext.getStore('tables');
 		
 		createModels(store);
@@ -33,7 +35,6 @@ Ext.regApplication({
 		}));
 		
 		this.viewport.getActiveItem().loadData();
-		
 	},
 	
 	launch: function() {
@@ -147,7 +148,7 @@ Ext.regApplication({
 									}
 								);
 							}
-						})
+						});
 					}
 				}, f = function() {
 					IOrders.xi.reconnect({
@@ -163,7 +164,7 @@ Ext.regApplication({
 									});
 							});
 						}
-				})};
+				});};
 
 					
 				this.dbeng.on ('dbstart', r);

@@ -145,13 +145,20 @@ var NavigatorView = Ext.extend(AbstractView, {
 			if(IOrders.newDesign && table.hasNameColumn()) {
 
 				var store = createStore(this.objectRecord.modelName, getSortersConfig(this.objectRecord.modelName, getSortersConfig(this.objectRecord.modelName, {})));
-				store.load({limit: me.ownerViewConfig.storeLimit});
-				store.currentPage = me.ownerViewConfig.storePage;
+
+				var limit = 0, curPage = 1;
+				if(me.ownerViewConfig.tableRecord.modelName === me.objectRecord.modelName) {
+
+					limit = me.ownerViewConfig.storeLimit;
+					curPage = me.ownerViewConfig.storePage;
+				}
+				store.load({limit:  limit});
+				store.currentPage = curPage;
 
 				this.items.push(me.objectList = Ext.create({
 					xtype: 'list',
 					flex: 1,
-					plugins: new Ext.plugins.ListPagingPlugin({autoPaging: true}), 
+					plugins: limit !== 0 ? new Ext.plugins.ListPagingPlugin({autoPaging: true}) : undefined, 
 					itemTpl: getItemTplMeta(this.objectRecord.modelName, {useDeps: false, onlyKey: true}).itemTpl,
 					store: store,
 					initComponent: function() {

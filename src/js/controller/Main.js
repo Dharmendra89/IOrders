@@ -127,16 +127,31 @@ Ext.regController('Main', {
 			;
 
 			if(depStore.getCount() === 1 && !table.hasExtendableDep()) {
-				Ext.dispatch(Ext.apply(options, {
-					controller: 'Navigator',
-					action: 'createAndActivateView',
-					record: list.modelForDeps && !Ext.getStore('tables').getById(tappedRec.modelName).hasIdColumn()
-							? Ext.getStore(list.modelForDeps).getById(tappedRec.get(list.modelForDeps.toLowerCase())) 
-							: tappedRec,
-					tableRecord: depStore.getAt(0).get('table_id'),
-					isSetView: true,
-					editing: false
-				}));
+
+				if(list.modelForDeps && !Ext.getStore('tables').getById(tappedRec.modelName).hasIdColumn()) {
+					Ext.ModelMgr.getModel(list.modelForDeps).load(tappedRec.get(list.modelForDeps.toLowerCase(), {
+						success: function(record) {
+	
+							Ext.dispatch(Ext.apply(options, {
+								controller: 'Navigator',
+								action: 'createAndActivateView',
+								record: record,
+								tableRecord: depStore.getAt(0).get('table_id'),
+								isSetView: true,
+								editing: false
+							}));
+						}
+					}));
+				} else {
+					Ext.dispatch(Ext.apply(options, {
+						controller: 'Navigator',
+						action: 'createAndActivateView',
+						record: tappedRec,
+						tableRecord: depStore.getAt(0).get('table_id'),
+						isSetView: true,
+						editing: false
+					}));
+				}
 			} else {
 				Ext.dispatch(Ext.apply(options, {
 					controller: 'Navigator',

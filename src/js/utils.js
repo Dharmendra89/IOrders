@@ -1,13 +1,6 @@
 Ext.util.Format.defaultDateFormat = 'd/m/Y';
 Date.monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
 
-var getValueFromParent = function(field, value) {
-
-	var parentStore = Ext.getStore(field[0].toUpperCase() + field.substring(1));
-	var rec = parentStore.getById(value);
-	return rec ? rec.get('name') : '';
-};
-
 var getParentInfo = function(field, value) {
 
 	var parentStore = Ext.getStore(field[0].toUpperCase() + field.substring(1));
@@ -38,7 +31,7 @@ var getItemTplMeta = function(modelName, config) {
 				+				'<p class="key">'
 				+					'<tpl for="keyColumns">'
 				+						'<tpl if="parent && !parentInfo">'
-				+							'<span>\\{[getValueFromParent("{name}", values.{name})]\\}<tpl if="!end"> : </tpl></span>&nbsp;'
+				+							'<span>\\{{name_br}\\}<tpl if="!end"> : </tpl></span>&nbsp;'
 				+						'</tpl>'
 				+						'<tpl if="parent && parentInfo">'
 				+							'<div class="parent-info">\\{[getParentInfo("{name}", values.{name})]\\}</div>'
@@ -60,7 +53,7 @@ var getItemTplMeta = function(modelName, config) {
 				+											'<input type="hidden" property="{name}" value="\\{{name}\\}" />'
 				+											'{label}'
 				+										'</span>'
-				+										'<tpl if="name">: \\{[getValueFromParent("{name}", values.{name})]\\}</tpl>'
+				+										'<tpl if="name_br">: \\{{name_br}\\}</tpl>'
 				+									'</div>'
 				+								'</tpl>'
 				+							'</tpl>'
@@ -128,6 +121,7 @@ var getItemTplMeta = function(modelName, config) {
 				templateData.keyColumns.push({
 					parent: col.get('parent') ? true: false,
 					name: col.get('name'),
+					name_br: col.get('parent') ? col.get('name')[0].toUpperCase() + col.get('name').substring(1) + '_name' : col.get('name'),
 					parentInfo: keyColumns.getCount() === 1 && !tableRecord.hasIdColumn(),
 					end: keyColumns.indexOf(col) + 1 >= length
 				});
@@ -182,7 +176,8 @@ var getItemTplMeta = function(modelName, config) {
 					parent: col.get('parent') ? true : false,
 					label: label,
 					cls: colName,
-					name: name
+					name: name,
+					name_br: colName[0].toUpperCase() + colName.substring(1) + '_name'
 				});
 				
 			});

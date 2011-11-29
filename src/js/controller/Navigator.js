@@ -248,7 +248,7 @@ Ext.regController('Navigator', {
 				depStore = table.deps()
 			;
 
-			if(depStore.getCount() !== 1 || table.hasExtendableDep())
+			if(depStore.getCount() !== 1 || table.hasExtendableDep()) {
 				Ext.defer ( function() {
 
 					Ext.dispatch(Ext.apply(options, {
@@ -258,6 +258,33 @@ Ext.regController('Navigator', {
 						selections: [list.getRecord(item)]
 					}));
 				}, 150);
+			} else if(depStore.getCount() === 1 && !table.hasExtendableDep()) {
+
+				if(list.modelForDeps && !Ext.getStore('tables').getById(tappedRec.modelName).hasIdColumn()) {
+					Ext.ModelMgr.getModel(list.modelForDeps).load(tappedRec.get(list.modelForDeps.toLowerCase(), {
+						success: function(record) {
+	
+							Ext.dispatch(Ext.apply(options, {
+								controller: 'Navigator',
+								action: 'createAndActivateView',
+								record: record,
+								tableRecord: depStore.getAt(0).get('table_id'),
+								isSetView: true,
+								editing: false
+							}));
+						}
+					}));
+				} else {
+					Ext.dispatch(Ext.apply(options, {
+						controller: 'Navigator',
+						action: 'createAndActivateView',
+						record: tappedRec,
+						tableRecord: depStore.getAt(0).get('table_id'),
+						isSetView: true,
+						editing: false
+					}));
+				}
+			}
 		}
 		
 	},

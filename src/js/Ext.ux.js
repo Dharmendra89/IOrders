@@ -1,113 +1,4 @@
-Ext.ns('Ext.ux.form');
-
 Ext.override(Ext.Interaction, {controller: 'Main'});
-
-var ExpandableGroupedList = Ext.extend(Ext.List, {
-	
-	grouped: true,
-	
-	initComponent: function() {
-		var scroll = this.scroll;
-		ExpandableGroupedList.superclass.initComponent.apply(this, arguments);
-		if (typeof scroll == 'object')
-			this.scroll = scroll;
-	},
-	
-	onRender: function() {
-		ExpandableGroupedList.superclass.onRender.apply(this, arguments);
-		this.mon(this.el, 'tap', this.onListHeaderTap, this, {
-			delegate: '.x-list-header'
-		});
-		this.el.addCls ('expandable');
-	},
-	
-	onListHeaderTap: function(e, t) {
-		
-		var tapedHeaderEl = Ext.get(t),
-			tapedGroupEl = this.getGroupEl(tapedHeaderEl),
-			list = this;
-		;
-		
-		var expanded = tapedGroupEl.hasCls('expanded');
-		
-		this.setGroupExpanded(tapedGroupEl, !expanded, tapedHeaderEl);
-		
-		if(!expanded) {
-			var headerElArray = list.getExpandedElHeaders();
-			headerElArray.removeByKey(tapedHeaderEl.id);
-			list.setGroupExpanded(headerElArray, false);
-		}
-	},
-	
-	getExpandedElHeaders: function() {
-		
-		var list = this;
-		
-		var expanded = new Ext.util.MixedCollection();
-		var headerElList = list.getEl().query('.x-list-header');
-
-		Ext.each(headerElList, function(hEl) {
-			var el = list.getGroupEl(Ext.get(hEl));
-			el && el.hasCls('expanded') && expanded.add(Ext.get(hEl));
-		});
-		
-		return expanded;
-	},
-	
-	getGroupEl: function(headerEl) {
-
-		var el = headerEl.next();
-		if (headerEl.hasCls('x-list-header-swap')) {
-			return el.down('.x-group-' + headerEl.dom.innerText.toLowerCase() + ' .x-list-group-items');
-		} else {
-			return el;
-		}
-	},
-	
-	setGroupExpanded: function(el, expanded, headerEl) {
-		
-		var list = this;
-		
-		if(Ext.isObject(el) && el instanceof Ext.util.MixedCollection) {
-
-			el.each(function(hEl) {
-				var e = list.getGroupEl(hEl);
-				list.setGroupExpanded(e, expanded, hEl);
-			});
-
-		} else {
-
-			var dv = 30 * el.dom.children.length,
-				list = this
-			;
-			
-			if (dv < 150) {
-				dv = 150;
-			} else if (dv > 500) {
-				dv = 500;
-			}
-			
-			el[expanded ? 'addCls' : 'removeCls']('expanded');
-			
-			Ext.defer( function() {
-				list.updateOffsets();
-				list.scroller && list.scroller.updateBoundary();
-			}, 50);
-			
-			if(expanded) {
-				
-				Ext.defer ( function() {
-					list.scroller && list.scroller.scrollTo({
-						y: headerEl.getOffsetsTo( list.scrollEl )[1]
-					}, 300);
-					
-					Ext.defer ( function() { list.disableSwipe = false; }, 400);
-				}, 100);
-			}
-		}
-	}
-});
-Ext.reg('expandableGroupedList', ExpandableGroupedList);
 
 Ext.override(Ext.List, {
 	listeners: {
@@ -209,55 +100,6 @@ Ext.override(Ext.form.Select, {
     }
 });
 
-var PagingSelectField = Ext.extend(Ext.form.Select, {
-	
-	getListPanel: function() {
-        if (!this.listPanel) {
-            this.listPanel = new Ext.Panel({
-                floating         : true,
-                stopMaskTapEvent : false,
-                hideOnMaskTap    : true,
-                cls              : 'x-select-overlay',
-                scroll           : 'vertical',
-                items: {
-                    xtype: 'list',
-                    store: this.store,
-                    itemId: 'list',
-                    plugins: new Ext.plugins.ListPagingPlugin({autoPaging: true}),
-                    scroll: false,
-                    itemTpl : [
-                        '<span class="x-list-label">{' + this.displayField + '}</span>',
-                        '<span class="x-list-selected"></span>'
-                    ],
-                    listeners: {
-                        select : this.onListSelect,
-                        scope  : this
-                    }
-                }
-            });
-        }
-
-        return this.listPanel;
-    }
-});
-Ext.reg('pagingselectfield', PagingSelectField);
-
-var FilterField = Ext.extend(PagingSelectField, {
-	onRender: function() {
-
-		FilterField.superclass.onRender.apply(this, arguments);
-		this.removeFilterBtn = this.labelEl.insertHtml('beforeBegin', '<div class="x-button remove-filter">X</div>', true);
-		this.mon (this.removeFilterBtn, 'tap', function(evt, el, o) {
-        	Ext.dispatch({
-        		action: 'onSelectFieldValueChange',
-        		field: this,
-        		removeFilter: true
-        	});
-        }, this);
-	}
-});
-Ext.reg('filterfield', FilterField);
-
 Ext.override(Ext.form.Toggle, {
 	setValue: function(value) {
 	
@@ -277,55 +119,7 @@ Ext.override(Ext.form.Toggle, {
 });
 
 
-Ext.plugins.ListPagingPlugin = Ext.extend(Ext.util.Observable, {
-	
-	init: function(list) {
-		var me = this;
-		
-		me.list = list;
-		
-		list.onBeforeLoad = Ext.util.Functions.createInterceptor(list.onBeforeLoad, me.onBeforeLoad, me);
-		
-		me.mon(list, 'update', me.onListUpdate, me);
-		
-		me.mon(list, 'render', function() {
-				me.mon(list.getTargetEl().getScrollParent()
-				, 'scrollend', me.onScrollEnd, me);
-		},me)
-		
-	},
-	
-	onBeforeLoad : function() {
-        if (this.loading && this.list.store.getCount() > 0) {
-            this.list.loadMask.disable();
-            return false;
-        }
-		
-		return true;
-    },
 
-    onListUpdate : function() {
-		
-		var store = this.list.store,
-			scroller = this.list.ownerCt.scroller;
-			
-		if (scroller)
-			scroller.noMorePages = (!store.proxy.lastRowCount || store.proxy.lastRowCount < store.pageSize);
-			
-		this.loading = false;
-		
-    },
-	
-	onScrollEnd: function(scroller, pos) {
-		if( !(scroller.noMorePages || this.loading) &&
-			//scroller.containerBox.height >= Math.abs(pos.y + scroller.offsetBoundary.top)/2
-			scroller.containerBox.height/4 + pos.y >= Math.abs(scroller.offsetBoundary.top)) {
-			this.loading = true;
-			this.list.store.nextPage();
-		}
-	}
-	
-});
 
 Ext.override(Ext.form.FormPanel, {
 	getElConfig: function() {
@@ -403,7 +197,7 @@ String.right = function (str, n){
        var iLen = String(str).length;
        return String(str).substring(iLen, iLen - n);
     }
-}
+};
 
 Ext.MessageBox.YESNO[1].text = 'Да';
 Ext.MessageBox.YESNO[0].text = 'Нет';

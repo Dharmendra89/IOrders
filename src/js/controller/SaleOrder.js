@@ -45,7 +45,7 @@ Ext.regController('SaleOrder', {
 		//offerStore.clearFilter(true);
 		
 		Ext.each(offerStore.getUpdatedRecords(), function(rec) {
-			var posRec = saleOrderPosStore.findRecord('product', rec.get('product'));
+			var posRec = saleOrderPosStore.getAt(saleOrderPosStore.findExact('product', rec.get('product')));
 			
 			if (!posRec) {
 				saleOrderPosStore.add (Ext.ModelMgr.create(Ext.apply({
@@ -204,7 +204,7 @@ Ext.regController('SaleOrder', {
 								
 								if (s) {
 									
-									newCard.productPanel.doLayout();
+									newCard.productPanel.doLayout(); 	
 									newCard.productStore.remoteFilter = false;
 									
 									saleOrderPositionStore.load({
@@ -264,21 +264,21 @@ Ext.regController('SaleOrder', {
 	},
 	
 	onListItemSwipe: function(options) {
-		
-		var rec = options.list.getRecord(options.item),
-		    volume = parseInt(rec.get('volume') ? rec.get('volume') : '0'),
-		    factor = parseInt(rec.get('factor')),
-		    sign = options.event.direction === 'left' ? -1 : 1
+
+		var rec = options.list.store.getAt(options.idx),
+			volume = parseInt(rec.get('volume') ? rec.get('volume') : '0'),
+			factor = parseInt(rec.get('factor')),
+			sign = options.event.direction === 'left' ? -1 : 1
 		;
-		
+
 		!volume && (volume = 0);
-		
+
 		Ext.dispatch (Ext.apply(options, {
 			action: 'setVolume',
 			volume: volume + sign * factor,
 			rec: rec
 		}));
-		
+
 	},
 	
 	setVolume: function (options) {
@@ -311,8 +311,9 @@ Ext.regController('SaleOrder', {
 			action: 'calculateTotalCost'
 		}));
 		
-		Ext.get(options.item).down('.cost').dom.innerHTML = rec.get('cost');
-		Ext.get(options.item).down('.volume').dom.innerHTML = rec.get('volume');
+		var iel = Ext.get(options.item); 
+		iel.down('.cost').dom.innerHTML = rec.get('cost');
+		iel.down('.volume').dom.innerHTML = rec.get('volume');
 		
 //		options.list.scroller.enable();
 		

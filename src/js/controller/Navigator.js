@@ -824,18 +824,18 @@ Ext.regController('Navigator', {
 								list.doComponentLayout();
 							});
 						}
-
-						if(depRec.table_id === 'SaleOrder') {
-
+						
+						if(depStore.getById(depRec.table_id).columns().findBy(function(c){return c.get('name')=='processing'})) {
+						
 							filters.push({property: 'processing', value: 'draft'});
-
+							
 							var countOperation = new Ext.data.Operation({depRec: depRec, filters: filters});
 							modelProxy.aggregate(countOperation, function(operation) {
-
+								
 								var aggResults = operation.resultSet.records[0].data;
-
+								
 								operation.depRec.stats = aggResults.cnt;
-
+								
 								record.data.deps = data;
 								list.store && list.refreshNode(list.indexOf(record));
 							});

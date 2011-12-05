@@ -14,6 +14,11 @@
         <file>src/js/model/Metadata.js</file>
         <file>src/js/model/Models.js</file>
         
+        <file>src/js/ux/ExpandableGroupedList.js</file>
+        <file>src/js/ux/FilterField.js</file>
+        <file>src/js/ux/ListPagingPlugin.js</file>
+        <file>src/js/ux/PagingSelectField.js</file>
+        
         <file>src/js/view/AbstractView.js</file>
         <file>src/js/view/EncashmentView.js</file>
         <file>src/js/view/NavigatorView.js</file>

@@ -825,7 +825,9 @@ Ext.regController('Navigator', {
 							});
 						}
 						
-						if(depStore.getById(depRec.table_id).columns().findBy(function(c){return c.get('name')=='processing'})) {
+						var t = depStore.getById(depRec.table_id);
+						
+						if(t && t.columns && t.columns().findBy(function(c){return c.get('name')=='processing'})) {
 						
 							filters.push({property: 'processing', value: 'draft'});
 							

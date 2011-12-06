@@ -64,7 +64,7 @@ Ext.regController('SaleOrder', {
 			
 		});
 		
-		var tc = view.saleOrderPositionStore.sum('cost').toFixed(2);
+		var tc = saleOrderPosStore.sum('cost').toFixed(2);
 		
 		view.saleOrder.set ('totalCost', tc);
 		saleOrderPosStore.sync();
@@ -193,11 +193,9 @@ Ext.regController('SaleOrder', {
 								value: options.saleOrder.getId()
 							}]
 						});
-						
-						newCard.productList = newCard.productPanel.add( new ExpandableGroupedList (Ext.apply (offerProductList, {
-							store: newCard.productStore
-						})));
-						
+
+						newCard.productList = newCard.productPanel.add(Ext.apply(offerProductList, {store: newCard.productStore}));
+
 						newCard.productStore.load({
 							limit: 0,
 							callback: function(r, o, s) {

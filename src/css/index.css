@@ -66,7 +66,7 @@
 
 .stats {
 	width: 2.75em;
-	color: teal;
+	color: blue;
 	text-align: center;
 	margin-right: 0.5em;
 }
@@ -227,4 +227,8 @@
 
 .prefsheet .x-layout-box > .x-button  {
 	-webkit-box-flex: 1;
+}
+
+.processing.draft {
+	color: blue;
 }

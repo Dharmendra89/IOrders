@@ -45,6 +45,7 @@ var SaleOrderView = Ext.extend(AbstractView, {
 
 		this.dockedItems[0].items.push(
 			{xtype: 'spacer'},
+			{name: 'ToggleActive', text: 'Показать актив', scope: this, text2: 'Скрыть актив' },
 			this.showSaleOrderBtn = new Ext.Button({name: 'ShowSaleOrder', text: 'Показать заказ', scope: this}),
 			{ui: 'save', name: 'Save', text: 'Сохранить', scope: this}
 		);

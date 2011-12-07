@@ -402,15 +402,53 @@ Ext.regController('SaleOrder', {
 		
 		view.productList.scroller.scrollTo ({y:0});
 		
-		var groupEls = view.productList.getEl().query('.x-list-item .active');
+		if (view.modeActive)
+			Ext.dispatch (Ext.apply (options, {action: 'toggleActiveOn'}));
 		
-		Ext.each (groupEls, function(dom) {
+		view.setLoading(false);
+		
+	},
+	
+	onToggleActiveButtonTap: function( options ) {
+		var view = options.view,
+			btn = options.btn,
+			t = btn.text
+		;
+		
+		view.modeActive = view.modeActive ? false : true;
+		
+		btn.setText( btn.text2 );
+		btn.text2 = t;
+		
+		Ext.dispatch ({
+			controller: 'SaleOrder',
+			action: 'toggleActive' + (view.modeActive ? 'On' : 'Off'),
+			view: view
+		});
+	},
+	
+	toggleActiveOn: function( options ) {
+		var view = options.view,
+			doms = view.productList.getEl().query('.x-list-item .active')
+		;
+		
+		Ext.each (doms, function(dom) {
 			var el = Ext.get(dom);
 			
 			el.up('.x-list-item').addCls('active').up('.x-list-group-items').addCls('hasActive');
 		});
+	},
+	
+	toggleActiveOff: function( options ) {
+		var view = options.view,
+			doms = view.productList.getEl().query('.x-list-group-items')
+		;
 		
-		view.setLoading(false);
-		
+		Ext.each (doms, function(dom) {
+			var el = Ext.get(dom);
+			
+			el.removeCls('hasActive');
+		});
 	}
+	
 });

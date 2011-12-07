@@ -157,11 +157,17 @@ Ext.regApplication({
 							
 							Ext.Msg.confirm ('Не удалось обновить БД', 'Проверим метаданные?', function (b) {
 								if (b == 'yes')
-									IOrders.xi.reconnect ({
+									IOrders.xi.request( {
+										command: 'logoff',
 										success: function() {
-											Ext.dispatch ({controller: 'Main', action: 'onXiMetaButtonTap'});
+											this.sessionData.id = false;
+											this.login({
+												success: function() {
+													Ext.dispatch ({controller: 'Main', action: 'onXiMetaButtonTap'});
+												}
+											});
 										}
-									});
+									})
 							});
 						}
 				});};

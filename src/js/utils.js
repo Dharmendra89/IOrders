@@ -212,7 +212,7 @@ function getItemTpl (modelName) {
 				 + '</div>';
 		}
 		case 'OfferCategory': {
-			return '<div>{name}</div><div class="price">'
+			return '<div <tpl if="lastActive">class="active"</tpl> >{name}</div><div class="price">'
 				 //  + '<small> {totalCost} руб.</small>'
 				 + '</div>';
 		}
@@ -222,6 +222,7 @@ function getItemTpl (modelName) {
 				     + '<p>{name}'
 						+'<tpl if="extraLabel"><span class="blue"> [{extraLabel}]</span></tpl>'
 						+'<tpl if="lastActive"><span class="green"> [{lastActive}]</span></tpl>'
+						+'<tpl if="BonusProgram_tag"><span class="crec">{BonusProgram_tag}</span></tpl>'
 					 +'</p>'
 				     + '<small><span class="price">Цена: {price} руб. </span>'
 					   + '<tpl if="rel &gt; 1"><span>Вложение: {rel}; </span></tpl>'

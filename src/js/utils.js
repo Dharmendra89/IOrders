@@ -22,7 +22,7 @@ var getItemTplMeta = function(modelName, config) {
 	
 	var modelForDeps = undefined;
 	
-	var templateString = '<div class="hbox">'
+	var templateString = '<div class="hbox {cls}">'
 				+		'<div class="data">'
 				+			'<tpl if="hasName">'
 				+				'<p class="name">\\{name\\}</p>'
@@ -92,7 +92,8 @@ var getItemTplMeta = function(modelName, config) {
 		keyColumns: [],
 		otherColumnsLength: 0,
 		otherColumns: [],
-		buttons: useDeps && !onlyKey ? buttons : ''
+		buttons: useDeps && !onlyKey ? buttons : '',
+		cls: ''
 	};
 	
 	var idColExist = columnStore.findExact('name', 'id') === -1 ? false : true;
@@ -175,12 +176,14 @@ var getItemTplMeta = function(modelName, config) {
 				templateData.otherColumns.push({
 					parent: col.get('parent') ? true : false,
 					label: label,
-					cls: colName,
+					cls: colName === 'processing' ? colName + ' {' + colName + '}' : colName,
 					name: name,
 					name_br: colName[0].toUpperCase() + colName.substring(1) + '_name'
 				});
-				
-			});
+
+				templateData.cls += (colName === 'processing' ? ' {' + colName + '}' : '');
+
+			}); 
 		}
 	}
 	

@@ -89,11 +89,13 @@
 	color: blue;
 }
 
-.expandable .x-list-group-items {
+.expandable .x-list-group-items, .expandable .hasActive .x-list-item {
 	display: none;
 }
 
-.expandable .x-list-group-items.expanded {
+
+.expandable .x-list-group-items.hasActive , .expandable .x-list-group-items.expanded,
+.expandable .hasActive .x-list-item.active, .expandable .hasActive.expanded .x-list-item {
 	display: inherit;
 }
 
@@ -213,6 +215,14 @@
 
 .blue {
 	color: blue !important;
+}
+
+.yellow {
+	color: yellow !important;
+}
+
+.green {
+	color: green !important;
 }
 
 .prefsheet .x-layout-box > .x-button  {

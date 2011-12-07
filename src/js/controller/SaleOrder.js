@@ -402,6 +402,14 @@ Ext.regController('SaleOrder', {
 		
 		view.productList.scroller.scrollTo ({y:0});
 		
+		var groupEls = view.productList.getEl().query('.x-list-item .active');
+		
+		Ext.each (groupEls, function(dom) {
+			var el = Ext.get(dom);
+			
+			el.up('.x-list-item').addCls('active').up('.x-list-group-items').addCls('hasActive');
+		});
+		
 		view.setLoading(false);
 		
 	}

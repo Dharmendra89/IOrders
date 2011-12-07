@@ -104,12 +104,22 @@ var NavigatorView = Ext.extend(AbstractView, {
 			});
 		
 			this.cls = 'objectView';
-			
+
 			formItems.push(createFieldSet(table.columns(), this.objectRecord.modelName, this));
-			
-			if(table.get('editable') || (this.editing && table.get('extendable'))) {
+
+			var spacerExist = false;
+			if(table.get('deletable')) {
 				this.dockedItems[0].items.push(
 					{xtype: 'spacer'},
+					{itemId: 'Delete', name: 'Delete', text: 'Удалить', scope: this, hidden: this.objectRecord.get('processing') !== 'draft'}
+				);
+				spacerExist = true;
+			}
+
+			if(table.get('editable') || (this.editing && table.get('extendable'))) {
+
+				spacerExist || this.dockedItems[0].items.push({xtype: 'spacer'});
+				this.dockedItems[0].items.push(
 					{itemId: 'Cancel', name: 'Cancel', text: 'Отменить', hidden: true, scope: this},
 					{
 						itemId: 'SaveEdit',

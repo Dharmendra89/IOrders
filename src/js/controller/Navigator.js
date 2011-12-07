@@ -17,7 +17,21 @@ Ext.regController('Navigator', {
 			objectRecord: IOrders.mainMenuRecord
 		}), IOrders.viewport.anims.home);
 	},
-	
+
+	onDeleteButtonTap: function(options) {
+
+		var view = options.view,
+			record = view.objectRecord
+		;
+
+		view.setLoading(true);
+		Ext.ModelMgr.getModel(record.modelName).prototype.getProxy().destroy(new Ext.data.Operation({id: record.getId(), records: [record]}), function(operation) {
+
+			view.setLoading(false);
+			Ext.dispatch(Ext.apply(options, {action: 'goBack'}));
+		});
+	},
+
 	onSaveButtonTap: function(options) {
 		
 		var view = options.view,

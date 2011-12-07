@@ -9,6 +9,7 @@ var AbstractView = Ext.extend(Ext.Panel, {
 		this.dockedItems = [{
 			xtype: 'toolbar',
 			dock: 'top',
+			itemId: 'top',
 			title: this.title,
 			items: [{
 				ui: 'back', iconMask: true,

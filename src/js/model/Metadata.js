@@ -33,6 +33,7 @@ Ext.regModel('Table', {
 		{name: 'extendable', type: 'boolean'},
 		{name: 'editable', type: 'boolean'},
 		{name: 'belongs', type: 'string'},
+		{name: 'deletable', type: 'string'}
 	],
  	associations: [
 		{type: 'hasMany', model: 'Column', name: 'columns'},

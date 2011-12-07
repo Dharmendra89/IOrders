@@ -384,6 +384,11 @@ Ext.regController('Main', {
 		field.setValue( btn.name );
 		rec.set( bar.name, btn.name );
 		rec.save();
-		
+
+		if(rec.modelName === 'SaleOrder') {
+
+			var delBtn = view.getDockedComponent('top').getComponent('Delete');
+			delBtn && delBtn[btn.name !== 'draft' ? 'hide' : 'show']();
+		}
 	}
 });

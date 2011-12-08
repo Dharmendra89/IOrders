@@ -229,8 +229,12 @@
 	-webkit-box-flex: 1;
 }
 
-.processing.draft {
+.processing.is-draft {
 	color: blue;
+}
+
+.processing.is-processing {
+	color: green;
 }
 
 .crec {

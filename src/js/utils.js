@@ -176,12 +176,12 @@ var getItemTplMeta = function(modelName, config) {
 				templateData.otherColumns.push({
 					parent: col.get('parent') ? true : false,
 					label: label,
-					cls: colName === 'processing' ? colName + ' {' + colName + '}' : colName,
+					cls: colName === 'processing' ? colName + ' is-{' + colName + '}' : colName,
 					name: name,
 					name_br: colName[0].toUpperCase() + colName.substring(1) + '_name'
 				});
 
-				templateData.cls += (colName === 'processing' ? ' {' + colName + '}' : '');
+				templateData.cls += (colName === 'processing' ? ' is-{' + colName + '}' : '');
 
 			}); 
 		}

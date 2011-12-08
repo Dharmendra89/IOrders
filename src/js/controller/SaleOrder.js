@@ -356,11 +356,9 @@ Ext.regController('SaleOrder', {
 
 		this.pricePanel = this.pricePanel || Ext.create({
 			xtype: 'panel',
-			centered: true,
 			floating: true,
 			layout: 'fit',
 			width: list.getWidth() / 2,
-			height: list.getHeight() / 2,
 			items: [{
 				xtype: 'list',
 				itemId: 'priceList',
@@ -373,13 +371,14 @@ Ext.regController('SaleOrder', {
 				}
 			}
 		});
-
+		
+		this.pricePanel.setHeight(list.getHeight() * 2 / 3);
 		this.pricePanel.iel = iel;
 
 		this.pricePanel.getComponent('priceList').store.load({
 			filters: [{property: 'product', value: productRec.get('product')}],
 			callback: function() {
-				this.pricePanel.show();
+				this.pricePanel.showBy(iel, false, false);
 			},
 			scope: this
 		});

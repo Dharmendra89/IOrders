@@ -349,11 +349,8 @@ Ext.regController('SaleOrder', {
 		var list = options.list,
 			item = options.item,
 			iel = Ext.get(item),
-			productRec = list.getRecord(item),
-			store = createStore('Price', Ext.apply(getSortersConfig('Price', {}), {filters: [{property: 'product', value: productRec.get('product')}]}))
+			productRec = list.getRecord(item)
 		;
-
-		store.load();
 
 		iel.addCls('editing');
 
@@ -366,8 +363,9 @@ Ext.regController('SaleOrder', {
 			height: list.getHeight() / 2,
 			items: [{
 				xtype: 'list',
+				itemId: 'priceList',
 				itemTpl: getItemTplMeta('Price', {useDeps: false, groupField: 'category', filterObject: {modelName: 'Product'}}).itemTpl,
-				store: store
+				store: createStore('Price', Ext.apply(getSortersConfig('Price', {})))
 			}],
 			listeners: {
 				hide: function() {
@@ -378,7 +376,13 @@ Ext.regController('SaleOrder', {
 
 		this.pricePanel.iel = iel;
 
-		this.pricePanel.show();
+		this.pricePanel.getComponent('priceList').store.load({
+			filters: [{property: 'product', value: productRec.get('product')}],
+			callback: function() {
+				this.pricePanel.show();
+			},
+			scope: this
+		});
 	},
 
 	addOfferProductList: function(options) {

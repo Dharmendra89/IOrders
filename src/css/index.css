@@ -243,3 +243,7 @@
 	padding: 2px 6px;
 	margin-left: 6px;
 }
+
+.hbox.dep {
+	margin-bottom: 6px;
+}

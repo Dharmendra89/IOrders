@@ -334,7 +334,7 @@ var getDepsData = function(depsStore, tablesStore, view) {
 
 		var depTable = tablesStore.getById(dep.get('table_id'));
 
-		if(depTable.get('id') != 'SaleOrderPosition' || view.objectRecord.modelName == 'SaleOrder') {
+		if(depTable.get('nameSet') && depTable.get('id') != 'SaleOrderPosition' || view.objectRecord.modelName == 'SaleOrder') {
 			var depRec = Ext.ModelMgr.create({
 				name: depTable.get('nameSet'),
 				table_id: depTable.get('id'),

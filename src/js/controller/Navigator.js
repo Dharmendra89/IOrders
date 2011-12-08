@@ -778,7 +778,7 @@ Ext.regController('Navigator', {
 					
 					var depTable = tableStore.getById(dep.get('table_id'));
 					
-					if((depTable.get('id') != 'SaleOrderPosition' || record.modelName == 'SaleOrder') && record.modelName !== depTable.get('id')) {
+					if(depTable.get('nameSet') && (depTable.get('id') != 'SaleOrderPosition' || record.modelName == 'SaleOrder') && record.modelName !== depTable.get('id')) {
 						
 						var depRec = {
 								name: depTable.get('nameSet'),

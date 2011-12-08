@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.677" expect-megabytes="15">
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.689" expect-megabytes="15">
   <tables set-of="table">
     <table id="Uncashment" name="Сданная выручка" nameSet="Сданная выручка" level="0" extendable="true">
       <columns set-of="column">
@@ -67,6 +67,7 @@
       <deps set-of="dep">
         <dep table_id="Price" id="Priceproduct"/>
         <dep table_id="Stock" id="Stockproduct"/>
+        <dep table_id="BonusProgramProduct" id="BonusProgramProductproduct"/>
       </deps>
     </table>
     <table id="Price" name="Цена прайс-листа" nameSet="Цены прайс-листа" level="1">
@@ -76,6 +77,26 @@
         <column id="Pricepricelist" name="pricelist" parent="Pricelist" label="Прайс-лист" key="true"/>
         <column id="Priceproduct" name="product" parent="Product" label="Товар" key="true"/>
         <column id="Priceprice" name="price" type="float" label="Цена"/>
+      </columns>
+    </table>
+    <table id="BonusProgram" name="Бонусная программа" nameSet="Бонусные программы" level="0">
+      <columns set-of="column">
+        <column id="BonusProgramid" name="id" type="int" key="true"/>
+        <column id="BonusProgramname" name="name" type="string" label="Название"/>
+        <column id="BonusProgramdateStart" name="dateStart" type="date" label="Дата начала"/>
+        <column id="BonusProgramdateEnd" name="dateEnd" type="date" label="Дата окончания"/>
+        <column id="BonusProgramtag" name="tag" type="string" label="Название кнопки"/>
+      </columns>
+      <deps set-of="dep">
+        <dep table_id="BonusProgramProduct" id="BonusProgramProductbonusprogram"/>
+      </deps>
+    </table>
+    <table id="BonusProgramProduct" name="Бонусная программа товара" nameSet="Бонусные программы товара" level="1">
+      <columns set-of="column">
+        <column id="BonusProgramProductbonusprogram" name="bonusprogram" type="int" parent="BonusProgram" label="Бонусная программа" key="true"/>
+        <column id="BonusProgramProductproduct" name="product" parent="Product" label="Товар"/>
+        <column id="BonusProgramProductdateStart" name="dateStart" type="date" label="Дата начала"/>
+        <column id="BonusProgramProductdateEnd" name="dateEnd" type="date" label="Дата окончания"/>
       </columns>
     </table>
     <table id="Warehouse" name="Склад" nameSet="Склады" level="0">
@@ -154,6 +175,7 @@
         <dep table_id="RoutePoint" id="RoutePointcustomer"/>
         <dep table_id="SaleOrder" id="SaleOrdercustomer"/>
         <dep table_id="Encashment" id="Encashmentcustomer"/>
+        <dep table_id="Shipment" id="Shipmentcustomer" contains="true"/>
       </deps>
     </table>
     <table id="SaleOrder" name="Заказ" nameSet="Заказы" level="2" extendable="true" deletable="new-only" editable="true">
@@ -168,6 +190,7 @@
         <column id="SaleOrderisWhite" name="isWhite" type="boolean" label="Нужен счет-фактура" editable="true"/>
         <column id="SaleOrderdate" name="date" type="date" label="Дата доставки" editable="true"/>
         <column id="SaleOrdertotalCost" name="totalCost" type="float" label="Стоимость"/>
+        <column id="SaleOrdercomment" name="comment" type="string" label="Комментарий" editable="true"/>
       </columns>
       <deps set-of="dep">
         <dep table_id="SaleOrderPosition" id="SaleOrderPositionsaleorder" contains="true"/>
@@ -192,6 +215,32 @@
         <column id="Encashmentsumm" name="summ" type="float" label="Получено" editable="true"/>
         <column id="Encashmentdebt" name="debt" parent="Debt" label="Задолженность" editable="true"/>
         <column id="Encashmentuncashment" name="uncashment" parent="Uncashment" label="Сданная выручка" editable="true"/>
+      </columns>
+    </table>
+    <table id="Shipment" name="Отгрузка" nameSet="Отгрузки" level="2" belongs="Customer">
+      <columns set-of="column">
+        <column id="Shipmentcustomer" name="customer" type="int" parent="Customer" label="Клиент"/>
+        <column id="Shipmentid" name="id" type="int" key="true"/>
+        <column id="Shipmentndoc" name="ndoc" type="string" label="№"/>
+        <column id="Shipmentdate" name="date" type="date" label="Дата отгрузки"/>
+        <column id="Shipmentstatus" name="status" type="string" label="Статус"/>
+        <column id="Shipmentcomment" name="comment" type="string" label="Примечание"/>
+        <column id="ShipmentdebtSumm" name="debtSumm" type="float" label="Задолженность"/>
+        <column id="Shipmentsumm" name="summ" type="float" label="Стоимость"/>
+        <column id="ShipmentlastActive" name="lastActive" type="int"/>
+      </columns>
+      <deps set-of="dep">
+        <dep table_id="ShipmentPosition" id="ShipmentPositionshipment"/>
+      </deps>
+    </table>
+    <table id="ShipmentPosition" name="Позиция отгрузки" nameSet="Позиции отгрузки" level="3">
+      <columns set-of="column">
+        <column id="ShipmentPositionshipment" name="shipment" type="int" parent="Shipment" label="Отгрузка" key="true"/>
+        <column id="ShipmentPositionxid" name="xid"/>
+        <column id="ShipmentPositionproduct" name="product" parent="Product" label="Товар"/>
+        <column id="ShipmentPositionsumm" name="summ" type="float" label="Стоимость"/>
+        <column id="ShipmentPositionvol" name="vol" type="int" label="Кол-во штук"/>
+        <column id="ShipmentPositionprice" name="price" type="float" label="Цена"/>
       </columns>
     </table>
     <table id="Route" name="Маршрут" nameSet="Маршруты" level="0">
@@ -224,10 +273,12 @@
         <column id="Offerrel" name="rel" type="int" label="Шт. в упаковке"/>
         <column id="Offerfactor" name="factor" type="int" label="Кратность"/>
         <column id="OfferextraLabel" name="extraLabel" type="string" label="Подсказка"/>
+        <column id="OfferBonusProgram_tag" name="BonusProgram_tag" type="string" label="Название кнопки"/>
         <column id="OfferstockLevel" name="stockLevel" type="int" label="Уровень запаса"/>
         <column id="Offercost" name="cost" type="float" label="Стоимость"/>
+        <column id="OfferlastActive" name="lastActive" type="int"/>
       </columns>
-      <sql>select c.id as customer, g.category, p.price, g.id as Product, g.firstName, g.name, g.rel, g.factor, g.extraLabel, s.stockLevel, 0 as isActive, null as cost from Customer c join PartnerPriceList ppl on ppl.partner = c.partner join Price p on p.pricelistSet = ppl.pricelistSet and p.priceList = ppl.priceList join Product g on g.id = p.product join Stock s on s.product = g.id and s.warehouse = c.warehouse and s.stockLevel &gt; 0</sql>
+      <sql>select c.id as customer, g.category, p.price, g.id as Product, g.firstName, g.name, g.rel, g.factor, g.extraLabel, case (select count(*) from BonusProgramProduct bpp where product = g.id) when 0 then null else 'A' end as BonusProgram_tag, s.stockLevel, null as cost, round(julianday() - (select julianday(replace(max(s.date), '/', '-')) from Shipment s join ShipmentPosition sp on sp.shipment = s.id where sp.product = g.id and s.customer = c.id ),0) as lastActive from Customer c join PartnerPriceList ppl on ppl.partner = c.partner join Price p on p.pricelistSet = ppl.pricelistSet and p.priceList = ppl.priceList join Product g on g.id = p.product join Stock s on s.product = g.id and s.warehouse = c.warehouse and s.stockLevel &gt; 0</sql>
     </view>
     <view id="OfferCategory">
       <columns set-of="column">
@@ -237,8 +288,9 @@
         <column id="OfferCategorytotalCost" name="totalCost" type="float" label="Стоимость"/>
         <column id="OfferCategoryshopDepartment" name="shopDepartment"/>
         <column id="OfferCategoryShopDepartment_name" name="ShopDepartment_name" type="string" label="Название"/>
+        <column id="OfferCategorylastActive" name="lastActive" type="int"/>
       </columns>
-      <sql>select c.*, sd.name as shopDepartment_name from ( select cu.id as customer, c.id category, c.name, null as totalCost, c.shopDepartment from Customer cu, Category c where exists (select * from Offer where c.id=category and customer = cu.id) ) c join ShopDepartment sd on sd.id = c.shopDepartment</sql>
+      <sql>select c.*, sd.name as shopDepartment_name from ( select cu.id as customer, c.id category, c.name, null as totalCost, c.shopDepartment, null as lastActive from Customer cu, Category c where exists (select * from Offer where c.id=category and customer = cu.id) ) c join ShopDepartment sd on sd.id = c.shopDepartment</sql>
     </view>
     <view id="Cash" nameSet="Выручка">
       <columns set-of="column">

@@ -397,6 +397,45 @@ var getDepsData = function(depsStore, tablesStore, view) {
 	return data;
 };
 
+var prepareDepRecord = function() {
+
+	depsStore.each(function(dep) {
+
+		var depTable = tablesStore.getById(dep.get('table_id'));
+
+		if(depTable.get('id') != 'SaleOrderPosition' || view.objectRecord.modelName == 'SaleOrder') {
+			var depRec = Ext.ModelMgr.create({
+				name: depTable.get('nameSet'),
+				table_id: depTable.get('id'),
+				extendable: depTable.get('extendable'),
+				contains: dep.get('contains'),
+				editing: view.editing
+			}, 'Dep');
+		}
+	});
+};
+
+var loadDepData = function(depRec, depTable, filters, aggregatesHandler) {
+
+	var modelProxy = Ext.ModelMgr.getModel(depTable.get('id')).prototype.getProxy();
+		
+	var aggCols = depTable.getAggregates();
+	var aggOperation = new Ext.data.Operation({depRec: depRec, filters: filters});
+
+	modelProxy.aggregate(aggOperation, function(operation) {
+
+		var aggDepResult = '';
+		var aggDepTpl = new Ext.XTemplate('<tpl if="value &gt; 0"><tpl if="name">{name} : </tpl>{[values.value.toFixed(2)]} </tpl>');
+		var aggResults = operation.resultSet.records[0].data;
+
+		aggCols.each(function(aggCol) {
+			aggDepResult += aggDepTpl.apply({name: aggCol.get('label') != depTable.get('nameSet') ? aggCol.get('label') : '', value: aggResults[aggCol.get('name')]});
+		});
+		
+		aggregatesHandler.apply(this, [operation, aggResults, aggDepResult]);
+	});
+};
+
 var createTitlePanel = function(t) {
 
 	var htmlTpl = new Ext.XTemplate('<div>{title}</div>');

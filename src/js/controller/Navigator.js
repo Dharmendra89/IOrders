@@ -841,8 +841,8 @@ Ext.regController('Navigator', {
 						
 						var t = depStore.getById(depRec.table_id);
 						
-						if(t && t.columns && t.columns().findBy(function(c){return c.get('name')=='processing'})) {
-						
+						if(t && t.columns && t.columns().findBy(function(c){return c.get('name')=='processing'}) > 0) {
+							
 							filters.push({property: 'processing', value: 'draft'});
 							
 							var countOperation = new Ext.data.Operation({depRec: depRec, filters: filters});
@@ -850,7 +850,7 @@ Ext.regController('Navigator', {
 								
 								var aggResults = operation.resultSet.records[0].data;
 								
-								operation.depRec.stats = aggResults.cnt;
+								if (aggResults.cnt > 0) operation.depRec.stats =  aggResults.cnt;
 								
 								record.data.deps = data;
 								list.store && list.refreshNode(list.indexOf(record));

@@ -49,7 +49,7 @@ var getItemTplMeta = function(modelName, config) {
 				+							'<tpl if="parent">'
 				+								'<tpl if="label || name">'
 				+									'<div>'
-				+										'<span class="label-parent">'
+				+										'<span class="label-parent x-button">'
 				+											'<input type="hidden" property="{name}" value="\\{{name}\\}" />'
 				+											'{label}'
 				+										'</span>'

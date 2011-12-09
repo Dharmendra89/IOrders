@@ -247,3 +247,7 @@
 .hbox.dep {
 	margin-bottom: 6px;
 }
+
+.label-parent.x-button {
+	display: inline;
+}

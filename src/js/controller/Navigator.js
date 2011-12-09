@@ -168,7 +168,7 @@ Ext.regController('Navigator', {
 
 		view.lastSelectedRecord = tappedRec;
 
-		if (target.hasCls('x-button')) {
+		if (target.hasCls('x-button') && !target.hasCls('label-parent')) {
 			
 			if (target.hasCls('extend')) {
 				

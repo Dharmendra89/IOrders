@@ -696,9 +696,9 @@ Ext.regController('Navigator', {
 				items: [
 					{ text: 'Закрыть панель настроек', name: 'PrefsClose'},
 					{ text: 'Запросить данные', name: 'XiDownload'},
-					{ text: 'Запросить метаданные', name: 'XiMeta'},
-					{ text: 'Стереть локальные данные', name: 'ClearLocalStorage'},
 					{ text: 'Пересоздать БД', name: 'DbRebuild'},
+					{ text: 'Сервер-логин', name: 'XiLogin'},
+					{ text: 'Сервер-логоф', name: 'XiLogoff'},
 					{ xtype: 'segmentedbutton', items: [
 						{text: 'Localdata', name: 'XiNoServer', pressed: IOrders.xi.noServer},
 						{text: 'System', name: 'XiYesServer', pressed: !IOrders.xi.noServer},
@@ -711,9 +711,9 @@ Ext.regController('Navigator', {
  						{text: 'Новый дизайн', name: 'NewDesign', pressed: IOrders.newDesign},
  						{text: 'Старый дизайн', name: 'OldDesign', pressed: !IOrders.newDesign},
  					]},
-					{ text: 'Сервер-логин', name: 'XiLogin'},
-					{ text: 'Сервер-логоф', name: 'XiLogoff'},
 					{ text: 'Включить Heartbeat', name: 'HeartbeatOn'},
+					{ text: 'Запросить метаданные', name: 'XiMeta'},
+					{ text: 'Забыть пароль', name: 'ClearLocalStorage'},
 					{ text: 'Обновить кэш', name: 'CacheRefresh'},
 					{ text: 'Перезапустить', name: 'Reload'}
 				],

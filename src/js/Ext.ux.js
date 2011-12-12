@@ -188,6 +188,34 @@ Ext.override (Ext.SegmentedButton, {
     }
 });
 
+Ext.override(Ext.List, {
+
+	onIndex : function(record, target, index) {
+        var key = record.get('key').toLowerCase(),
+            groups = this.store.getGroups(),
+            ln = groups.length,
+            group, i, closest, id;
+
+        for (i = 0; i < ln; i++) {
+            group = groups[i];
+            id = this.getGroupId(group);
+
+            if (id == key || id > key) {
+                closest = id;
+                break;
+            }
+            else {
+                closest = id;
+            }
+        }
+
+        closest = this.getTargetEl().down('.x-group-' + id);
+        if (closest) {
+            this.scroller.scrollTo({x: 0, y: closest.getOffsetsTo(this.scrollEl)[1]}, 400);
+        }
+    },
+});
+
 String.right = function (str, n){
     if (n <= 0)
        return "";

@@ -251,3 +251,30 @@
 .label-parent.x-button {
 	display: inline;
 }
+
+.x-indexbar-horizontal {
+	padding: 0 .3em;
+	width: auto;
+	display: -webkit-box;
+	display: box;
+	-webkit-box-orient: vertical;
+	box-orient: vertical;
+	-webkit-box-align: stretch;
+	box-align: stretch;
+	-webkit-box-pack: center;
+	box-pack: center;
+	position: absolute;
+	top: auto;
+	bottom: 0.5em;
+	right: auto;
+	z-index: 3;
+}
+
+.x-indexbar-horizontal .x-indexbar-body {
+	display: -webkit-box;
+	-webkit-box-orient: horizontal;
+}
+
+.x-indexbar-horizontal .x-indexbar-item {
+	padding-right: 3px;
+}

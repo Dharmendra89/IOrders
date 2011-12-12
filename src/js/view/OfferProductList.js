@@ -1,16 +1,17 @@
 var offerProductList = {
 
+	xtype: 'expandableGroupedList',
 	cls: 'x-product-list',
 	itemTpl: getItemTpl('OfferProduct'),
-	grouped: true,
 	disableSelection: true,
 	pinHeaders: false,
-	xtype: 'expandableGroupedList',
-	
+
+	indexBar: new HorizontalIndexBar(),
+
 	onItemTap: Ext.emptyFn,
-	
+
 	listeners: {
-		
+
 		itemswipe: function(list, idx, item, event) {
 			if (!list.disableSwipe) {
 				Ext.dispatch({
@@ -77,7 +78,6 @@ var offerProductList = {
 		}*/
 		
 	},
-	
 
 	onRender: function() {
 

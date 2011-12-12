@@ -243,11 +243,11 @@ Ext.regController('SaleOrder', {
 												} else {
 													console.log ('SaleOrder: empty customer');
 												}
-												
+
 												newCard.productStore.filter(newCard.productStore.volumeFilter);
 												oldCard.setLoading(false);
 												IOrders.viewport.setActiveItem(newCard);
-												
+												newCard.productList.indexBar.loadIndex(newCard.productStore);
 											} else failureCb('товаров');
 										}
 									});
@@ -400,9 +400,10 @@ Ext.regController('SaleOrder', {
 		});
 		
 		view.isShowSaleOrder && filters.push(productStore.volumeFilter);
-		
+
 		productStore.filter(filters);
-		
+
+		view.productList.indexBar.loadIndex(productStore);
 		view.productList.scroller.scrollTo ({y:0});
 		
 		if (view.modeActive)

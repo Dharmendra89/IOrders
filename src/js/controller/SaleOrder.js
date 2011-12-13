@@ -284,16 +284,16 @@ Ext.regController('SaleOrder', {
 	},
 	
 	onProductCategoryListItemTap: function(options) {
-		
+
 		var list = options.list,
-		    rec = list.getRecord(options.item),
-		    view = list.up('saleorderview')
+			rec = list.getRecord(options.item),
+			view = list.up('saleorderview')
 		;
-		
+
 		view.setLoading(true);
-		
+
 		Ext.apply(options, {action: 'addOfferProductList', view: view, categoryRec: rec});
-		
+
 		Ext.defer(Ext.dispatch, 100, this, [options]);
 	},
 
@@ -324,7 +324,7 @@ Ext.regController('SaleOrder', {
 				}
 			}
 		});
-		
+
 		this.pricePanel.setHeight(list.getHeight() * 2 / 3);
 		this.pricePanel.iel = iel;
 
@@ -353,6 +353,7 @@ Ext.regController('SaleOrder', {
 		});
 		
 		view.isShowSaleOrder && filters.push(productStore.volumeFilter);
+		view.bonusMode && filters.push(productStore.bonusFilter);
 
 		productStore.filter(filters);
 
@@ -413,7 +414,7 @@ Ext.regController('SaleOrder', {
 			}
 		}));
 
-		Ext.dispatch(Ext.apply(options, {action: 'afterShowSaleOrder'}));
+		Ext.dispatch(Ext.apply(options, {action: 'afterFilterProductStore'}));
 	},
 
 	toggleShowSaleOrderOff: function(options) {
@@ -431,7 +432,7 @@ Ext.regController('SaleOrder', {
 		view.productStore.clearFilter(true);
 		view.productStore.filter(view.productStore.filtersSnapshot);
 
-		Ext.dispatch(Ext.apply(options, {action: 'afterShowSaleOrder'}));
+		Ext.dispatch(Ext.apply(options, {action: 'afterFilterProductStore'}));
 	},
 
 	beforeShowSaleOrder: function(options) {
@@ -442,7 +443,7 @@ Ext.regController('SaleOrder', {
 		view.isShowSaleOrder = options.mode;
 	},
 
-	afterShowSaleOrder: function(options) {
+	afterFilterProductStore: function(options) {
 
 		var view = options.view;
 
@@ -461,9 +462,7 @@ Ext.regController('SaleOrder', {
 			pressed = options.pressed
 		;
 
-		var t = btn.text;
-		btn.setText(btn.altText);
-		btn.altText = t;
+		changeBtnText(btn);
 
 		Ext.dispatch(Ext.apply(options, {
 			action: 'toggle' + btn.itemId + (pressed ? 'On' : 'Off')
@@ -472,5 +471,133 @@ Ext.regController('SaleOrder', {
 
 	toggleBonusOn: function(options) {
 
+		var view = options.view;
+
+		if(!view.bonusPanel) { 
+			view.bonusPanel = Ext.create({
+				xtype: 'panel',
+				floating: true,
+				centered: true,
+				layout: 'fit',
+				width: view.getWidth() / 2,
+				height: view.getHeight() * 2 / 3,
+				dockedItems: [
+					{xtype: 'toolbar', itemId: 'top', dock: 'top',
+						items: [
+							{itemId: 'AllBonus', name: 'AllBonus', text: 'Выбрать все', scope: view},
+							{itemId: 'BonusSelect', name: 'BonusSelect', text: 'ОК', scope: view}
+						]
+					}
+				],
+				items: [{
+					xtype: 'list',
+					itemId: 'bonusList',
+					simpleSelect: true,
+					multiSelect: true,
+					itemTpl: getItemTplMeta('BonusProgram', {useDeps: false}).itemTpl,
+					store: createStore('BonusProgram', Ext.apply(getSortersConfig('BonusProgram', {})))
+				}],
+				listeners: {
+					hide: function() {
+
+						if(!view.bonusMode) {
+
+							var segBtn = view.getDockedComponent('top').getComponent('ModeChanger'),
+								btn = segBtn.getComponent('Bonus')
+							;
+							segBtn.setPressed(btn, undefined);
+						}
+					}
+				}
+			});
+	
+			view.bonusProductStore = createStore('BonusProgramProduct', Ext.apply(getSortersConfig('BonusProgramProduct', {})));
+			view.bonusPanel.getComponent('bonusList').store.load({
+				callback: function() {
+					view.bonusProductStore.load({callback: function() {
+						view.bonusProductStore.remoteFilter = false;
+						view.bonusPanel.show();
+					}});
+				}
+			});
+		} else {
+			view.bonusPanel.show();
+		}
+	},
+
+	toggleBonusOff: function(options) {
+
+		var view = options.view,
+			bonusList = view.bonusPanel.getComponent('bonusList')
+		;
+
+		bonusList.selModel.deselect(bonusList.selModel.getSelection());
+
+		view.bonusMode = false;
+
+		view.productStore.clearFilter(true);
+		view.productStore.filtersSnapshot && view.productStore.filter(view.productStore.filtersSnapshot);
+		view.offerCategoryStore.clearFilter();
+
+		view.bonusMode && Ext.dispatch(Ext.apply(options, {action: 'afterFilterProductStore'}));
+	},
+
+	onAllBonusButtonTap: function(options) {
+
+		var view = options.view,
+			bonusList = view.bonusPanel.getComponent('bonusList')
+		;
+
+		bonusList.selModel.select(bonusList.store.getRange());
+	},
+
+	onBonusSelectButtonTap: function(options) {
+
+		var view = options.view,
+			bonusList = view.bonusPanel.getComponent('bonusList'),
+			selectedBonus = bonusList.selModel.getSelection()
+		;
+
+		view.bonusProductStore.filterBy(function(rec, id) {
+			var isBonusProduct = false;
+
+			Ext.each(selectedBonus, function(bonus) {
+				if(bonus.getId() == rec.get('bonusprogram')) {
+					isBonusProduct = true;
+					return false;
+				}
+			});
+			return isBonusProduct;
+		});
+
+		view.productStore.bonusFilter = view.productStore.bonusFilter || new Ext.util.Filter({
+			filterFn: function(item) {
+				if(view.bonusProductStore.findExact('product', item.get('product')) != -1) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		});
+
+		view.productStore.filtersSnapshot = view.productStore.filters.items;
+		view.productStore.clearFilter(true);
+		view.productStore.filter(view.productStore.bonusFilter);
+
+		view.offerCategoryStore.remoteFilter = false;
+		view.offerCategoryStore.clearFilter();
+		view.offerCategoryStore.filter(new Ext.util.Filter({
+			filterFn: function(item) {
+				return view.productStore.findExact('category', item.get('category')) > -1 ? true : false;
+			}
+		}));
+
+		view.bonusProductStore.clearFilter();
+
+		view.bonusMode = true;
+
+		Ext.dispatch(Ext.apply(options, {action: 'afterFilterProductStore'}));
+
+		view.bonusPanel.hide();
 	}
 });

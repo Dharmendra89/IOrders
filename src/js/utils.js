@@ -576,3 +576,10 @@ var getOwnerViewConfig = function(view) {
 		lastSelectedRecord: view.lastSelectedRecord
 	}};
 };
+
+var changeBtnText = function(btn) {
+
+	var t = btn.text;
+	btn.setText(btn.altText);
+	btn.altText = t;
+};

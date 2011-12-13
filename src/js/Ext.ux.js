@@ -164,12 +164,25 @@ Ext.override ( Ext.util.Observable, {
 Ext.override (Ext.SegmentedButton, {
 	
 	onTap : function(e, t) {
-        if (!this.disabled && (t = e.getTarget('.x-button'))) {
-			var b = Ext.getCmp(t.id);
+		if (!this.disabled && (t = e.getTarget('.x-button'))) {
+			var b = Ext.getCmp(t.id),
+				allowPress = true
+			;
 			b.wasPressed = b.pressed;
-            if (!b.disabled ) this.setPressed(b.itemId || t.id, this.allowDepress ? undefined : true);
-        }
-    },
+
+			if(this.allowMultiple) {
+				var pressed = this.getPressed();
+	
+				Ext.each(pressed, function(btn) {
+	
+					Ext.each(btn.disallowOther, function(dBtn) {
+						allowPress = allowPress && dBtn != b.itemId;
+					});
+				});
+			}
+			if (!b.disabled && allowPress) this.setPressed(b.itemId || t.id, this.allowDepress ? undefined : true);
+		}
+	},
 	
 	afterLayout : function(layout) {
         var me = this;

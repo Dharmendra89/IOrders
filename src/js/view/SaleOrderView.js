@@ -45,8 +45,26 @@ var SaleOrderView = Ext.extend(AbstractView, {
 
 		this.dockedItems[0].items.push(
 			{xtype: 'spacer'},
-			{name: 'ToggleActive', text: 'Показать актив', scope: this, text2: 'Скрыть актив' },
-			this.showSaleOrderBtn = new Ext.Button({name: 'ShowSaleOrder', text: 'Показать заказ', scope: this}),
+			{xtype: 'segmentedbutton', allowMultiple: true, itemId: 'ModeChanger',
+				items: [
+					{itemId: 'Bonus', text: 'По акциям', altText: 'Все', handler: Ext.emptyFn},
+					{itemId: 'Active', text: 'Показать актив', altText: 'Скрыть актив', handler: Ext.emptyFn},
+					{itemId: 'ShowSaleOrder', text: 'Показать заказ', altText: 'Показать все', handler: Ext.emptyFn}
+				],
+				listeners: {
+					toggle: function(segBtn, btn, pressed) {
+
+						Ext.dispatch({
+							controller: 'SaleOrder',
+							action: 'onModeButtonTap',
+							view: segBtn.up('saleorderview'),
+							segBtn: segBtn,
+							btn: btn,
+							pressed: pressed
+						});
+					}
+				}
+			},
 			{ui: 'save', name: 'Save', text: 'Сохранить', scope: this}
 		);
 	},

@@ -430,7 +430,7 @@ Ext.regController('SaleOrder', {
 		);
 
 		view.productStore.clearFilter(true);
-		view.productStore.filter(view.productStore.filtersSnapshot);
+		view.productStore.filtersSnapshot && view.productStore.filter(view.productStore.filtersSnapshot);
 
 		Ext.dispatch(Ext.apply(options, {action: 'afterFilterProductStore'}));
 	},
@@ -533,13 +533,12 @@ Ext.regController('SaleOrder', {
 
 		bonusList.selModel.deselect(bonusList.selModel.getSelection());
 
-		view.bonusMode = false;
-
 		view.productStore.clearFilter(true);
 		view.productStore.filtersSnapshot && view.productStore.filter(view.productStore.filtersSnapshot);
 		view.offerCategoryStore.clearFilter();
 
 		view.bonusMode && Ext.dispatch(Ext.apply(options, {action: 'afterFilterProductStore'}));
+		view.bonusMode = false;
 	},
 
 	onAllBonusButtonTap: function(options) {

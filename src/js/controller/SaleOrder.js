@@ -505,7 +505,8 @@ Ext.regController('SaleOrder', {
 							var segBtn = view.getDockedComponent('top').getComponent('ModeChanger'),
 								btn = segBtn.getComponent('Bonus')
 							;
-							segBtn.setPressed(btn, undefined);
+							segBtn.setPressed(btn, undefined, true);
+							changeBtnText(btn);
 						}
 					}
 				}
@@ -531,14 +532,26 @@ Ext.regController('SaleOrder', {
 			bonusList = view.bonusPanel.getComponent('bonusList')
 		;
 
-		bonusList.selModel.deselect(bonusList.selModel.getSelection());
+		Ext.Msg.confirm('Акции', 'Выбрать другие акции?', function(btn) {
+			if(btn === 'yes') {
 
-		view.productStore.clearFilter(true);
-		view.productStore.filtersSnapshot && view.productStore.filter(view.productStore.filtersSnapshot);
-		view.offerCategoryStore.clearFilter();
+				var segBtn = view.getDockedComponent('top').getComponent('ModeChanger'),
+					bonusBtn = segBtn.getComponent('Bonus')
+				;
+				segBtn.setPressed(bonusBtn, true);
 
-		view.bonusMode && Ext.dispatch(Ext.apply(options, {action: 'afterFilterProductStore'}));
-		view.bonusMode = false;
+				
+			} else {
+				bonusList.selModel.deselect(bonusList.selModel.getSelection());
+
+				view.productStore.clearFilter(true);
+				view.productStore.filtersSnapshot && view.productStore.filter(view.productStore.filtersSnapshot);
+				view.offerCategoryStore.clearFilter();
+
+				view.bonusMode && Ext.dispatch(Ext.apply(options, {action: 'afterFilterProductStore'}));
+				view.bonusMode = false;
+			}
+		});
 	},
 
 	onAllBonusButtonTap: function(options) {
@@ -582,20 +595,26 @@ Ext.regController('SaleOrder', {
 		view.productStore.filtersSnapshot = view.productStore.filters.items;
 		view.productStore.clearFilter(true);
 		view.productStore.filter(view.productStore.bonusFilter);
+		
+		if(view.productStore.getCount() > 0) {
 
-		view.offerCategoryStore.remoteFilter = false;
-		view.offerCategoryStore.clearFilter();
-		view.offerCategoryStore.filter(new Ext.util.Filter({
-			filterFn: function(item) {
-				return view.productStore.findExact('category', item.get('category')) > -1 ? true : false;
-			}
-		}));
+			view.offerCategoryStore.remoteFilter = false;
+			view.offerCategoryStore.clearFilter();
+			view.offerCategoryStore.filter(new Ext.util.Filter({
+				filterFn: function(item) {
+					return view.productStore.findExact('category', item.get('category')) > -1 ? true : false;
+				}
+			}));
+	
+			view.bonusProductStore.clearFilter();
 
-		view.bonusProductStore.clearFilter();
-
-		view.bonusMode = true;
-
-		Ext.dispatch(Ext.apply(options, {action: 'afterFilterProductStore'}));
+			view.bonusMode || Ext.dispatch(Ext.apply(options, {action: 'afterFilterProductStore'}));
+			view.bonusMode = true;
+		} else {
+			Ext.Msg.alert('Нет товаров', 'По выбранной акции нет товаров для заказа');
+			view.productStore.clearFilter(true);
+			view.productStore.filter(view.productStore.filtersSnapshot);
+		}
 
 		view.bonusPanel.hide();
 	}

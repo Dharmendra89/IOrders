@@ -575,7 +575,7 @@ var getOwnerViewConfig = function(view) {
 		storeLimit: view.isSetView ? view.setViewStore.currentPage * view.setViewStore.pageSize : undefined,
 		storePage: view.isSetView && view.setViewStore.currentPage,
 		lastSelectedRecord: view.lastSelectedRecord,
-		scrollOffset: view.form.scroller.getOffet()
+		scrollOffset: view.form.scroller.getOffset()
 	}};
 };
 

@@ -469,7 +469,8 @@ var createNavigatorView = function(rec, oldCard, isSetView, editing, config) {
 				ownerViewConfig: oldCard.ownerViewConfig,
 				storeLimit: oldCard.isSetView ? oldCard.setViewStore.currentPage * oldCard.setViewStore.pageSize : undefined,
 				storePage: oldCard.isSetView && oldCard.setViewStore.currentPage,
-				lastSelectedRecord: oldCard.lastSelectedRecord
+				lastSelectedRecord: oldCard.lastSelectedRecord,
+				scrollOffset: oldCard.form.scroller.getOffset()
 			}
 		}, config);
 		
@@ -573,7 +574,8 @@ var getOwnerViewConfig = function(view) {
 		ownerViewConfig: view.ownerViewConfig,
 		storeLimit: view.isSetView ? view.setViewStore.currentPage * view.setViewStore.pageSize : undefined,
 		storePage: view.isSetView && view.setViewStore.currentPage,
-		lastSelectedRecord: view.lastSelectedRecord
+		lastSelectedRecord: view.lastSelectedRecord,
+		scrollOffset: view.form.scroller.getOffet()
 	}};
 };
 

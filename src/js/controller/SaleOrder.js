@@ -481,21 +481,17 @@ Ext.regController('SaleOrder', {
 				layout: 'fit',
 				width: view.getWidth() / 2,
 				height: view.getHeight() * 2 / 3,
-				dockedItems: [
-					{xtype: 'toolbar', itemId: 'top', dock: 'top',
-						items: [
-							{itemId: 'AllBonus', name: 'AllBonus', text: 'Выбрать все', scope: view},
-							{itemId: 'BonusSelect', name: 'BonusSelect', text: 'ОК', scope: view}
-						]
-					}
-				],
+				dockedItems: [],
 				items: [{
 					xtype: 'list',
 					itemId: 'bonusList',
-					simpleSelect: true,
-					multiSelect: true,
 					itemTpl: getItemTplMeta('BonusProgram', {useDeps: false}).itemTpl,
-					store: createStore('BonusProgram', Ext.apply(getSortersConfig('BonusProgram', {})))
+					store: createStore('BonusProgram', Ext.apply(getSortersConfig('BonusProgram', {}))),
+					listeners: {
+						itemtap: function(list, idx, item, e) {
+							Ext.dispatch({controller: 'SaleOrder',action: 'onBonusItemSelect', view: view, list: list, idx: idx, item: item, event: e});
+						}
+					}
 				}],
 				listeners: {
 					hide: function() {
@@ -514,8 +510,9 @@ Ext.regController('SaleOrder', {
 	
 			view.bonusProductStore = createStore('BonusProgramProduct', Ext.apply(getSortersConfig('BonusProgramProduct', {})));
 			view.bonusPanel.getComponent('bonusList').store.load({
+				limit: 0,
 				callback: function() {
-					view.bonusProductStore.load({callback: function() {
+					view.bonusProductStore.load({limit: 0, callback: function() {
 						view.bonusProductStore.remoteFilter = false;
 						view.bonusPanel.show();
 					}});
@@ -529,29 +526,11 @@ Ext.regController('SaleOrder', {
 	toggleBonusOff: function(options) {
 
 		var view = options.view,
-			bonusList = view.bonusPanel.getComponent('bonusList')
+			segBtn = view.getDockedComponent('top').getComponent('ModeChanger'),
+			bonusBtn = segBtn.getComponent('Bonus')
 		;
 
-		Ext.Msg.confirm('Акции', 'Выбрать другие акции?', function(btn) {
-			if(btn === 'yes') {
-
-				var segBtn = view.getDockedComponent('top').getComponent('ModeChanger'),
-					bonusBtn = segBtn.getComponent('Bonus')
-				;
-				segBtn.setPressed(bonusBtn, true);
-
-				
-			} else {
-				bonusList.selModel.deselect(bonusList.selModel.getSelection());
-
-				view.productStore.clearFilter(true);
-				view.productStore.filtersSnapshot && view.productStore.filter(view.productStore.filtersSnapshot);
-				view.offerCategoryStore.clearFilter();
-
-				view.bonusMode && Ext.dispatch(Ext.apply(options, {action: 'afterFilterProductStore'}));
-				view.bonusMode = false;
-			}
-		});
+		segBtn.setPressed(bonusBtn, true);
 	},
 
 	onAllBonusButtonTap: function(options) {
@@ -563,59 +542,58 @@ Ext.regController('SaleOrder', {
 		bonusList.selModel.select(bonusList.store.getRange());
 	},
 
-	onBonusSelectButtonTap: function(options) {
+	onBonusItemSelect: function(options) {
 
 		var view = options.view,
 			bonusList = view.bonusPanel.getComponent('bonusList'),
-			selectedBonus = bonusList.selModel.getSelection()
+			tapedBonus = bonusList.getRecord(options.item),
+			selectedBonus = bonusList.selModel.getSelection()[0]
 		;
 
-		view.bonusProductStore.filterBy(function(rec, id) {
-			var isBonusProduct = false;
-
-			Ext.each(selectedBonus, function(bonus) {
-				if(bonus.getId() == rec.get('bonusprogram')) {
-					isBonusProduct = true;
-					return false;
+		if(!selectedBonus || tapedBonus.getId() != selectedBonus.getId()) {
+			view.bonusProductStore.filterBy(function(rec, id) {
+				return tapedBonus.get('id') == rec.get('bonusprogram');
+			});
+	
+			view.productStore.bonusFilter = view.productStore.bonusFilter || new Ext.util.Filter({
+				filterFn: function(item) {
+					return view.bonusProductStore.findExact('product', item.get('product')) != -1;
 				}
 			});
-			return isBonusProduct;
-		});
 
-		view.productStore.bonusFilter = view.productStore.bonusFilter || new Ext.util.Filter({
-			filterFn: function(item) {
-				if(view.bonusProductStore.findExact('product', item.get('product')) != -1) {
-					return true;
-				} else {
-					return false;
-				}
-			}
-		});
+			view.productStore.filtersSnapshot = view.productStore.filters.items;
+			view.productStore.clearFilter(true);
+			view.productStore.filter(view.productStore.bonusFilter);
 
-		view.productStore.filtersSnapshot = view.productStore.filters.items;
-		view.productStore.clearFilter(true);
-		view.productStore.filter(view.productStore.bonusFilter);
-		
-		if(view.productStore.getCount() > 0) {
+			view.bonusProductStore.clearFilter(true);
 
-			view.offerCategoryStore.remoteFilter = false;
-			view.offerCategoryStore.clearFilter();
-			view.offerCategoryStore.filter(new Ext.util.Filter({
-				filterFn: function(item) {
-					return view.productStore.findExact('category', item.get('category')) > -1 ? true : false;
-				}
-			}));
+			if(view.productStore.getCount() > 0) {
 	
-			view.bonusProductStore.clearFilter();
+				view.offerCategoryStore.remoteFilter = false;
+				view.offerCategoryStore.clearFilter();
+				view.offerCategoryStore.filter(new Ext.util.Filter({
+					filterFn: function(item) {
+						return view.productStore.findExact('category', item.get('category')) > -1 ? true : false;
+					}
+				}));
 
-			view.bonusMode || Ext.dispatch(Ext.apply(options, {action: 'afterFilterProductStore'}));
-			view.bonusMode = true;
+				view.bonusMode || Ext.dispatch(Ext.apply(options, {action: 'afterFilterProductStore'}));
+				view.bonusMode = true;
+			} else {
+				Ext.Msg.alert('Нет товаров', 'По выбранной акции нет товаров для заказа');
+				view.productStore.clearFilter(true);
+				view.productStore.filter(view.productStore.filtersSnapshot);
+			}
 		} else {
-			Ext.Msg.alert('Нет товаров', 'По выбранной акции нет товаров для заказа');
+
 			view.productStore.clearFilter(true);
 			view.productStore.filter(view.productStore.filtersSnapshot);
-		}
 
+			view.offerCategoryStore.clearFilter();
+
+			view.bonusMode && Ext.dispatch(Ext.apply(options, {action: 'afterFilterProductStore'}));
+			view.bonusMode = false;
+		}
 		view.bonusPanel.hide();
 	}
 });

@@ -47,7 +47,7 @@ var SaleOrderView = Ext.extend(AbstractView, {
 			{xtype: 'spacer'},
 			{xtype: 'segmentedbutton', allowMultiple: true, itemId: 'ModeChanger',
 				items: [
-					{itemId: 'Bonus', text: 'По акциям', altText: 'Все', handler: Ext.emptyFn, disallowOther: ['ShowSaleOrder']},
+					{itemId: 'Bonus', text: 'По акциям', handler: Ext.emptyFn, disallowOther: ['ShowSaleOrder']},
 					{itemId: 'Active', text: 'Показать актив', altText: 'Скрыть актив', handler: Ext.emptyFn},
 					{itemId: 'ShowSaleOrder', text: 'Показать заказ', altText: 'Показать все', handler: Ext.emptyFn, disallowOther: ['Bonus']}
 				],

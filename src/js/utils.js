@@ -579,7 +579,9 @@ var getOwnerViewConfig = function(view) {
 
 var changeBtnText = function(btn) {
 
-	var t = btn.text;
-	btn.setText(btn.altText);
-	btn.altText = t;
+	if(btn.altText) {
+		var t = btn.text;
+		btn.setText(btn.altText);
+		btn.altText = t;
+	}
 };

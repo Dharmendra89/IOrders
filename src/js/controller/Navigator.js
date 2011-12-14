@@ -191,10 +191,13 @@ Ext.regController('Navigator', {
 					rec = Ext.ModelMgr.create({}, createdRecordModelName);
 					rec.set( objectRecord.modelName.toLowerCase(), objectRecord.getId() );
 					
-					if (rec.modelName === 'SaleOrder') {
-						rec.set('totalCost', '0');
-						rec.set('date', getNextWorkDay());
-					}
+					if (rec.modelName === 'SaleOrder')
+						rec.set('totalCost', '0')
+					;
+					
+					if (rec.modelName === 'SaleOrder' || rec.modelName === 'EncashmentRequest')
+						rec.set('date', getNextWorkDay())
+					;
 					
 					if(createdRecordModelName === 'Encashment') {
 						

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.692" expect-megabytes="15">
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.700" expect-megabytes="15">
   <tables set-of="table">
     <table id="Uncashment" name="Сданная выручка" nameSet="Сданная выручка" level="0" extendable="true">
       <columns set-of="column">
@@ -177,9 +177,20 @@
       <deps set-of="dep">
         <dep table_id="RoutePoint" id="RoutePointcustomer"/>
         <dep table_id="SaleOrder" id="SaleOrdercustomer"/>
+        <dep table_id="EncashmentRequest" id="EncashmentRequestcustomer"/>
         <dep table_id="Encashment" id="Encashmentcustomer"/>
         <dep table_id="Shipment" id="Shipmentcustomer" contains="true"/>
       </deps>
+    </table>
+    <table id="EncashmentRequest" name="Заявка на инкассацию" nameSet="Заявки на инкассацию" level="2" extendable="true" deletable="new-only" editable="true">
+      <columns set-of="column">
+        <column id="EncashmentRequestcustomer" name="customer" type="int" parent="Customer" label="Клиент" editable="true"/>
+        <column id="EncashmentRequestid" name="id" type="string" key="true"/>
+        <column id="EncashmentRequestxid" name="xid"/>
+        <column id="EncashmentRequestdate" name="date" type="date" label="Дата" editable="true"/>
+        <column id="EncashmentRequestcomment" name="comment" type="string" label="Комментарий" editable="true"/>
+        <column id="EncashmentRequeststatus" name="status" type="string" label="Статус"/>
+      </columns>
     </table>
     <table id="SaleOrder" name="Заказ" nameSet="Заказы" level="2" extendable="true" deletable="new-only" editable="true">
       <columns set-of="column">

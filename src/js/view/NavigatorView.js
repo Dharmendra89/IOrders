@@ -67,7 +67,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 			table.columns().each( function (c) {
 				var cName = c.get('name');
 				
-				if (String.right(cName, 3) == 'ing') {
+				if (String.right(cName, 10) == 'processing') {
 					var statusButtons = [],
 						state = me.objectRecord.get(cName) || 'draft'
 					;

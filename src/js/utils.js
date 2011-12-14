@@ -280,8 +280,14 @@ var createFieldSet = function(columnsStore, modelName, view) {
 			}
 			
 			Ext.apply(field, column.get('parent') 
-					? {xtype: 'selectfield', store: Ext.getStore(column.get('parent')), valueField: 'id', displayField: 'name', onFieldLabelTap: true, onFieldInputTap: true}
-					: fieldConfig
+					? {
+						xtype: 'selectfield',
+						store: Ext.getStore(column.get('parent')),
+						valueField: 'id',
+						displayField: 'name',
+						onFieldLabelTap: true,
+						onFieldInputTap: true
+					} : fieldConfig
 			);
 			fsItems.push(field);
 		}
@@ -479,6 +485,8 @@ var createNavigatorView = function(rec, oldCard, isSetView, editing, config) {
 
 var getGroupConfig = function(model) {
 	switch(model) {
+		case 'EncashmentRequest':
+		case 'Shipment':
 		case 'SaleOrder' : {
 			return {
 				getGroupString: function(rec) {

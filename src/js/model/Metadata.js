@@ -12,7 +12,7 @@ var addMainMenu = function(store, tables) {
 	var mmDeps = mainMenu.deps();
 	
 	Ext.each(tables, function(table) {
-		if(table.deps().getCount() > 0 && table.get('nameSet')) {
+		if((table.deps().getCount() > 0 || table.get('mainMenu')) && table.get('nameSet')) {
 			mmDeps.add({
 				id: table.getId() + 'id',
 				table_id: table.getId()
@@ -33,7 +33,8 @@ Ext.regModel('Table', {
 		{name: 'extendable', type: 'boolean'},
 		{name: 'editable', type: 'boolean'},
 		{name: 'belongs', type: 'string'},
-		{name: 'deletable', type: 'string'}
+		{name: 'deletable', type: 'string'},
+		{name: 'mainMenu', type: 'boolean'}
 	],
  	associations: [
 		{type: 'hasMany', model: 'Column', name: 'columns'},
@@ -85,7 +86,8 @@ Ext.regModel('Column', {
 			{name: 'aggregable', type: 'string'},
 			{name: 'parent', type: 'string'},
 			{name: 'contains', type: 'boolean'},
-			{name: 'editable', type: 'boolean'} 
+			{name: 'editable', type: 'boolean'},
+			{name: 'title', type: 'boolean'},
 	],
 	associations: [
 		{type: 'belongsTo', model: 'Table'}

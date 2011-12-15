@@ -167,8 +167,8 @@
         <column id="Customerid" name="id" type="int" key="true"/>
         <column id="Customerwarehouse" name="warehouse" parent="Warehouse" label="Склад"/>
         <column id="CustomerisBlockedPlong" name="isBlockedPlong" type="boolean" label="Заблокирован по просрочке"/>
+        <column id="Customeraddress" name="address" type="string" label="Адрес" title="true"/>
         <column id="Customername" name="name" type="string" label="Название"/>
-        <column id="Customeraddress" name="address" type="string" label="Адрес"/>
         <column id="Customerphone" name="phone" type="string" label="Телефон"/>
         <column id="Customerinfo" name="info" type="string" label="Комментарии"/>
         <column id="CustomerbonusCost" name="bonusCost" type="float" label="Товарный бонус"/>
@@ -182,7 +182,7 @@
         <dep table_id="Shipment" id="Shipmentcustomer" contains="true"/>
       </deps>
     </table>
-    <table id="EncashmentRequest" name="Заявка на инкассацию" nameSet="Заявки на инкассацию" level="2" extendable="true" deletable="new-only" editable="true">
+    <table id="EncashmentRequest" name="Заявка на инкассацию" nameSet="Заявки на инкассацию" level="2" extendable="true" deletable="new-only" mainMenu="true" editable="true">
       <columns set-of="column">
         <column id="EncashmentRequestcustomer" name="customer" type="int" parent="Customer" label="Клиент" editable="true"/>
         <column id="EncashmentRequestid" name="id" type="string" key="true"/>

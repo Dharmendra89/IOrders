@@ -454,6 +454,8 @@ Ext.regController('SaleOrder', {
 		view.productList.scroller.scrollTo ({y:0});
 		view.productList.el.toggleCls('expandable');
 
+		view.productListIndexBar.loadIndex();
+
 		view.setLoading(false);
 	},
 
@@ -520,6 +522,7 @@ Ext.regController('SaleOrder', {
 				}
 			});
 		} else {
+			view.bonusPanel.getComponent('bonusList').scroller.scrollTo({y: 0});
 			view.bonusPanel.show();
 		}
 	},
@@ -595,6 +598,8 @@ Ext.regController('SaleOrder', {
 			view.bonusMode && Ext.dispatch(Ext.apply(options, {action: 'afterFilterProductStore'}));
 			view.bonusMode = false;
 		}
+
+		view.productListIndexBar.loadIndex();
 		view.bonusPanel.hide();
 	}
 });

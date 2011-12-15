@@ -147,7 +147,8 @@ Ext.regController('SaleOrder', {
 							}]
 						});
 
-						newCard.productList = newCard.productPanel.add(Ext.apply(offerProductList, {store: newCard.productStore}));
+						newCard.productList = newCard.productPanel.add(Ext.apply(offerProductList, {flex: 3, store: newCard.productStore}));
+						newCard.productListIndexBar = newCard.productPanel.add(new HorizontalIndexBar({list: newCard.productList}));
 
 						newCard.productStore.load({
 							limit: 0,
@@ -200,7 +201,7 @@ Ext.regController('SaleOrder', {
 												newCard.productStore.filter(newCard.productStore.volumeFilter);
 												oldCard.setLoading(false);
 												IOrders.viewport.setActiveItem(newCard);
-												newCard.productList.indexBar.loadIndex(newCard.productStore);
+												newCard.productListIndexBar.loadIndex();
 											} else failureCb('товаров');
 										}
 									});
@@ -357,7 +358,7 @@ Ext.regController('SaleOrder', {
 
 		productStore.filter(filters);
 
-		view.productList.indexBar.loadIndex(productStore);
+		view.productListIndexBar.loadIndex();
 		view.productList.scroller.scrollTo ({y:0});
 		
 		if (view.modeActive)

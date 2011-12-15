@@ -6,8 +6,6 @@ var offerProductList = {
 	disableSelection: true,
 	pinHeaders: false,
 
-	indexBar: new HorizontalIndexBar(),
-
 	onItemTap: Ext.emptyFn,
 
 	listeners: {
@@ -58,8 +56,13 @@ var offerProductList = {
 				this.keyboard.setValue(volume);
 				this.keyboard.options = {item: item, list: list, rec: rec};
 			}
+		},
+
+		update: function() {
+
+			this.scroller && this.scroller.updateBoundary();
 		}
-		
+
 	},
 	
 	scroll: {

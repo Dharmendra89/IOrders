@@ -1,40 +1,5 @@
 Ext.override(Ext.Interaction, {controller: 'Main'});
 
-Ext.override(Ext.List, {
-	listeners: {
-/*		selectionchange: function(selModel, selections) {
-			Ext.dispatch({action: 'onListSelectionChange', list: this, selModel: selModel, selections: selections});
-		},*/
-		itemtap: function(list, idx, item, e) {
-			Ext.dispatch({action: 'onListItemTap', list: list, idx: idx, item: item, event: e});
-		},
-		disclose: function(rec, item, idx, e) {
-			Ext.dispatch({action: 'onListItemDisclosure', list: this, idx: idx, item: item, event: e});
-		}
-	},
-
-
-	onUpdate : function(store, record) {
-		this.itemRefresh = true;
-        Ext.List.superclass.onUpdate.apply(this, arguments);
-		this.itemRefresh = false;
-    },
-
-    bufferRender : function(records, index){
-        var div = document.createElement('div');
-		
-		if (this.grouped && this.itemRefresh && records.length == 1) {
-			this.listItemTpl.overwrite (div, Ext.List.superclass.collectData.call(this, records, index));
-		}
-		else {
-	        this.tpl.overwrite(div, this.collectData(records, index));
-		}
-		
-        return Ext.query(this.itemSelector, div);
-    }
-
-});
-
 /**
  * Scope указывает на панель, в которой лежит кнопка
  */
@@ -227,6 +192,41 @@ Ext.override(Ext.List, {
             this.scroller.scrollTo({x: 0, y: closest.getOffsetsTo(this.scrollEl)[1]}, 400);
         }
     },
+
+	listeners: {
+		/*selectionchange: function(selModel, selections) {
+			Ext.dispatch({action: 'onListSelectionChange', list: this, selModel: selModel, selections: selections});
+		},*/
+		itemtap: function(list, idx, item, e) {
+			Ext.dispatch({action: 'onListItemTap', list: list, idx: idx, item: item, event: e});
+		},
+		disclose: function(rec, item, idx, e) {
+			Ext.dispatch({action: 'onListItemDisclosure', list: this, idx: idx, item: item, event: e});
+		},
+		update: function() {
+
+			this.scroller && this.scroller.updateBoundary();
+		}
+	},
+
+	onUpdate : function(store, record) {
+
+		this.itemRefresh = true;
+		Ext.List.superclass.onUpdate.apply(this, arguments);
+		this.itemRefresh = false;
+	},
+
+	bufferRender : function(records, index){
+		var div = document.createElement('div');
+
+		if (this.grouped && this.itemRefresh && records.length == 1) {
+			this.listItemTpl.overwrite (div, Ext.List.superclass.collectData.call(this, records, index));
+		} else {
+			this.tpl.overwrite(div, this.collectData(records, index));
+		}
+
+		return Ext.query(this.itemSelector, div);
+	}
 });
 
 String.right = function (str, n){

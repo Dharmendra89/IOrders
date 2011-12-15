@@ -1,93 +1,79 @@
-var HorizontalIndexBar = Ext.extend(Ext.IndexBar, {
-	renderTpl : ['<div></div>'],
-	tpl: '<tpl for="."><tpl if="(xindex - 1) % 10 == 0"><div class="x-indexbar-body"></tpl>'
-		+ '<div class="x-indexbar-item">{value}</div><tpl if="xindex % 10 == 0"></div></tpl></tpl>',
-	direction: 'horizontal', alphabet: false,
-	loadIndex: function(store) {
+var HorizontalIndexBar = Ext.extend(Ext.DataView, {
 
-		if(store) {
+	tpl: new Ext.XTemplate(
+			'<div class="x-hindex-body">',
+				'<tpl for=".">',
+					'<tpl if="(xindex - 1) % 10 == 0">',
+						'<div class="x-hindex-line">',
+					'</tpl>',
+					'<div class="x-hindex-item x-button">',
+						'{value}',
+					'</div>',
+					'<tpl if="xindex % 10 == 0">',
+						'</div>',
+					'</tpl>',
+				'</tpl>',
+			'</div>'
+	),
 
-			var groups = store.getGroups();
+	itemSelector:'div.x-hindex-item',
+	scroll: false,
 
-			this.store.removeAll();
-			Ext.each(groups, function(group) {
+	height: 120,
 
-				this.store.add({key: group.name, value: group.name});
-			}, this);
-		}
+	loadIndex: function() {
+
+		var store = this.list.store;
+
+		var groups = store.getGroups();
+
+		this.store.removeAll();
+		Ext.each(groups, function(group) {
+
+			this.store.add({key: group.name, value: group.name});
+		}, this);
 	},
+
 	initComponent : function() {
-        // No docking and no sizing of body!
-        this.componentLayout = this.getComponentLayout();
 
-        if (!this.store) {
-            this.store = new Ext.data.Store({
-                model: 'IndexBarModel'
-            });
-        }
+		this.addEvents('index');
+		this.store = new Ext.data.Store({model: 'IndexBarModel'});
 
-        if (this.alphabet == true) {
-            this.ui = this.ui || 'alphabet';
-        }
+		HorizontalIndexBar.superclass.initComponent.call(this);
 
-        if (this.direction == 'horizontal') {
-            this.horizontal = true;
-        }
-        else {
-            this.vertical = true;
-        }
+		this.list.mon(this, {
+			index: this.list.onIndex,
+			scope: this.list
+		});
+	},
+/*
+	afterRender: function() {
 
-        this.addEvents(
-          /**
-           * @event index
-           * Fires when an item in the index bar display has been tapped
-           * @param {Ext.data.Model} record The record tapped on the indexbar
-           * @param {HTMLElement} target The node on the indexbar that has been tapped
-           * @param {Number} index The index of the record tapped on the indexbar
-           */
-          'index'
-        );
+		HorizontalIndexBar.superclass.afterRender.apply(this, arguments);
+		this.mon(this.el, {
+			touchstart: this.onTouchStart,
+			touchend: this.onTouchEnd,
+			scope: this
+		});
+	},
 
-        Ext.apply(this.renderData, {
-            componentCls: this.componentCls
-        });
-        
-        Ext.apply(this.renderSelectors, {
-            body: '.' + this.componentCls + ' div'
-        });
-        
-        Ext.IndexBar.superclass.initComponent.call(this);
-    },
-    onTouchMove : function(e) {
-        e.stopPropagation();
+	onTouchStart: function(e, t) {
 
-        var point = Ext.util.Point.fromEvent(e),
-            target,
-            record,
-            pageBox = this.pageBox;
+		e.stopEvent();
+		Ext.get(t).addCls('x-button-pressed');
+		e.stopPropagation();
+	},
 
-        if (!pageBox) {
-            pageBox = this.pageBox = this.el.getPageBox();
-        }
+	onTouchEnd: function(e, t) {
 
-        if (this.vertical) {
-            if (point.y > pageBox.bottom || point.y < pageBox.top) {
-                return;
-            }
-            target = Ext.Element.fromPoint(pageBox.left + (pageBox.width / 2), point.y);
-        }
-        else if (this.horizontal) {
-            if (point.x > pageBox.right || point.x < pageBox.left) {
-                return;
-            }
-            target = Ext.Element.fromPoint(point.x, point.y);
-        }
+		e.stopEvent();
+		Ext.get(t).removeCls('x-button-pressed');
+	},
+*/
+	onItemTap: function(item , idx, e) {
 
-        if (target) {
-            record = this.getRecord(target.dom);
-            if (record) {
-                this.fireEvent('index', record, target, this.indexOf(target));
-            }
-        }
-    }
+		this.fireEvent('index', this.getRecord(item), item, idx);
+
+		return HorizontalIndexBar.superclass.onItemTap.apply(this, arguments);
+	}
 });

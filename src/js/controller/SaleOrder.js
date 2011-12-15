@@ -59,19 +59,18 @@ Ext.regController('SaleOrder', {
 				posRec.set('cost', rec.get('cost'));
 				posRec.editing = false;
 			}
-			
 			rec.commit(true);
-			
+
 		});
-		
+
 		var tc = saleOrderPosStore.sum('cost').toFixed(2);
-		
+
 		view.saleOrder.set ('totalCost', tc);
 		saleOrderPosStore.sync();
-		
+
 		view.saleOrder.save();
 		view.saleOrder.commit(true);
-		
+
 		if (view.bonusCost){
 			view.customerRecord.set (
 				'bonusCost',

@@ -187,10 +187,11 @@ Ext.override(Ext.List, {
             }
         }
 
-        closest = this.getTargetEl().down('.x-group-' + id);
+        closest = this.getTargetEl().down('.x-group-' + id.replace('.', '\\.'));
         if (closest) {
             this.scroller.scrollTo({x: 0, y: closest.getOffsetsTo(this.scrollEl)[1]}, 400);
         }
+        return closest;
     },
 
 	listeners: {

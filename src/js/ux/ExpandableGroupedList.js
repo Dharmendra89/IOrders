@@ -18,6 +18,19 @@ var ExpandableGroupedList = Ext.extend(Ext.List, {
 		});
 		this.el.addCls ('expandable');
 	},
+	
+	onIndex: function(record, target, item) {
+
+		var headerEl = ExpandableGroupedList.superclass.onIndex.apply(this, arguments).down('.x-list-header'),
+			groupEl = this.getGroupEl(headerEl)
+		;
+
+		var headerElArray = this.getExpandedElHeaders();
+		headerElArray.removeByKey(headerEl.id);
+		this.setGroupExpanded(headerElArray, false);
+
+		this.setGroupExpanded(groupEl, true, headerEl);
+	},
 
 	onListHeaderTap: function(e, t) {
 

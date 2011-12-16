@@ -18,14 +18,15 @@ var createModels = function(tablesStore) {
 			
 			var cName = column.get('name'),
 				fieldConfig = {
-				name: cName,
-				type: column.get('type'),
-				useNull: true,
-				defaultValue: null
-			};
+					name: cName,
+					type: column.get('type'),
+					useNull: true,
+					defaultValue: null
+				}
+			;
 			
 			if (String.right(cName, 3) == 'ing')
-				fieldConfig.defaultValue = 'draft';
+				fieldConfig.defaultValue = column.get('init') || 'draft';
 			
 			cName == 'date'
 				&& validations.push({

@@ -289,12 +289,13 @@
 	-webkit-box-orient: horizontal;
 }
 
-.x-hindex-body .x-hindex-line .x-hindex-item {
+.x-hindex-body  .x-hindex-item {
 	padding: 0.2em 0.1em;
-	display: block;
-	width: 60px;
+	display: inline-block;
+	width: 70px;
 	text-overflow: ellipsis;
 	overflow: hidden;
 	white-space: nowrap;
 	font-size: 16px;
+	margin: 1px;
 }

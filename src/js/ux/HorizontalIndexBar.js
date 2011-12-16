@@ -3,23 +3,23 @@ var HorizontalIndexBar = Ext.extend(Ext.DataView, {
 	tpl: new Ext.XTemplate(
 			'<div class="x-hindex-body">',
 				'<tpl for=".">',
-					'<tpl if="(xindex - 1) % 10 == 0">',
-						'<div class="x-hindex-line">',
-					'</tpl>',
-					'<div class="x-hindex-item x-button">',
-						'{value}',
-					'</div>',
-					'<tpl if="xindex % 10 == 0">',
+//					'<tpl if="(xindex - 1) % 10 == 0">',
+//						'<div class="x-hindex-line">',
+//					'</tpl>',
+						'<div class="x-hindex-item x-button">',
+							'{value}',
 						'</div>',
-					'</tpl>',
+//					'<tpl if="xindex % 10 == 0">',
+//						'</div>',
+//					'</tpl>',
 				'</tpl>',
 			'</div>'
 	),
 
 	itemSelector:'div.x-hindex-item',
-	scroll: false,
+	scroll: 'vertical',
 
-	height: 120,
+	height: 124,
 
 	loadIndex: function() {
 

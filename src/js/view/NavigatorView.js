@@ -111,7 +111,13 @@ var NavigatorView = Ext.extend(AbstractView, {
 			if(table.get('deletable')) {
 				this.dockedItems[0].items.push(
 					{xtype: 'spacer'},
-					{itemId: 'Delete', name: 'Delete', text: 'Удалить', scope: this, hidden: this.objectRecord.get('processing') !== 'draft'}
+					{
+						itemId: 'Delete',
+						name: 'Delete',
+						text: 'Удалить',
+						scope: this,
+						hidden: this.objectRecord.fields.getByKey('processing') && this.objectRecord.get('processing') !== 'draft'
+					}
 				);
 				spacerExist = true;
 			}

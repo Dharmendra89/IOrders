@@ -140,9 +140,9 @@ Ext.regController('Navigator', {
 			);
 		}
 		
-		if(rec.modelName === 'SaleOrder') {
-			rec.set('date', getNextWorkDay());
-		}
+		if (rec.modelName === 'SaleOrder' || rec.modelName === 'EncashmentRequest')
+			rec.set('date', getNextWorkDay())
+		;
 		
 		var oldCard = IOrders.viewport.getActiveItem();
 		if(rec.modelName === 'Uncashment') {

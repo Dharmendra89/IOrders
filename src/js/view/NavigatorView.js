@@ -22,16 +22,40 @@ var NavigatorView = Ext.extend(AbstractView, {
 		this.dockedItems[0].title = table.get('name');
 
 		var sb = this.syncButton = new Ext.Button ({
+			
 			iconMask: true,
 			name: 'Sync',
 			iconCls: 'action',
 			scope: this,
+			
 			checkDisabled: function(){
 				this.setDisabled(IOrders.xi.isBusy())
+			},
+			
+			rebadge: function(){
+				var me = sb,
+					p = new Ext.data.SQLiteProxy({
+						engine: IOrders.dbeng,
+						model: 'ToUpload'
+					})
+				;
+				
+				p.count(new Ext.data.Operation(), function(o) {
+					if (o.wasSuccessful())
+						me.setBadge(me.cnt = o.result);
+				});
 			}
+			
 		});
 		
 		sb.checkDisabled();
+		
+		sb.mon (
+			this,
+			'saved',
+			sb.rebadge,
+			sb
+		);
 		
 		sb.mon (
 			IOrders.xi.connection,
@@ -247,19 +271,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 			});
 		}
 		
-		this.mon (this, 'activate', function(){
-			var me = this.syncButton,
-				p = new Ext.data.SQLiteProxy({
-					engine: IOrders.dbeng,
-					model: 'ToUpload'
-				})
-			;
-			
-			p.count(new Ext.data.Operation(), function(o) {
-				if (o.wasSuccessful())
-					me.setBadge(me.cnt = o.result);
-			});
-		});
+		this.mon (this, 'activate', this.syncButton.rebadge);
 		
 		this.items.push(this.form = new Ext.form.FormPanel(Ext.apply({
 				flex: 2,
@@ -278,6 +290,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 
 		NavigatorView.superclass.initComponent.apply(this, arguments);
 		this.mon (this,'show', this.loadData);
+		this.addEvents ('saved');
 	},
 	
 	loadData: function() {

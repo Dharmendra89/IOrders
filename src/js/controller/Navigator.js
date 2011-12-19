@@ -63,6 +63,7 @@ Ext.regController('Navigator', {
 			}
 			
 			rec.save();
+			view.fireEvent ('saved', rec);
 			
 		} else {
 			

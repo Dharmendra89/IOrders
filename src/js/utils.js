@@ -439,6 +439,8 @@ var createNavigatorView = function(rec, oldCard, isSetView, editing, config) {
 
 var getGroupConfig = function(model) {
 	switch(model) {
+		case 'EncashmentRequest':
+		case 'Shipment':
 		case 'SaleOrder' : {
 			return {
 				getGroupString: function(rec) {

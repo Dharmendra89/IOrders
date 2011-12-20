@@ -1,4 +1,4 @@
-var DEBUG = localStorage.getItem('DEBUG') === false ? false : true; // set to false to disable debugging
+var DEBUG = location.protocol == 'https:' ? false : localStorage.getItem('DEBUG') === false ? false : true;
 var oldConsoLog = console.log;
 
 console.log = function() {

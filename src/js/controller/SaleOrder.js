@@ -164,7 +164,7 @@ Ext.regController('SaleOrder', {
 											if(s) {
 												
 												Ext.each(records, function(rec, idx, all) {
-													var offerRec = newCard.productStore.findRecord('product', rec.get('product'));
+													var offerRec = newCard.productStore.findRecord('product', rec.get('product'), undefined, undefined, true, true);
 													
 													if (offerRec) {
 														

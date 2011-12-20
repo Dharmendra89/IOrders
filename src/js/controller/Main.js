@@ -384,6 +384,8 @@ Ext.regController('Main', {
 		field.setValue( btn.name );
 		rec.set( bar.name, btn.name );
 		rec.save();
+		
+		view.fireEvent ('saved', rec);
 
 		if(rec.modelName === 'SaleOrder') {
 

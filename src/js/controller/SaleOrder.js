@@ -131,6 +131,24 @@ Ext.regController('SaleOrder', {
 							},
 							sorters: [{property: 'firstName', direction: 'ASC'}, {property: 'name', direction: 'ASC'}],
 							filters: [{property: 'customer', value: options.saleOrder.get('customer')}],
+							filter: function(filters, value) {
+
+								var bonusProductStore = newCard.bonusProductStore,
+									bonusProgramStore = newCard.bonusProgramStore
+								;
+
+								if(filters.contains && filters.contains(this.isFocusedFilter) || filters == this.isFocusedFilter) {
+									bonusProgramStore.filter({property: 'isFocused', value: true});
+									bonusProductStore.filterBy(function(it) {
+										return bonusProgramStore.findExact('id', it.get('bonusprogram')) !== -1 ? true : false;
+									});
+								}
+
+								Ext.data.Store.prototype.filter.apply(this, arguments);
+
+								bonusProductStore.clearFilter(true);
+								bonusProgramStore.clearFilter(true);
+							},
 							volumeFilter: new Ext.util.Filter({
 								filterFn: function(item) {
 									return item.get('volume') > 0;
@@ -138,22 +156,7 @@ Ext.regController('SaleOrder', {
 							}),
 							isFocusedFilter: new Ext.util.Filter({
 								filterFn: function(item) {
-
-									var bonusProductStore = newCard.bonusProductStore,
-										bonusProgramStore = newCard.bonusProgramStore
-									;
-
-									bonusProgramStore.filter({property: 'isFocused', value: 'true'});
-
-									bonusProductStore.filterBy(function(it) {
-										return bonusProgramStore.findExact('id', it.get('bonusprogram')) !== -1 ? true : false;
-									});
-
-									var filter = bonusProductStore.findExact('product', item.get('product')) !== -1 ? true : false;
-
-									bonusProductStore.clearFilter(true);
-									bonusProgramStore.clearFilter(true);
-									return filter;
+									return newCard.bonusProductStore.findExact('product', item.get('product')) !== -1 ? true : false;
 								}
 							})
 						});
@@ -230,8 +233,25 @@ Ext.regController('SaleOrder', {
 															callback: function() {
 
 																newCard.bonusProductStore.remoteFilter = false;
-	
-																newCard.productStore.filter(newCard.productStore[records.length > 0 ? 'volumeFilter' : 'isFocusedFilter']);
+
+																if(records.length) {
+																	newCard.productStore.filter(newCard.productStore.volumeFilter);
+																} else {
+
+																	var bonusProductStore = newCard.bonusProductStore,
+																		bonusProgramStore = newCard.bonusProgramStore
+																	;
+																	bonusProgramStore.filter({property: 'isFocused', value: true});
+																	bonusProductStore.filterBy(function(it) {
+																		return bonusProgramStore.findExact('id', it.get('bonusprogram')) !== -1 ? true : false;
+																	});
+
+																	newCard.productStore.filter(newCard.productStore.isFocusedFilter);
+
+																	bonusProductStore.clearFilter(true);
+																	bonusProgramStore.clearFilter(true);
+																}
+
 																oldCard.setLoading(false);
 																IOrders.viewport.setActiveItem(newCard);
 																newCard.productListIndexBar.loadIndex();

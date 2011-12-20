@@ -38,8 +38,11 @@ var SaleOrderView = Ext.extend(AbstractView, {
 		
 		this.dockedItems.push({
 			id: 'bottomToolbar', xtype: 'toolbar', dock: 'bottom',
-			items: [{xtype: 'spacer'}, {
-				text: summTpl.apply({totalCost: 0}), itemId: 'ShowCustomer', name: 'ShowCustomer', scope: this}],
+			items: [
+				{xtype: 'spacer'},
+				{text: this.indexBarMode ? 'Скрыть индекс-бар' : 'Показать индекс-бар', altText: !this.indexBarMode ? 'Скрыть индекс-бар' : 'Показать индекс-бар', itemId: 'ShowIndexBar', name: 'ShowIndexBar', scope: this},
+				{text: summTpl.apply({totalCost: 0}), itemId: 'ShowCustomer', name: 'ShowCustomer', scope: this}
+			],
 			titleTpl: summTpl
 		});
 
@@ -83,6 +86,9 @@ var SaleOrderView = Ext.extend(AbstractView, {
 	 */
 	
 	initComponent: function() {
+
+		this.indexBarMode = localStorage.getItem('indexBarMode') == 'true';
+
 		SaleOrderView.superclass.initComponent.apply(this, arguments);
 	}
 });

@@ -60,6 +60,8 @@ Ext.regController('Navigator', {
 				
 				toolbar.getComponent('Cancel').hide();
 				Ext.dispatch(Ext.apply(options, {action: 'setEditing', editing: false}));
+
+				rec.fields.getByKey('processing') && this.controlButtonsVisibilities(view, rec.get('processing') != 'draft');
 			}
 			
 			rec.save();

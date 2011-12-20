@@ -387,16 +387,18 @@ Ext.regController('Main', {
 		
 		view.fireEvent ('saved', rec);
 
-		if(rec.modelName === 'SaleOrder') {
+		rec.fields.getByKey('processing') && this.controlButtonsVisibilities(view, rec.get('processing') != 'draft');
+	},
 
-			var topBar = view.getDockedComponent('top'),
-				delBtn = topBar.getComponent('Delete'),
-				editBtn = topBar.getComponent('SaveEdit')
-			;
+	controlButtonsVisibilities: function(view, hide) {
 
-			delBtn && delBtn[btn.name !== 'draft' ? 'hide' : 'show']();
-
-			editBtn && editBtn[btn.name !== 'draft' ? 'hide' : 'show']();
-		}
+		var topBar = view.getDockedComponent('top'),
+			delBtn = topBar.getComponent('Delete'),
+			editBtn = topBar.getComponent('SaveEdit')
+		;
+	
+		delBtn && delBtn[hide ? 'hide' : 'show']();
+	
+		editBtn && editBtn[hide ? 'hide' : 'show']();
 	}
 });

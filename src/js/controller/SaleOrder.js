@@ -135,6 +135,26 @@ Ext.regController('SaleOrder', {
 								filterFn: function(item) {
 									return item.get('volume') > 0;
 								}
+							}),
+							isFocusedFilter: new Ext.util.Filter({
+								filterFn: function(item) {
+
+									var bonusProductStore = newCard.bonusProductStore,
+										bonusProgramStore = newCard.bonusProgramStore
+									;
+
+									bonusProgramStore.filter({property: 'isFocused', value: 'true'});
+
+									bonusProductStore.filterBy(function(it) {
+										return bonusProgramStore.findExact('id', it.get('bonusprogram')) !== -1 ? true : false;
+									});
+
+									var filter = bonusProductStore.findExact('product', item.get('product')) !== -1 ? true : false;
+
+									bonusProductStore.clearFilter(true);
+									bonusProgramStore.clearFilter(true);
+									return filter;
+								}
 							})
 						});
 						
@@ -197,10 +217,28 @@ Ext.regController('SaleOrder', {
 													console.log ('SaleOrder: empty customer');
 												}
 
-												newCard.productStore.filter(newCard.productStore.volumeFilter);
-												oldCard.setLoading(false);
-												IOrders.viewport.setActiveItem(newCard);
-												newCard.productListIndexBar.loadIndex();
+												newCard.bonusProgramStore = createStore('BonusProgram', Ext.apply(getSortersConfig('BonusProgram', {})));
+												newCard.bonusProductStore = createStore('BonusProgramProduct', Ext.apply(getSortersConfig('BonusProgramProduct', {})));
+
+												newCard.bonusProgramStore.load({
+													limit: 0,
+													callback: function() {
+														newCard.bonusProgramStore.remoteFilter = false;
+
+														newCard.bonusProductStore.load({
+															limit: 0,
+															callback: function() {
+
+																newCard.bonusProductStore.remoteFilter = false;
+	
+																newCard.productStore.filter(newCard.productStore[records.length > 0 ? 'volumeFilter' : 'isFocusedFilter']);
+																oldCard.setLoading(false);
+																IOrders.viewport.setActiveItem(newCard);
+																newCard.productListIndexBar.loadIndex();
+															}
+														});
+													}
+												});
 											} else failureCb('товаров');
 										}
 									});
@@ -488,7 +526,7 @@ Ext.regController('SaleOrder', {
 					xtype: 'list',
 					itemId: 'bonusList',
 					itemTpl: getItemTplMeta('BonusProgram', {useDeps: false}).itemTpl,
-					store: createStore('BonusProgram', Ext.apply(getSortersConfig('BonusProgram', {}))),
+					store: view.bonusProgramStore,
 					listeners: {
 						itemtap: function(list, idx, item, e) {
 							Ext.dispatch({controller: 'SaleOrder',action: 'onBonusItemSelect', view: view, list: list, idx: idx, item: item, event: e});
@@ -509,21 +547,10 @@ Ext.regController('SaleOrder', {
 					}
 				}
 			});
-	
-			view.bonusProductStore = createStore('BonusProgramProduct', Ext.apply(getSortersConfig('BonusProgramProduct', {})));
-			view.bonusPanel.getComponent('bonusList').store.load({
-				limit: 0,
-				callback: function() {
-					view.bonusProductStore.load({limit: 0, callback: function() {
-						view.bonusProductStore.remoteFilter = false;
-						view.bonusPanel.show();
-					}});
-				}
-			});
 		} else {
 			view.bonusPanel.getComponent('bonusList').scroller.scrollTo({y: 0});
-			view.bonusPanel.show();
 		}
+		view.bonusPanel.show();
 	},
 
 	toggleBonusOff: function(options) {

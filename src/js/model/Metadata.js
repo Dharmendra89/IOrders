@@ -72,6 +72,9 @@ Ext.regModel('Table', {
 			return !result;
 		});
 		return result;
+	},
+	getTitleColumns: function() {
+		return this.columns().queryBy(function(rec) {return rec.get('title') == true ? true : false;});
 	}
 });
 

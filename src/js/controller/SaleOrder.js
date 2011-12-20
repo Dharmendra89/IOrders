@@ -147,7 +147,7 @@ Ext.regController('SaleOrder', {
 						});
 
 						newCard.productList = newCard.productPanel.add(Ext.apply(offerProductList, {flex: 3, store: newCard.productStore}));
-						newCard.productListIndexBar = newCard.productPanel.add(new HorizontalIndexBar({list: newCard.productList}));
+						newCard.productListIndexBar = newCard.productPanel.add(new HorizontalIndexBar({hidden: !newCard.indexBarMode, list: newCard.productList}));
 
 						newCard.productStore.load({
 							limit: 0,
@@ -600,5 +600,23 @@ Ext.regController('SaleOrder', {
 
 		view.productListIndexBar.loadIndex();
 		view.bonusPanel.hide();
+	},
+
+	onShowIndexBarButtonTap: function(options) {
+
+		var view = options.view,
+			btn = options.btn,
+			t = btn.text
+		;
+
+		btn.setText(btn.altText);
+		btn.altText = t;
+
+		view.indexBarMode = !view.indexBarMode;
+
+		view.productListIndexBar[view.indexBarMode ? 'show' : 'hide']();
+		view.productPanel.doLayout();
+
+		localStorage.setItem('indexBarMode', view.indexBarMode);
 	}
 });

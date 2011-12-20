@@ -389,8 +389,14 @@ Ext.regController('Main', {
 
 		if(rec.modelName === 'SaleOrder') {
 
-			var delBtn = view.getDockedComponent('top').getComponent('Delete');
+			var topBar = view.getDockedComponent('top'),
+				delBtn = topBar.getComponent('Delete'),
+				editBtn = topBar.getComponent('SaveEdit')
+			;
+
 			delBtn && delBtn[btn.name !== 'draft' ? 'hide' : 'show']();
+
+			editBtn && editBtn[btn.name !== 'draft' ? 'hide' : 'show']();
 		}
 	}
 });

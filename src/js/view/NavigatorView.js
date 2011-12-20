@@ -155,6 +155,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 						itemId: 'SaveEdit',
 						name: this.editing ? 'Save' : 'Edit',
 						text: this.editing ? 'Сохранить' : 'Редактировать',
+						hidden: this.objectRecord.get('processing') !== 'draft',
 						scope: this
 					}
 				);

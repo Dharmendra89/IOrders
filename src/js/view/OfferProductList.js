@@ -30,26 +30,30 @@ var offerProductList = {
 					
 				iel.addCls('editing');
 				
-				this.keyboard = this.keyboard || Ext.create({
-					xtype: 'numkeyboard',
-					value: volume,
-					onConfirmButtonTap: function(button, value) {
-						
-						if (this.iel) {
-							this.iel.removeCls('editing');
-							this.iel = false;
+				if(!this.keyboard) {
+					this.keyboard = Ext.create({
+						xtype: 'numkeyboard',
+						value: volume,
+						onConfirmButtonTap: function(button, value) {
+							
+							if (this.iel) {
+								this.iel.removeCls('editing');
+								this.iel = false;
+							}
+							
+							if (button == 'ok') {
+								Ext.dispatch (Ext.apply({
+									controller: 'SaleOrder',
+									action: 'setVolume',
+									volume: value || 0
+								}, this.options));
+							};
+							//this.hide();
 						}
-						
-						if (button == 'ok') {
-							Ext.dispatch (Ext.apply({
-								controller: 'SaleOrder',
-								action: 'setVolume',
-								volume: value || 0
-							}, this.options));
-						};
-						//this.hide();
-					}
-				});
+					});
+
+					this.up('saleorderview').cmpLinkArray.push(this.keyboard);
+				}
 				
 				this.keyboard.showBy(iel.down('.volume'), false, false);
 				this.keyboard.iel = iel;

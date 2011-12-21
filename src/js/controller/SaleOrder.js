@@ -360,42 +360,48 @@ Ext.regController('SaleOrder', {
 		var list = options.list,
 			item = options.item,
 			iel = Ext.get(item),
-			productRec = list.getRecord(item)
+			productRec = list.getRecord(item),
+			view = list.up('saleorderview')
 		;
 
 		iel.addCls('editing');
 
-		this.pricePanel = this.pricePanel || Ext.create({
-			xtype: 'panel',
-			floating: true,
-			layout: 'fit',
-			width: list.getWidth() / 2,
-			dockedItems: [{xtype: 'toolbar', itemId: 'top', dock: 'top', title: '', titleTpl: new Ext.XTemplate('Себестоимость: {productCost}, Доход: {[values.cost > 0 ? (values.cost - values.productCost * values.volume).toFixed(2) : 0]}')}],
-			items: [{
-				xtype: 'list',
-				itemId: 'priceList',
-				itemTpl: getItemTplMeta('Price', {useDeps: false, groupField: 'category', filterObject: {modelName: 'Product'}}).itemTpl,
-				store: createStore('Price', Ext.apply(getSortersConfig('Price', {})))
-			}],
-			listeners: {
-				hide: function() {
-					this.iel.removeCls('editing');
+		if(!view.pricePanel) {
+
+			 view.pricePanel = Ext.create({
+				xtype: 'panel',
+				floating: true,
+				layout: 'fit',
+				width: list.getWidth() / 2,
+				dockedItems: [{xtype: 'toolbar', itemId: 'top', dock: 'top', title: '', titleTpl: new Ext.XTemplate('Себестоимость: {productCost}, Доход: {[values.cost > 0 ? (values.cost - values.productCost * values.volume).toFixed(2) : 0]}')}],
+				items: [{
+					xtype: 'list',
+					itemId: 'priceList',
+					itemTpl: getItemTplMeta('Price', {useDeps: false, groupField: 'category', filterObject: {modelName: 'Product'}}).itemTpl,
+					store: createStore('Price', Ext.apply(getSortersConfig('Price', {})))
+				}],
+				listeners: {
+					hide: function() {
+						this.iel.removeCls('editing');
+					}
 				}
-			}
-		});
+			});
 
-		this.pricePanel.setHeight(list.getHeight() * 2 / 3);
-		this.pricePanel.iel = iel;
+			 view.cmpLinkArray.push(view.pricePanel);
+		}
 
-		var topBar = this.pricePanel.getDockedComponent('top');
+		view.pricePanel.setHeight(list.getHeight() * 2 / 3);
+		view.pricePanel.iel = iel;
+
+		var topBar = view.pricePanel.getDockedComponent('top');
 		topBar.setTitle(topBar.titleTpl.apply(productRec.data));
 
-		this.pricePanel.getComponent('priceList').store.load({
+		view.pricePanel.getComponent('priceList').store.load({
 			filters: [{property: 'product', value: productRec.get('product')}],
 			callback: function() {
-				this.pricePanel.showBy(iel, false, false);
+				view.pricePanel.showBy(iel, false, false);
 			},
-			scope: this
+			scope: view
 		});
 	},
 
@@ -571,6 +577,8 @@ Ext.regController('SaleOrder', {
 					}
 				}
 			});
+
+			view.cmpLinkArray.push(view.bonusPanel);
 		} else {
 			view.bonusPanel.getComponent('bonusList').scroller.scrollTo({y: 0});
 		}

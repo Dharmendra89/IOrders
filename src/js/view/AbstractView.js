@@ -1,4 +1,6 @@
 var AbstractView = Ext.extend(Ext.Panel, {
+
+	cmpLinkArray: [],
 	/**
 	 * Own
 	 */
@@ -37,6 +39,15 @@ var AbstractView = Ext.extend(Ext.Panel, {
 		this.createDockedItmes();
 		this.createItems();
 		AbstractView.superclass.initComponent.apply(this, arguments);
+
+		this.on('destroy', this.afterDestroy, this);
+	},
+
+	afterDestroy: function() {
+
+		Ext.each(this.cmpLinkArray, function(cmpLink) {
+			cmpLink.destroy();
+		});
 	}
 });
 Ext.reg('abstractview', AbstractView);

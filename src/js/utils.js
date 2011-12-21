@@ -110,21 +110,43 @@ var getItemTplMeta = function(modelName, config) {
 				&& ( !filterObject || filterObject.modelName.toLowerCase() != rec.get('name').toLowerCase())
 				&& groupField !== rec.get('name') ? true : false;
 		});
-		
+
 		templateData.keyColumnsLength = keyColumns.getCount(); 
-		
+
 		if(keyColumns.getCount() > 0) {
-			
+
 			var length = keyColumns.getCount(); 
 
 			keyColumns.each(function(col) {
 
+				var parentName = col.get('name')[0].toUpperCase() + col.get('name').substring(1),
+					titleCols = undefined
+				;
+
+				if(col.get('parent')) {
+
+					titleCols = tableStore.getById(parentName).getTitleColumns();
+
+					length += titleCols.getCount();
+				}
+
 				templateData.keyColumns.push({
 					parent: col.get('parent') ? true: false,
 					name: col.get('name'),
-					name_br: col.get('parent') ? col.get('name')[0].toUpperCase() + col.get('name').substring(1) + '_name' : col.get('name'),
+					name_br: col.get('parent') ? parentName + '_name' : col.get('name'),
 					parentInfo: keyColumns.getCount() === 1 && !tableRecord.hasIdColumn(),
 					end: keyColumns.indexOf(col) + 1 >= length
+				});
+
+				titleCols && titleCols.each(function(tCol) {
+
+					templateData.keyColumns.push({
+						parent: true,
+						name: tCol.get('name'),
+						name_br: parentName + '_' + tCol.get('name'),
+						parentInfo: false,
+						end: titleCols.indexOf(tCol) + keyColumns.indexOf(col) + 2 >= length 
+					});
 				});
 			});
 		}

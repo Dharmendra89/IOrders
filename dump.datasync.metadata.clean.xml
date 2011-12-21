@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.700" expect-megabytes="15">
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.701" expect-megabytes="15">
   <tables set-of="table">
     <table id="Uncashment" name="Сданная выручка" nameSet="Сданная выручка" level="0" extendable="true">
       <columns set-of="column">
@@ -290,9 +290,10 @@
         <column id="OfferBonusProgram_tag" name="BonusProgram_tag" type="string" label="Название кнопки"/>
         <column id="OfferstockLevel" name="stockLevel" type="int" label="Уровень запаса"/>
         <column id="Offercost" name="cost" type="float" label="Стоимость"/>
+        <column id="OfferproductCost" name="productCost" type="float" label="Себестоимость"/>
         <column id="OfferlastActive" name="lastActive" type="int"/>
       </columns>
-      <sql>select c.id as customer, g.category, p.price, g.id as Product, g.firstName, g.name, g.rel, g.factor, g.extraLabel, (select group_concat(bp.tag) from BonusProgramProduct bpp join BonusProgram bp on bp.id = bpp.bonusProgram where product = g.id) as BonusProgram_tag, s.stockLevel, null as cost, round(julianday() - (select julianday(replace(max(s.date), '/', '-')) from Shipment s join ShipmentPosition sp on sp.shipment = s.id where sp.product = g.id and s.customer = c.id ),0) as lastActive from Customer c join PartnerPriceList ppl on ppl.partner = c.partner join Price p on p.pricelistSet = ppl.pricelistSet and p.priceList = ppl.priceList join Product g on g.id = p.product join Stock s on s.product = g.id and s.warehouse = c.warehouse and s.stockLevel &gt; 0</sql>
+      <sql>select c.id as customer, g.category, p.price, g.id as Product, g.firstName, g.name, g.rel, g.factor, g.extraLabel, g.cost as productCost, (select group_concat(bp.tag) from BonusProgramProduct bpp join BonusProgram bp on bp.id = bpp.bonusProgram where product = g.id) as BonusProgram_tag, s.stockLevel, null as cost, round(julianday() - (select julianday(replace(max(s.date), '/', '-')) from Shipment s join ShipmentPosition sp on sp.shipment = s.id where sp.product = g.id and s.customer = c.id ),0) as lastActive from Customer c join PartnerPriceList ppl on ppl.partner = c.partner join Price p on p.pricelistSet = ppl.pricelistSet and p.priceList = ppl.priceList join Product g on g.id = p.product join Stock s on s.product = g.id and s.warehouse = c.warehouse and s.stockLevel &gt; 0</sql>
     </view>
     <view id="OfferCategory">
       <columns set-of="column">

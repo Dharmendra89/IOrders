@@ -370,6 +370,7 @@ Ext.regController('SaleOrder', {
 			floating: true,
 			layout: 'fit',
 			width: list.getWidth() / 2,
+			dockedItems: [{xtype: 'toolbar', itemId: 'top', dock: 'top', title: '', titleTpl: new Ext.XTemplate('Себестоимость: {productCost}, Доход: {[values.cost > 0 ? (values.cost - values.productCost * values.volume).toFixed(2) : 0]}')}],
 			items: [{
 				xtype: 'list',
 				itemId: 'priceList',
@@ -385,6 +386,9 @@ Ext.regController('SaleOrder', {
 
 		this.pricePanel.setHeight(list.getHeight() * 2 / 3);
 		this.pricePanel.iel = iel;
+
+		var topBar = this.pricePanel.getDockedComponent('top');
+		topBar.setTitle(topBar.titleTpl.apply(productRec.data));
 
 		this.pricePanel.getComponent('priceList').store.load({
 			filters: [{property: 'product', value: productRec.get('product')}],

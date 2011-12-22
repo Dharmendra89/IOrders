@@ -26,8 +26,6 @@ var HorizontalIndexBar = Ext.extend(Ext.DataView, {
 
 			this.store.add({key: group.name, value: group.name});
 		}, this);
-
-		this.updateScroller();
 	},
 
 	initComponent : function() {
@@ -41,14 +39,19 @@ var HorizontalIndexBar = Ext.extend(Ext.DataView, {
 			index: this.list.onIndex,
 			scope: this.list
 		});
-
-		this.on('show', this.updateScroller, this);
 	},
+	
+	onShow: function() {
 
-	updateScroller: function() {
+		HorizontalIndexBar.superclass.onShow.apply(this, arguments);
 
-		this.scroller.updateBoundary();
-		this.scroller.scrollTo({y: 0});
+		Ext.defer(function() {
+
+			this.refresh();
+
+			this.scroller.updateBoundary();
+			this.scroller.scrollTo({y: 0});
+		}, 50, this);
 	},
 
 	onItemTap: function(item , idx, e) {

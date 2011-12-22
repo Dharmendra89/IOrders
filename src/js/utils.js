@@ -31,13 +31,13 @@ var getItemTplMeta = function(modelName, config) {
 				+				'<p class="key">'
 				+					'<tpl for="keyColumns">'
 				+						'<tpl if="parent && !parentInfo">'
-				+							'<span>\\{{name_br}\\}<tpl if="!end"> : </tpl></span>&nbsp;'
+				+							'<span class="{cls}">\\{{name_br}\\}<tpl if="!end"> : </tpl></span>&nbsp;'
 				+						'</tpl>'
 				+						'<tpl if="parent && parentInfo">'
 				+							'<div class="parent-info">\\{[getParentInfo("{name}", values.{name})]\\}</div>'
 				+						'</tpl>'
 				+						'<tpl if="!parent">'
-				+							'<span>\\{{name}\\}<tpl if="!end"> : </tpl></span>&nbsp;'
+				+							'<span class="{cls}">\\{{name}\\}<tpl if="!end"> : </tpl></span>&nbsp;'
 				+						'</tpl>'
 				+					'</tpl>'
 				+				'</p>'
@@ -142,6 +142,7 @@ var getItemTplMeta = function(modelName, config) {
 
 					templateData.keyColumns.push({
 						parent: true,
+						cls: 'title',
 						name: tCol.get('name'),
 						name_br: parentName + '_' + tCol.get('name'),
 						parentInfo: false,

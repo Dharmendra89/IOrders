@@ -369,17 +369,35 @@ Ext.regController('SaleOrder', {
 		if(!view.pricePanel) {
 
 			 view.pricePanel = Ext.create({
-				xtype: 'panel',
+				xtype: 'tabpanel',
+				tabBarDock: 'top',
+				tabBar: {ui: 'light', height: 50},
 				floating: true,
-				layout: 'fit',
 				width: list.getWidth() / 2,
-				dockedItems: [{xtype: 'toolbar', itemId: 'top', dock: 'top', title: '', titleTpl: new Ext.XTemplate('Себестоимость: {productCost}, Доход: {[values.cost > 0 ? (values.cost - values.productCost * values.volume).toFixed(2) : 0]}')}],
-				items: [{
-					xtype: 'list',
-					itemId: 'priceList',
-					itemTpl: getItemTplMeta('Price', {useDeps: false, groupField: 'category', filterObject: {modelName: 'Product'}}).itemTpl,
-					store: createStore('Price', Ext.apply(getSortersConfig('Price', {})))
-				}],
+				items: [
+					{
+						xtype: 'list',
+						title: 'Товар',
+						scroll: false,
+						itemId: 'productList',
+						itemTpl: getItemTplMeta('Product', {useDeps: false, groupField: 'category'}).itemTpl,
+						store: createStore('Product', Ext.apply(getSortersConfig('Product', {})))
+					},
+					{
+						xtype: 'list',
+						title: 'Цены',
+						itemId: 'priceList',
+						itemTpl: getItemTplMeta('Price', {useDeps: false, groupField: 'category', filterObject: {modelName: 'Product'}}).itemTpl,
+						store: createStore('Price', Ext.apply(getSortersConfig('Price', {})))
+					},
+					{
+						xtype: 'list',
+						title: 'Отгрузки',
+						itemId: 'shipmentList',
+						itemTpl: getItemTpl('ShipmentProduct'),
+						store: createStore('Shipment', Ext.apply(getSortersConfig('Shipment', {})))
+					}
+				],
 				listeners: {
 					hide: function() {
 						this.iel.removeCls('editing');
@@ -393,15 +411,53 @@ Ext.regController('SaleOrder', {
 		view.pricePanel.setHeight(list.getHeight() * 2 / 3);
 		view.pricePanel.iel = iel;
 
-		var topBar = view.pricePanel.getDockedComponent('top');
-		topBar.setTitle(topBar.titleTpl.apply(productRec.data));
+		var productStore = view.pricePanel.getComponent('productList').store,
+			priceStore = view.pricePanel.getComponent('priceList').store,
+			shipmentStore = view.pricePanel.getComponent('shipmentList').store
+		;
 
-		view.pricePanel.getComponent('priceList').store.load({
-			filters: [{property: 'product', value: productRec.get('product')}],
+		shipmentStore.clearFilter(true);
+		
+		productStore.load({
+			filters: [{property: 'id', value: productRec.get('product')}],
+			scope: view,
 			callback: function() {
-				view.pricePanel.showBy(iel, false, false);
-			},
-			scope: view
+
+				priceStore.load({
+					filters: [{property: 'product', value: productRec.get('product')}],
+					scope: this,
+					callback: function() {
+						
+						shipmentStore.load({
+							scope: this,
+							callback: function() {
+
+								var shipPosStore = this.pricePanel.shipPositionStore = createStore('ShipmentPosition', {});
+								shipPosStore.load({
+									filters: [{property: 'product', value: productRec.get('product')}],
+									scope: this,
+									callback: function() {
+
+										shipmentStore.filterBy(function(item) {
+											return shipPosStore.findExact('shipment', item.get('id')) !== -1;
+										}, this);
+
+										shipmentStore.each(function(rec) {
+
+											var pos = shipPosStore.findRecord('shipment', rec.getId());
+											Ext.apply(rec.data, {name: productStore.getAt(0).get('name'), price: pos.get('price'), volume: pos.get('vol')});
+										});
+
+										this.pricePanel.showBy(iel, false, false);
+
+										this.pricePanel.getComponent('shipmentList').refresh();
+									}
+								});
+							}
+						});
+					}
+				});
+			}
 		});
 	},
 

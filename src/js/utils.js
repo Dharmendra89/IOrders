@@ -238,6 +238,16 @@ function getItemTpl (modelName) {
 				 //  + '<small> {totalCost} руб.</small>'
 				 + '</div>';
 		}
+		case 'ShipmentProduct': {
+			return '<div class="data">'
+				+		'<div class="date">Дата: {[Ext.util.Format.date(values.date)]}</div>'
+				+		'<small>'
+				+			'<div class="name">Товар: {name}</div>'
+				+			'<div class="price">Цена: {price}</div>'
+				+			'<div class="volume">Количество: {volume}</div>'
+				+		'<small>'
+				+	'</div>';
+		}
 		case 'OfferProduct': {
 			return '<div class="hbox<tpl if="lastActive"> active</tpl>">'
 			       +'<div class="info {cls} data ' + '<tpl if="stockLevel==1">caution</tpl>' + '">'

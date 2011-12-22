@@ -421,21 +421,26 @@ Ext.regController('SaleOrder', {
 		productStore.load({
 			filters: [{property: 'id', value: productRec.get('product')}],
 			scope: view,
+			limit: 0,
 			callback: function() {
 
 				priceStore.load({
 					filters: [{property: 'product', value: productRec.get('product')}],
 					scope: this,
+					limit: 0,
 					callback: function() {
 						
 						shipmentStore.load({
 							scope: this,
+							limit: 0,
+							filters: [{property: 'customer', value: this.saleOrder.get('customer')}],
 							callback: function() {
 
 								var shipPosStore = this.pricePanel.shipPositionStore = createStore('ShipmentPosition', {});
 								shipPosStore.load({
 									filters: [{property: 'product', value: productRec.get('product')}],
 									scope: this,
+									limit: 0,
 									callback: function() {
 
 										shipmentStore.filterBy(function(item) {

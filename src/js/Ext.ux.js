@@ -1,40 +1,5 @@
 Ext.override(Ext.Interaction, {controller: 'Main'});
 
-Ext.override(Ext.List, {
-	listeners: {
-/*		selectionchange: function(selModel, selections) {
-			Ext.dispatch({action: 'onListSelectionChange', list: this, selModel: selModel, selections: selections});
-		},*/
-		itemtap: function(list, idx, item, e) {
-			Ext.dispatch({action: 'onListItemTap', list: list, idx: idx, item: item, event: e});
-		},
-		disclose: function(rec, item, idx, e) {
-			Ext.dispatch({action: 'onListItemDisclosure', list: this, idx: idx, item: item, event: e});
-		}
-	},
-
-
-	onUpdate : function(store, record) {
-		this.itemRefresh = true;
-        Ext.List.superclass.onUpdate.apply(this, arguments);
-		this.itemRefresh = false;
-    },
-
-    bufferRender : function(records, index){
-        var div = document.createElement('div');
-		
-		if (this.grouped && this.itemRefresh && records.length == 1) {
-			this.listItemTpl.overwrite (div, Ext.List.superclass.collectData.call(this, records, index));
-		}
-		else {
-	        this.tpl.overwrite(div, this.collectData(records, index));
-		}
-		
-        return Ext.query(this.itemSelector, div);
-    }
-
-});
-
 /**
  * Scope указывает на панель, в которой лежит кнопка
  */
@@ -164,12 +129,25 @@ Ext.override ( Ext.util.Observable, {
 Ext.override (Ext.SegmentedButton, {
 	
 	onTap : function(e, t) {
-        if (!this.disabled && (t = e.getTarget('.x-button'))) {
-			var b = Ext.getCmp(t.id);
+		if (!this.disabled && (t = e.getTarget('.x-button'))) {
+			var b = Ext.getCmp(t.id),
+				allowPress = true
+			;
 			b.wasPressed = b.pressed;
-            if (!b.disabled ) this.setPressed(t.id, this.allowDepress ? undefined : true);
-        }
-    },
+
+			if(this.allowMultiple) {
+				var pressed = this.getPressed();
+	
+				Ext.each(pressed, function(btn) {
+	
+					Ext.each(btn.disallowOther, function(dBtn) {
+						allowPress = allowPress && dBtn != b.itemId;
+					});
+				});
+			}
+			if (!b.disabled && allowPress) this.setPressed(b.itemId || t.id, this.allowDepress ? undefined : true);
+		}
+	},
 	
 	afterLayout : function(layout) {
         var me = this;
@@ -186,6 +164,70 @@ Ext.override (Ext.SegmentedButton, {
             me.initialized = true;
         }
     }
+});
+
+Ext.override(Ext.List, {
+
+	onIndex : function(record, target, index) {
+        var key = record.get('key').toLowerCase(),
+            groups = this.store.getGroups(),
+            ln = groups.length,
+            group, i, closest, id;
+
+        for (i = 0; i < ln; i++) {
+            group = groups[i];
+            id = this.getGroupId(group);
+
+            if (id == key || id > key) {
+                closest = id;
+                break;
+            }
+            else {
+                closest = id;
+            }
+        }
+
+        closest = this.getTargetEl().down('.x-group-' + id.replace('.', '\\.'));
+        if (closest) {
+            this.scroller.scrollTo({x: 0, y: closest.getOffsetsTo(this.scrollEl)[1]}, 400);
+        }
+        return closest;
+    },
+
+	listeners: {
+		/*selectionchange: function(selModel, selections) {
+			Ext.dispatch({action: 'onListSelectionChange', list: this, selModel: selModel, selections: selections});
+		},*/
+		itemtap: function(list, idx, item, e) {
+			Ext.dispatch({action: 'onListItemTap', list: list, idx: idx, item: item, event: e});
+		},
+		disclose: function(rec, item, idx, e) {
+			Ext.dispatch({action: 'onListItemDisclosure', list: this, idx: idx, item: item, event: e});
+		},
+		update: function() {
+
+			this.scroller && this.scroller.updateBoundary();
+		}
+	},
+
+	onUpdate : function(store, record) {
+
+		this.itemRefresh = true;
+		Ext.List.superclass.onUpdate.apply(this, arguments);
+		this.itemRefresh = false;
+	},
+
+	bufferRender : function(records, index){
+		var div = document.createElement('div');
+
+		if (this.grouped && this.itemRefresh && records.length == 1) {
+			this.listItemTpl.overwrite (div, Ext.List.superclass.collectData.call(this, records, index));
+		} else {
+			this.tpl.overwrite(div, this.collectData(records, index));
+		}
+
+		return Ext.query(this.itemSelector, div);
+	}
 });
 
 String.right = function (str, n){

@@ -91,7 +91,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 			table.columns().each( function (c) {
 				var cName = c.get('name');
 				
-				if (String.right(cName, 3) == 'ing') {
+				if (String.right(cName, 10) == 'processing') {
 					var statusButtons = [],
 						state = me.objectRecord.get(cName) || 'draft'
 					;
@@ -155,6 +155,7 @@ var NavigatorView = Ext.extend(AbstractView, {
 						itemId: 'SaveEdit',
 						name: this.editing ? 'Save' : 'Edit',
 						text: this.editing ? 'Сохранить' : 'Редактировать',
+						hidden: !this.editing && this.objectRecord.fields.getByKey('processing') && this.objectRecord.get('processing') !== 'draft',
 						scope: this
 					}
 				);

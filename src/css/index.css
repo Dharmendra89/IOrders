@@ -251,3 +251,51 @@
 .label-parent.x-button {
 	display: inline;
 }
+
+.x-indexbar-horizontal {
+	padding: 0 .3em;
+	width: auto;
+	display: -webkit-box;
+	display: box;
+	-webkit-box-orient: vertical;
+	box-orient: vertical;
+	-webkit-box-align: stretch;
+	box-align: stretch;
+	-webkit-box-pack: center;
+	box-pack: center;
+	position: absolute;
+	top: auto;
+	bottom: 0.5em;
+	right: auto;
+	z-index: 3;
+}
+
+.x-indexbar-horizontal .x-indexbar-body {
+	display: -webkit-box;
+	-webkit-box-orient: horizontal;
+}
+
+.x-indexbar-horizontal .x-indexbar-item {
+	padding-right: 3px;
+}
+
+.x-hindex-body {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+}
+.x-hindex-body .x-hindex-line {
+	flex: 1;
+	display: -webkit-box;
+	-webkit-box-orient: horizontal;
+}
+
+.x-hindex-body  .x-hindex-item {
+	padding: 0.2em 0.1em;
+	display: inline-block;
+	width: 70px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	white-space: nowrap;
+	font-size: 16px;
+	margin: 1px;
+}

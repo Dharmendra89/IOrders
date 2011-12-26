@@ -53,27 +53,31 @@ var EncashmentView = Ext.extend(AbstractView, {
 					if (rec) {
 						var	encashSumm = rec.get('encashSumm');
 						
-						this.keyboard = this.keyboard || Ext.create({
-							xtype: 'numkeyboard',
-							view: this.up('encashmentview'),
-							onConfirmButtonTap: function(button, value) {
-								
-								if (this.iel) {
-									this.iel.removeCls('editing');
-									this.iel = false;
+						if(!this.keyboard) {
+							this.keyboard = Ext.create({
+								xtype: 'numkeyboard',
+								view: this.up('encashmentview'),
+								onConfirmButtonTap: function(button, value) {
+									
+									if (this.iel) {
+										this.iel.removeCls('editing');
+										this.iel = false;
+									}
+									
+									if (button == 'ok') {
+										Ext.dispatch (Ext.apply({
+											controller: 'Navigator',
+											action: 'setEncashSumm',
+											encashSumm: value || 0,
+											view: this.view
+										}, this.options));
+									};
+									//this.hide();
 								}
-								
-								if (button == 'ok') {
-									Ext.dispatch (Ext.apply({
-										controller: 'Navigator',
-										action: 'setEncashSumm',
-										encashSumm: value || 0,
-										view: this.view
-									}, this.options));
-								};
-								//this.hide();
-							}
-						});
+							});
+
+							list.up('encashmentview').cmpLinkArray.push(this.keyboard);
+						}
 						
 						this.keyboard.iel = Ext.get(item);
 						

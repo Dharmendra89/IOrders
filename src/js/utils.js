@@ -31,13 +31,13 @@ var getItemTplMeta = function(modelName, config) {
 				+				'<p class="key">'
 				+					'<tpl for="keyColumns">'
 				+						'<tpl if="parent && !parentInfo">'
-				+							'<span>\\{{name_br}\\}<tpl if="!end"> : </tpl></span>&nbsp;'
+				+							'<span class="{cls}">\\{{name_br}\\}<tpl if="!end"> : </tpl></span>&nbsp;'
 				+						'</tpl>'
 				+						'<tpl if="parent && parentInfo">'
 				+							'<div class="parent-info">\\{[getParentInfo("{name}", values.{name})]\\}</div>'
 				+						'</tpl>'
 				+						'<tpl if="!parent">'
-				+							'<span>\\{{name}\\}<tpl if="!end"> : </tpl></span>&nbsp;'
+				+							'<span class="{cls}">\\{{name}\\}<tpl if="!end"> : </tpl></span>&nbsp;'
 				+						'</tpl>'
 				+					'</tpl>'
 				+				'</p>'
@@ -142,6 +142,10 @@ var getItemTplMeta = function(modelName, config) {
 
 					templateData.keyColumns.push({
 						parent: true,
+<<<<<<< HEAD
+=======
+						cls: 'title',
+>>>>>>> develop
 						name: tCol.get('name'),
 						name_br: parentName + '_' + tCol.get('name'),
 						parentInfo: false,
@@ -238,6 +242,16 @@ function getItemTpl (modelName) {
 				 //  + '<small> {totalCost} руб.</small>'
 				 + '</div>';
 		}
+		case 'ShipmentProduct': {
+			return '<div class="data">'
+				+		'<div class="date">Дата: {[Ext.util.Format.date(values.date)]}</div>'
+				+		'<small>'
+				+			'<div class="name">Товар: {name}</div>'
+				+			'<div class="price">Цена: {price}</div>'
+				+			'<div class="volume">Количество: {volume}</div>'
+				+		'<small>'
+				+	'</div>';
+		}
 		case 'OfferProduct': {
 			return '<div class="hbox<tpl if="lastActive"> active</tpl>">'
 			       +'<div class="info {cls} data ' + '<tpl if="stockLevel==1">caution</tpl>' + '">'
@@ -302,8 +316,14 @@ var createFieldSet = function(columnsStore, modelName, view) {
 			}
 			
 			Ext.apply(field, column.get('parent') 
-					? {xtype: 'selectfield', store: Ext.getStore(column.get('parent')), valueField: 'id', displayField: 'name', onFieldLabelTap: true, onFieldInputTap: true}
-					: fieldConfig
+					? {
+						xtype: 'selectfield',
+						store: Ext.getStore(column.get('parent')),
+						valueField: 'id',
+						displayField: 'name',
+						onFieldLabelTap: true,
+						onFieldInputTap: true
+					} : fieldConfig
 			);
 			fsItems.push(field);
 		}
@@ -419,6 +439,45 @@ var getDepsData = function(depsStore, tablesStore, view) {
 	return data;
 };
 
+var prepareDepRecord = function() {
+
+	depsStore.each(function(dep) {
+
+		var depTable = tablesStore.getById(dep.get('table_id'));
+
+		if(depTable.get('id') != 'SaleOrderPosition' || view.objectRecord.modelName == 'SaleOrder') {
+			var depRec = Ext.ModelMgr.create({
+				name: depTable.get('nameSet'),
+				table_id: depTable.get('id'),
+				extendable: depTable.get('extendable'),
+				contains: dep.get('contains'),
+				editing: view.editing
+			}, 'Dep');
+		}
+	});
+};
+
+var loadDepData = function(depRec, depTable, filters, aggregatesHandler) {
+
+	var modelProxy = Ext.ModelMgr.getModel(depTable.get('id')).prototype.getProxy();
+		
+	var aggCols = depTable.getAggregates();
+	var aggOperation = new Ext.data.Operation({depRec: depRec, filters: filters});
+
+	modelProxy.aggregate(aggOperation, function(operation) {
+
+		var aggDepResult = '';
+		var aggDepTpl = new Ext.XTemplate('<tpl if="value &gt; 0"><tpl if="name">{name} : </tpl>{[values.value.toFixed(2)]} </tpl>');
+		var aggResults = operation.resultSet.records[0].data;
+
+		aggCols.each(function(aggCol) {
+			aggDepResult += aggDepTpl.apply({name: aggCol.get('label') != depTable.get('nameSet') ? aggCol.get('label') : '', value: aggResults[aggCol.get('name')]});
+		});
+		
+		aggregatesHandler.apply(this, [operation, aggResults, aggDepResult]);
+	});
+};
+
 var createTitlePanel = function(t) {
 
 	var htmlTpl = new Ext.XTemplate('<div>{title}</div>');
@@ -452,7 +511,8 @@ var createNavigatorView = function(rec, oldCard, isSetView, editing, config) {
 				ownerViewConfig: oldCard.ownerViewConfig,
 				storeLimit: oldCard.isSetView ? oldCard.setViewStore.currentPage * oldCard.setViewStore.pageSize : undefined,
 				storePage: oldCard.isSetView && oldCard.setViewStore.currentPage,
-				lastSelectedRecord: oldCard.lastSelectedRecord
+				lastSelectedRecord: oldCard.lastSelectedRecord,
+				scrollOffset: oldCard.form.scroller.getOffset()
 			}
 		}, config);
 		
@@ -558,6 +618,16 @@ var getOwnerViewConfig = function(view) {
 		ownerViewConfig: view.ownerViewConfig,
 		storeLimit: view.isSetView ? view.setViewStore.currentPage * view.setViewStore.pageSize : undefined,
 		storePage: view.isSetView && view.setViewStore.currentPage,
-		lastSelectedRecord: view.lastSelectedRecord
+		lastSelectedRecord: view.lastSelectedRecord,
+		scrollOffset: view.form.scroller.getOffset()
 	}};
+};
+
+var changeBtnText = function(btn) {
+
+	if(btn.altText) {
+		var t = btn.text;
+		btn.setText(btn.altText);
+		btn.altText = t;
+	}
 };

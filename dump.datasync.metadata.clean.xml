@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.689" expect-megabytes="15">
+<metadata xmlns="http://unact.net/xml/xi" name="iorders" version="1.702" expect-megabytes="15">
   <tables set-of="table">
     <table id="Uncashment" name="Сданная выручка" nameSet="Сданная выручка" level="0" extendable="true">
       <columns set-of="column">
@@ -63,6 +63,7 @@
         <column id="ProductfirstName" name="firstName" type="string" label="Преднаименование"/>
         <column id="Productfactor" name="factor" type="int" label="Кратность"/>
         <column id="Productrel" name="rel" type="int" label="Шт. в упаковке"/>
+        <column id="Productcost" name="cost" type="float" label="Себестоимость"/>
       </columns>
       <deps set-of="dep">
         <dep table_id="Price" id="Priceproduct"/>
@@ -86,6 +87,8 @@
         <column id="BonusProgramdateStart" name="dateStart" type="date" label="Дата начала"/>
         <column id="BonusProgramdateEnd" name="dateEnd" type="date" label="Дата окончания"/>
         <column id="BonusProgramtag" name="tag" type="string" label="Название кнопки"/>
+        <column id="BonusProgramdescription" name="description" type="string" label="Описание"/>
+        <column id="BonusProgramisFocused" name="isFocused" type="boolean" label="Фокусная"/>
       </columns>
       <deps set-of="dep">
         <dep table_id="BonusProgramProduct" id="BonusProgramProductbonusprogram"/>
@@ -164,8 +167,8 @@
         <column id="Customerid" name="id" type="int" key="true"/>
         <column id="Customerwarehouse" name="warehouse" parent="Warehouse" label="Склад"/>
         <column id="CustomerisBlockedPlong" name="isBlockedPlong" type="boolean" label="Заблокирован по просрочке"/>
+        <column id="Customeraddress" name="address" type="string" label="Адрес" title="true"/>
         <column id="Customername" name="name" type="string" label="Название"/>
-        <column id="Customeraddress" name="address" type="string" label="Адрес"/>
         <column id="Customerphone" name="phone" type="string" label="Телефон"/>
         <column id="Customerinfo" name="info" type="string" label="Комментарии"/>
         <column id="CustomerbonusCost" name="bonusCost" type="float" label="Товарный бонус"/>
@@ -174,9 +177,20 @@
       <deps set-of="dep">
         <dep table_id="RoutePoint" id="RoutePointcustomer"/>
         <dep table_id="SaleOrder" id="SaleOrdercustomer"/>
+        <dep table_id="EncashmentRequest" id="EncashmentRequestcustomer"/>
         <dep table_id="Encashment" id="Encashmentcustomer"/>
         <dep table_id="Shipment" id="Shipmentcustomer" contains="true"/>
       </deps>
+    </table>
+    <table id="EncashmentRequest" name="Заявка на инкассацию" nameSet="Заявки на инкассацию" level="2" extendable="true" deletable="new-only" mainMenu="true" editable="true">
+      <columns set-of="column">
+        <column id="EncashmentRequestcustomer" name="customer" type="int" parent="Customer" label="Клиент" editable="true"/>
+        <column id="EncashmentRequestid" name="id" type="string" key="true"/>
+        <column id="EncashmentRequestxid" name="xid"/>
+        <column id="EncashmentRequestdate" name="date" type="date" label="Дата" editable="true"/>
+        <column id="EncashmentRequestcomment" name="comment" type="string" label="Комментарий" editable="true"/>
+        <column id="EncashmentRequeststatus" name="status" type="string" label="Статус"/>
+      </columns>
     </table>
     <table id="SaleOrder" name="Заказ" nameSet="Заказы" level="2" extendable="true" deletable="new-only" editable="true">
       <columns set-of="column">
@@ -253,7 +267,7 @@
         <dep table_id="RoutePoint" id="RoutePointroute"/>
       </deps>
     </table>
-    <table id="RoutePoint" name="Точка маршрута" nameSet="Точки маршрута" level="1">
+    <table id="RoutePoint" name="Точка маршрута" level="1">
       <columns set-of="column">
         <column id="RoutePointroute" name="route" type="int" parent="Route" label="Маршрут" key="true"/>
         <column id="RoutePointcustomer" name="customer" parent="Customer" label="Клиент" key="true"/>
@@ -278,7 +292,7 @@
         <column id="Offercost" name="cost" type="float" label="Стоимость"/>
         <column id="OfferlastActive" name="lastActive" type="int"/>
       </columns>
-      <sql>select c.id as customer, g.category, p.price, g.id as Product, g.firstName, g.name, g.rel, g.factor, g.extraLabel, case (select count(*) from BonusProgramProduct bpp where product = g.id) when 0 then null else 'A' end as BonusProgram_tag, s.stockLevel, null as cost, round(julianday() - (select julianday(replace(max(s.date), '/', '-')) from Shipment s join ShipmentPosition sp on sp.shipment = s.id where sp.product = g.id and s.customer = c.id ),0) as lastActive from Customer c join PartnerPriceList ppl on ppl.partner = c.partner join Price p on p.pricelistSet = ppl.pricelistSet and p.priceList = ppl.priceList join Product g on g.id = p.product join Stock s on s.product = g.id and s.warehouse = c.warehouse and s.stockLevel &gt; 0</sql>
+      <sql>select c.id as customer, g.category, p.price, g.id as Product, g.firstName, g.name, g.rel, g.factor, g.extraLabel, (select group_concat(bp.tag) from BonusProgramProduct bpp join BonusProgram bp on bp.id = bpp.bonusProgram where product = g.id) as BonusProgram_tag, s.stockLevel, null as cost, round(julianday() - (select julianday(replace(max(s.date), '/', '-')) from Shipment s join ShipmentPosition sp on sp.shipment = s.id where sp.product = g.id and s.customer = c.id ),0) as lastActive from Customer c join PartnerPriceList ppl on ppl.partner = c.partner join Price p on p.pricelistSet = ppl.pricelistSet and p.priceList = ppl.priceList join Product g on g.id = p.product join Stock s on s.product = g.id and s.warehouse = c.warehouse and s.stockLevel &gt; 0</sql>
     </view>
     <view id="OfferCategory">
       <columns set-of="column">

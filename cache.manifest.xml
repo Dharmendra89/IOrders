@@ -16,6 +16,7 @@
         
         <file>src/js/ux/ExpandableGroupedList.js</file>
         <file>src/js/ux/FilterField.js</file>
+        <file>src/js/ux/HorizontalIndexBar.js</file>
         <file>src/js/ux/ListPagingPlugin.js</file>
         <file>src/js/ux/PagingSelectField.js</file>
         

@@ -142,10 +142,7 @@ var getItemTplMeta = function(modelName, config) {
 
 					templateData.keyColumns.push({
 						parent: true,
-<<<<<<< HEAD
-=======
 						cls: 'title',
->>>>>>> develop
 						name: tCol.get('name'),
 						name_br: parentName + '_' + tCol.get('name'),
 						parentInfo: false,

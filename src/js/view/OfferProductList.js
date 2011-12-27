@@ -6,8 +6,6 @@ var offerProductList = {
 	disableSelection: true,
 	pinHeaders: false,
 
-	onItemTap: Ext.emptyFn,
-
 	listeners: {
 
 		itemswipe: function(list, idx, item, event) {
@@ -18,9 +16,15 @@ var offerProductList = {
 				});
 			}
 		},
-		
-//		itemTap: Ext.emptyFn,
-		
+
+		itemtap: function(list, idx, item, event) {
+
+			Ext.dispatch({
+				controller: 'SaleOrder', action: 'onListItemTap',
+				list: list, idx: idx, item: item, event: event
+			});
+		},
+
 		itemdoubletap: function (list, idx, item, el) {
 			var rec = list.getRecord (item);
 			

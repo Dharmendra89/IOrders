@@ -84,12 +84,22 @@ Ext.regController('SaleOrder', {
 
 	onListItemTap: function(options) {
 		
-		var listEl = options.list.getEl();
+		var list = options.list,
+			listEl = list.getEl()
+		;
 		
 		if(listEl.hasCls('x-product-category-list')) {
 			
 			Ext.dispatch(Ext.apply(options, {action: 'onProductCategoryListItemTap'}));
 			
+		} else if (listEl.hasCls('x-product-list')) {
+
+			var target = Ext.get(options.event.target);
+
+			if(target.hasCls('crec')) {
+
+				Ext.dispatch({controller: 'SaleOrder', action: 'toggleBonusOn', view: list.up('saleorderview'), productRec: list.getRecord(options.item)});
+			}
 		} else if(listEl.hasCls('x-deps-list')) {
 			
 			var oldCard = IOrders.viewport.getActiveItem();
@@ -602,7 +612,9 @@ Ext.regController('SaleOrder', {
 
 	toggleBonusOn: function(options) {
 
-		var view = options.view;
+		var view = options.view,
+			productRec = options.productRec
+		;
 
 		if(!view.bonusPanel) { 
 			view.bonusPanel = Ext.create({
@@ -635,15 +647,30 @@ Ext.regController('SaleOrder', {
 							segBtn.setPressed(btn, undefined, true);
 							changeBtnText(btn);
 						}
+
+						view.bonusProductStore.clearFilter(true);
+						view.bonusProgramStore.clearFilter(true);
 					}
 				}
 			});
 
 			view.cmpLinkArray.push(view.bonusPanel);
 		} else {
+			view.bonusPanel.getComponent('bonusList').refresh();
 			view.bonusPanel.getComponent('bonusList').scroller.scrollTo({y: 0});
 		}
+
 		view.bonusPanel.show();
+
+		if(productRec) {
+
+			view.bonusProductStore.filter({property: 'product', value: productRec.get('product')});
+
+			view.bonusProgramStore.filterBy(function(item) {return view.bonusProductStore.findExact('bonusprogram', item.getId()) !== -1;});
+
+			var bonusList = view.bonusPanel.getComponent('bonusList');
+			bonusList.selectSnapshot && bonusList.selModel.select(bonusList.selectSnapshot);
+		}
 	},
 
 	toggleBonusOff: function(options) {
@@ -674,6 +701,9 @@ Ext.regController('SaleOrder', {
 		;
 
 		if(!selectedBonus || tapedBonus.getId() != selectedBonus.getId()) {
+
+			bonusList.selectSnapshot = tapedBonus;
+
 			view.bonusProductStore.filterBy(function(rec, id) {
 				return tapedBonus.get('id') == rec.get('bonusprogram');
 			});
@@ -716,6 +746,8 @@ Ext.regController('SaleOrder', {
 
 			view.bonusMode && Ext.dispatch(Ext.apply(options, {action: 'afterFilterProductStore'}));
 			view.bonusMode = false;
+
+			bonusList.selectSnapshot = undefined;
 		}
 
 		view.productListIndexBar.loadIndex();

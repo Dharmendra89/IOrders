@@ -120,7 +120,8 @@ var getItemTplMeta = function(modelName, config) {
 			keyColumns.each(function(col) {
 
 				var parentName = col.get('name')[0].toUpperCase() + col.get('name').substring(1),
-					titleCols = undefined
+					titleCols = undefined,
+					parentInfo = keyColumns.getCount() === 1 && !tableRecord.hasIdColumn()
 				;
 
 				if(col.get('parent')) {
@@ -134,11 +135,11 @@ var getItemTplMeta = function(modelName, config) {
 					parent: col.get('parent') ? true: false,
 					name: col.get('name'),
 					name_br: col.get('parent') ? parentName + '_name' : col.get('name'),
-					parentInfo: keyColumns.getCount() === 1 && !tableRecord.hasIdColumn(),
+					parentInfo: parentInfo,
 					end: keyColumns.indexOf(col) + 1 >= length
 				});
 
-				titleCols && titleCols.each(function(tCol) {
+				titleCols && !parentInfo && titleCols.each(function(tCol) {
 
 					templateData.keyColumns.push({
 						parent: true,
